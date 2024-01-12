@@ -1,18 +1,11 @@
-import { Link, linkHorizontal } from "d3-shape";
-import { SankeyExtraProperties, SankeyLink } from ".";
+import { linkHorizontal } from "d3-shape";
 
-function horizontalSource<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(d: SankeyLink<N, L>): [number, number] {
+function horizontalSource(d: any): [number, number] {
   // @ts-ignore
   return [d.source.x1, d.y0];
 }
 
-function horizontalTarget<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(d: SankeyLink<N, L>): [number, number] {
+function horizontalTarget(d: any): [number, number] {
   // @ts-ignore
   return [d.target.x0, d.y1];
 }
@@ -30,10 +23,6 @@ function horizontalTarget<
  * Sankey layout generator. These properties are IN EXCESS to the properties explicitly identified in the
  * SankeyLinkMinimal interface.
  */
-export function sankeyLinkHorizontal<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(): Link<any, SankeyLink<N, L>, [number, number]> {
-  // @ts-ignore
+export function sankeyLinkHorizontal() {
   return linkHorizontal().source(horizontalSource).target(horizontalTarget);
 }

@@ -1,13 +1,304 @@
-import { max, min, sum } from "d3-array";
-import { justify } from "./align.js";
-import constant from "./constant.js";
-import {
-  SankeyExtraProperties,
-  SankeyGraph,
-  SankeyLayout,
-  SankeyLink,
-  SankeyNode,
-} from "./types.js";
+interface SankeyNode {
+  id: string; // 'us-east-1'
+  // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
+}
+
+interface SankeyLink {
+  sourceId: string; // 'us-east-1'
+  targetId: string; // 'us-east-2'
+  value: number; //
+  //   successWeight: number; // 100,
+  //   failedWeight: number; //50,
+  // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
+}
+
+interface SankeyGraph {
+  nodes: SankeyNode[];
+  links: SankeyLink[];
+}
+
+// interface SankeyOptions {
+//   numColumns: number;
+// }
+
+interface SankeyConfig {
+  extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+  nodeWidth: number; // 24
+  // TODO: Not sure this was translated correctly
+  nodeHeight: number; // 8
+  nodePadding: number; // 0
+  iterations: number; // 6
+  align: (node: NodeMeta, n: number) => number;
+}
+
+interface LinkMeta {
+  source: NodeMeta;
+  target: NodeMeta;
+  value: number; //
+  width?: number;
+  y0?: number;
+  y1?: number;
+}
+interface NodeMeta {
+  id: string;
+  // TODO: shouldn't use reference here unless updating when graph changes
+  // TODO: What do they really mean?
+  sourceLinks: LinkMeta[]; // If source of link, in sourcelinks
+  targetLinks: LinkMeta[]; // if target of link, in targetlinks
+  // means we get 2x links
+  value: number;
+  depth?: number; // How many iterations of BFS needed to hit the node
+  height?: number;
+  layer?: number;
+
+  x0?: number;
+  x1?: number;
+  y0?: number;
+  y1?: number;
+}
+
+export function computeSankey(graph: SankeyGraph) {
+  const sankeyConfig: SankeyConfig = {
+    extent: [
+      [0, 0],
+      [1, 1],
+    ],
+    nodeWidth: 24,
+    nodeHeight: 8,
+    nodePadding: 0,
+    iterations: 6,
+    // @ts-ignore
+    align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
+  };
+  // Infer graph
+  // TODO:
+  const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
+
+  return nodeIdToMeta;
+  //   computeNodeLinks(graph); - covered by above, use d3 optimization
+  //   computeNodeValues(graph); -  covered
+  //   computeNodeDepths(graph); - covered setNodeDepths
+  //   computeNodeHeights(graph);
+  //   computeNodeBreadths(graph);
+
+  //   computeLinkBreadths(graph);
+
+  //   function getNodeMeta(node: SankeyNode): NodeMeta {
+  //     // @ts-ignore
+  //     return nodeIdToMeta.get(node.id);
+  //   }
+}
+
+function computeNodeMetas(
+  graph: SankeyGraph,
+  sankeyConfig: SankeyConfig
+): Map<string, NodeMeta> {
+  // Create object placeholder to allow for wiring referentially
+  const idToRawNodeMeta = new Map<string, NodeMeta>(
+    // @ts-ignore - Allow invalid NodeMeta because we don't have the
+    graph.nodes.map((n) => [n.id, { id: n.id }])
+  );
+  const linkMetas = graph.links.map((v) => ({
+    source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
+    target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
+    value: v.value,
+    width: 0,
+  }));
+  const idToNodeMeta = new Map<string, NodeMeta>();
+
+  for (const node of graph.nodes) {
+    const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
+    const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
+
+    idToNodeMeta.set(
+      node.id,
+      Object.assign(idToRawNodeMeta.get(node.id) as NodeMeta, {
+        id: node.id,
+
+        sourceLinks,
+        targetLinks,
+        value: Math.max(
+          getSumOfLinkValues(sourceLinks),
+          getSumOfLinkValues(targetLinks)
+        ),
+      })
+    );
+  }
+
+  setNodeDepths(idToNodeMeta);
+  setNodeHeights(idToNodeMeta);
+  setNodeBreadths(idToNodeMeta, sankeyConfig);
+  setLinkBreadths(idToNodeMeta);
+
+  return idToNodeMeta;
+}
+
+// function computeNodeLinks({ nodes, links }: SankeyGraph) {
+//   for (const [i, node] of nodes.entries()) {
+//     // node.index = i;
+//     node.sourceLinks = [];
+//     node.targetLinks = [];
+//   }
+//   // @ts-ignore
+//   const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
+//   for (const [i, link] of links.entries()) {
+//     // link.index = i;
+//     let { source, target } = link;
+//     if (typeof source !== "object")
+//       source = link.source = find(nodeById, source);
+//     if (typeof target !== "object")
+//       target = link.target = find(nodeById, target);
+//     source.sourceLinks.push(link);
+//     target.targetLinks.push(link);
+//   }
+//   if (linkSort != null) {
+//     for (const { sourceLinks, targetLinks } of nodes) {
+//       sourceLinks.sort(linkSort);
+//       targetLinks.sort(linkSort);
+//     }
+//   }
+// }
+
+// TODO - perf, description
+function setNodeBreadths(
+  idToNodeMeta: Map<string, NodeMeta>,
+  sankeyConfig: SankeyConfig
+) {
+  const { extent, nodeHeight } = sankeyConfig;
+  const [[x0, y0], [x1, y1]] = extent;
+  const columns = computeNodeLayers([...idToNodeMeta.values()], sankeyConfig);
+
+  // TODO: can we avoid mutations?
+  sankeyConfig.nodePadding = Math.min(
+    nodeHeight,
+    (y1 - y0) / (Math.max(...columns.map((c) => c.length)) - 1)
+  );
+  initializeNodeBreadths(columns, sankeyConfig);
+  for (let i = 0; i < sankeyConfig.iterations; ++i) {
+    const alpha = Math.pow(0.99, i);
+    const beta = Math.max(1 - alpha, (i + 1) / sankeyConfig.iterations);
+    relaxRightToLeft(columns, alpha, beta, sankeyConfig);
+    relaxLeftToRight(columns, alpha, beta, sankeyConfig);
+  }
+}
+
+// rows - TODO
+function setNodeHeights(idToNodeMeta: Map<string, NodeMeta>) {
+  const nodes = [...idToNodeMeta.values()];
+  const n = nodes.length;
+  let current = new Set<NodeMeta>(nodes);
+  let next = new Set<NodeMeta>();
+  let x = 0;
+  while (current.size) {
+    for (const node of current) {
+      node.height = x;
+      for (const { source } of node.targetLinks) {
+        next.add(source);
+      }
+    }
+    if (++x > n) throw new Error("circular link");
+    current = next;
+    next = new Set();
+  }
+}
+
+// Columns - how many hops to that node from the leftern-most source node
+function setNodeDepths(idToNodeMeta: Map<string, NodeMeta>) {
+  let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
+  let nextNodesToIterate = new Set<NodeMeta>();
+
+  const numberOfNodes = nodesToIterate.size;
+
+  let depthCounter = 0;
+  while (nodesToIterate.size) {
+    for (const node of nodesToIterate) {
+      node.depth = depthCounter;
+      for (const { target } of node.sourceLinks) {
+        nextNodesToIterate.add(target);
+      }
+    }
+    if (++depthCounter > numberOfNodes) {
+      throw new Error("circular link");
+    }
+    nodesToIterate = nextNodesToIterate;
+    nextNodesToIterate = new Set();
+  }
+}
+
+function getSumOfLinkValues(links: LinkMeta[]): number {
+  return links.reduce((sum, v) => sum + v.value, 0);
+}
+
+function getMaxNodeDepth(nodes: NodeMeta[]): number {
+  // @ts-ignore
+  return nodes.reduce((maxDepth, v) => Math.max(maxDepth, v.depth), 0);
+}
+
+function computeNodeLayers(
+  nodes: NodeMeta[],
+  { extent, nodeWidth, align }: SankeyConfig
+): NodeMeta[][] {
+  const [[x0, y0], [x1, y1]] = extent;
+  const x = getMaxNodeDepth(nodes) + 1;
+  const kx = (x1 - x0 - nodeWidth) / (x - 1);
+  const columns: NodeMeta[][] = new Array(x);
+  for (const node of nodes) {
+    const i = Math.max(0, Math.min(x - 1, Math.floor(align(node, x))));
+    node.layer = i;
+    node.x0 = x0 + i * kx;
+    node.x1 = node.x0 + nodeWidth;
+    if (columns[i]) columns[i].push(node);
+    else columns[i] = [node];
+  }
+  // TODO:
+  // if (sort)
+  //   for (const column of columns) {
+  //     column.sort(sort);
+  //   }
+  return columns;
+}
+
+function initializeNodeBreadths(
+  columns: NodeMeta[][],
+  sankeyConfig: SankeyConfig
+) {
+  const { extent, nodePadding } = sankeyConfig;
+  const [[x0, y0], [x1, y1]] = extent;
+  const ky = getMinColumnWhat(columns, sankeyConfig);
+
+  console.log("ky", ky);
+  for (const nodes of columns) {
+    let y = y0;
+    for (const node of nodes) {
+      node.y0 = y;
+      node.y1 = y + node.value * ky;
+      y = node.y1 + nodePadding;
+      // TODO:
+      for (const link of node.sourceLinks) {
+        link.width = link.value * ky;
+      }
+    }
+    y = (y1 - y + nodePadding) / (nodes.length + 1);
+    for (let i = 0; i < nodes.length; ++i) {
+      const node = nodes[i];
+      // @ts-ignore
+      node.y0 += y * (i + 1);
+      // @ts-ignore
+      node.y1 += y * (i + 1);
+    }
+    reorderLinks(nodes);
+  }
+}
+
+function reorderLinks(nodes: NodeMeta[]) {
+  // TODO:
+  // if (linkSort === undefined) {
+  for (const { sourceLinks, targetLinks } of nodes) {
+    sourceLinks.sort(ascendingTargetBreadth);
+    targetLinks.sort(ascendingSourceBreadth);
+  }
+  // }
+}
 
 function ascendingSourceBreadth(a: any, b: any) {
   return ascendingBreadth(a.source, b.source) || a.index - b.index;
@@ -21,451 +312,246 @@ function ascendingBreadth(a: any, b: any) {
   return a.y0 - b.y0;
 }
 
-function value(d: any) {
-  return d.value;
+// Reposition each node based on its incoming (target) links.
+function relaxLeftToRight(
+  columns: NodeMeta[][],
+  alpha: any,
+  beta: any,
+  sankeyConfig: SankeyConfig
+) {
+  for (let i = 1, n = columns.length; i < n; ++i) {
+    const column = columns[i];
+    for (const target of column) {
+      let y = 0;
+      let w = 0;
+      for (const { source, value } of target.targetLinks) {
+        if (target.layer == null || source.layer == null) {
+          throw new Error(
+            "target.layer and source.layer should be defined already!"
+          );
+        }
+        let v = value * (target.layer - source.layer);
+        y += targetTop(source, target, sankeyConfig.nodePadding) * v;
+        w += v;
+      }
+      if (!(w > 0)) continue;
+      if (target.y0 == null || target.y1 == null) {
+        throw new Error("target.y0 and target.y1 should be defined already!");
+      }
+      let dy = (y / w - target.y0) * alpha;
+      target.y0 += dy;
+      target.y1 += dy;
+      reorderNodeLinks(target);
+    }
+
+    /* TODO: if (sort === undefined)*/ column.sort(ascendingBreadth);
+    resolveCollisions(column, beta, sankeyConfig);
+  }
 }
 
-function defaultId(d: any) {
-  return d.index;
+// Reposition each node based on its outgoing (source) links.
+function relaxRightToLeft(
+  columns: NodeMeta[][],
+  alpha: any,
+  beta: any,
+  sankeyConfig: SankeyConfig
+) {
+  for (let n = columns.length, i = n - 2; i >= 0; --i) {
+    const column = columns[i];
+    for (const source of column) {
+      let y = 0;
+      let w = 0;
+      for (const { target, value } of source.sourceLinks) {
+        if (target.layer == null || source.layer == null) {
+          throw new Error(
+            "target.layer and source.layer should be defined already!"
+          );
+        }
+        let v = value * (target.layer - source.layer);
+        y += sourceTop(source, target, sankeyConfig.nodePadding) * v;
+        w += v;
+      }
+      if (!(w > 0)) continue;
+      if (source.y0 == null || source.y1 == null) {
+        throw new Error(
+          "target.layer and source.layer should be defined already!"
+        );
+      }
+      let dy = (y / w - source.y0) * alpha;
+      source.y0 += dy;
+      source.y1 += dy;
+      reorderNodeLinks(source);
+    }
+    /* TODO: if (sort === undefined) */ column.sort(ascendingBreadth);
+    resolveCollisions(column, beta, sankeyConfig);
+  }
 }
 
-function defaultNodes<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(graph: SankeyGraph<N, L>) {
-  return graph.nodes;
+function resolveCollisions(
+  nodes: any,
+  alpha: any,
+  { extent, nodePadding }: SankeyConfig
+) {
+  const [[x0, y0], [x1, y1]] = extent;
+
+  const i = nodes.length >> 1;
+  const subject = nodes[i];
+  resolveCollisionsBottomToTop(
+    nodes,
+    subject.y0 - nodePadding,
+    i - 1,
+    alpha,
+    nodePadding
+  );
+  resolveCollisionsTopToBottom(
+    nodes,
+    subject.y1 + nodePadding,
+    i + 1,
+    alpha,
+    nodePadding
+  );
+  resolveCollisionsBottomToTop(nodes, y1, nodes.length - 1, alpha, nodePadding);
+  resolveCollisionsTopToBottom(nodes, y0, 0, alpha, nodePadding);
 }
 
-function defaultLinks<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(graph: SankeyGraph<N, L>) {
-  return graph.links;
+// Push any overlapping nodes down.
+function resolveCollisionsTopToBottom(
+  nodes: any,
+  y: any,
+  i: any,
+  alpha: any,
+  nodePadding: number
+) {
+  for (; i < nodes.length; ++i) {
+    const node = nodes[i];
+    const dy = (y - node.y0) * alpha;
+    if (dy > 1e-6) (node.y0 += dy), (node.y1 += dy);
+    y = node.y1 + nodePadding;
+  }
 }
 
-function find<T>(nodeById: Map<string, T>, id: string) {
-  const node = nodeById.get(id);
-  if (!node) throw new Error("missing: " + id);
-  return node;
+// Push any overlapping nodes up.
+function resolveCollisionsBottomToTop(
+  nodes: any,
+  y: any,
+  i: any,
+  alpha: any,
+  nodePadding: number
+) {
+  for (; i >= 0; --i) {
+    const node = nodes[i];
+    const dy = (node.y1 - y) * alpha;
+    if (dy > 1e-6) (node.y0 -= dy), (node.y1 -= dy);
+    y = node.y0 - nodePadding;
+  }
 }
 
-function computeLinkBreadths<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->({ nodes }: SankeyGraph<N, L>) {
-  for (const node of nodes) {
+function reorderNodeLinks({
+  sourceLinks,
+  targetLinks,
+}: {
+  sourceLinks: LinkMeta[];
+  targetLinks: LinkMeta[];
+}) {
+  // TODO: if (linkSort === undefined) {
+  for (const link of targetLinks) {
+    link.source.sourceLinks.sort(ascendingTargetBreadth);
+  }
+  for (const link of sourceLinks) {
+    link.target.targetLinks.sort(ascendingSourceBreadth);
+  }
+  // TODO }
+}
+
+// Returns the target.y0 that would produce an ideal link from source to target.
+function targetTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
+  if (source.y0 == null) {
+    throw new Error("source.y0 should not be empty here!");
+  }
+  let y = source.y0 - ((source.sourceLinks.length - 1) * nodePadding) / 2;
+  for (const { target: node, width } of source.sourceLinks) {
+    if (node === target) break;
+    if (width == null) {
+      throw new Error("width should not be empty here!");
+    }
+    y += width + nodePadding;
+  }
+  for (const { source: node, width } of target.targetLinks) {
+    if (node === source) break;
+    if (width == null) {
+      throw new Error("width should not be empty here!");
+    }
+    y -= width;
+  }
+  return y;
+}
+
+// Returns the source.y0 that would produce an ideal link from source to target.
+function sourceTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
+  if (target.y0 == null) {
+    throw new Error("target.y0 should not be empty here!");
+  }
+  let y = target.y0 - ((target.targetLinks.length - 1) * nodePadding) / 2;
+  for (const { source: node, width } of target.targetLinks) {
+    if (node === source) break;
+    if (width == null) {
+      throw new Error("width should not be empty here!");
+    }
+    y += width + nodePadding;
+  }
+  for (const { target: node, width } of source.sourceLinks) {
+    if (node === target) break;
+    if (width == null) {
+      throw new Error("width should not be empty here!");
+    }
+    y -= width;
+  }
+  return y;
+}
+
+function setLinkBreadths(idToNodeMeta: Map<string, NodeMeta>) {
+  for (const node of idToNodeMeta.values()) {
+    if (node.y0 == null) {
+      throw new Error("node.y0 should not be empty!");
+    }
     let y0 = node.y0;
     let y1 = y0;
     for (const link of node.sourceLinks) {
+      if (link.width == null) {
+        throw new Error("link.width should not be empty!");
+      }
       link.y0 = y0 + link.width / 2;
-      y0 += link.width;
+      y0 += link.width as number;
     }
     for (const link of node.targetLinks) {
+      if (link.width == null) {
+        throw new Error("link.width should not be empty!");
+      }
       link.y1 = y1 + link.width / 2;
       y1 += link.width;
     }
   }
 }
+// TODO: What is this doing?
+function getMinColumnWhat(
+  columns: NodeMeta[][],
+  { extent, nodePadding }: SankeyConfig
+): number {
+  const [[x0, y0], [x1, y1]] = extent;
 
-/**
- * Get a Sankey layout generator.
- *
- * The nodes/links accessors need to be configured to work with the data type of the first argument passed
- * in when invoking the Sankey layout generator.
- *
- * The first generic corresponds to the data type of the first argument passed in when invoking the Sankey layout generator,
- * and its nodes/links accessors.
- *
- * The second generic N refers to user-defined properties contained in the node data passed into
- * Sankey layout generator. These properties are IN EXCESS to the properties explicitly identified in the
- * SankeyNodeMinimal interface.
- *
- * The third generic L refers to user-defined properties contained in the link data passed into
- * Sankey layout generator. These properties are IN EXCESS to the properties explicitly identified in the
- * SankeyLinkMinimal interface.
- */
-export default function Sankey<
-  N extends SankeyExtraProperties = {},
-  L extends SankeyExtraProperties = {}
->(): SankeyLayout<SankeyGraph<SankeyNode<N, L>, SankeyLink<N, L>>, N, L> {
-  let x0 = 0,
-    y0 = 0,
-    x1 = 1,
-    y1 = 1; // extent
-  let dx = 24; // nodeWidth
-  let dy = 8,
-    py: any; // nodePadding
-  let id = defaultId;
-  let align = justify;
-  let sort: any;
-  let linkSort: any;
-  let nodes = defaultNodes;
-  let links = defaultLinks;
-  let iterations = 6;
-
-  function sankey() {
-    const graph = {
-      nodes: nodes.apply(null, arguments as any),
-      links: links.apply(null, arguments as any),
-    };
-    computeNodeLinks(graph);
-    computeNodeValues(graph);
-    computeNodeDepths(graph);
-    computeNodeHeights(graph);
-    computeNodeBreadths(graph);
-    computeLinkBreadths(graph);
-    return graph;
-  }
-
-  Object.assign(sankey, {
-    update,
-    nodeId,
-    nodeAlign,
-    nodeSort,
-    nodeWidth,
-    nodePadding,
-    nodes(_: any) {
-      return arguments.length
-        ? ((nodes = typeof _ === "function" ? _ : constant(_)), sankey)
-        : nodes;
-    },
-    links(_: any) {
-      return arguments.length
-        ? ((links = typeof _ === "function" ? _ : constant(_)), sankey)
-        : links;
-    },
-    linkSort(_: any) {
-      return arguments.length ? ((linkSort = _), sankey) : linkSort;
-    },
-    size(_: any) {
-      return arguments.length
-        ? ((x0 = y0 = 0), (x1 = +_[0]), (y1 = +_[1]), sankey)
-        : [x1 - x0, y1 - y0];
-    },
-    extent(_: any) {
-      return arguments.length
-        ? ((x0 = +_[0][0]),
-          (x1 = +_[1][0]),
-          (y0 = +_[0][1]),
-          (y1 = +_[1][1]),
-          sankey)
-        : [
-            [x0, y0],
-            [x1, y1],
-          ];
-    },
-    iterations(_: any) {
-      return arguments.length ? ((iterations = +_), sankey) : iterations;
-    },
-  });
-
-  function update<
-    N extends SankeyExtraProperties = {},
-    L extends SankeyExtraProperties = {}
-  >(graph: SankeyGraph<N, L>) {
-    computeLinkBreadths(graph);
-    return graph;
-  }
-
-  function nodeId(_: any) {
-    return arguments.length
-      ? ((id = typeof _ === "function" ? _ : constant(_)), sankey)
-      : id;
-  }
-
-  function nodeAlign(_: any) {
-    return arguments.length
-      ? ((align = typeof _ === "function" ? _ : constant(_)), sankey)
-      : align;
-  }
-
-  function nodeSort(_: any) {
-    return arguments.length ? ((sort = _), sankey) : sort;
-  }
-
-  function nodeWidth(_: any) {
-    return arguments.length ? ((dx = +_), sankey) : dx;
-  }
-
-  function nodePadding(_: any) {
-    return arguments.length ? ((dy = py = +_), sankey) : dy;
-  }
-
-  function computeNodeLinks({ nodes, links }: { nodes: any[]; links: any[] }) {
-    for (const [i, node] of nodes.entries()) {
-      node.index = i;
-      node.sourceLinks = [];
-      node.targetLinks = [];
-    }
-    // @ts-ignore
-    const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
-    for (const [i, link] of links.entries()) {
-      link.index = i;
-      let { source, target } = link;
-      if (typeof source !== "object")
-        source = link.source = find(nodeById, source);
-      if (typeof target !== "object")
-        target = link.target = find(nodeById, target);
-      source.sourceLinks.push(link);
-      target.targetLinks.push(link);
-    }
-    if (linkSort != null) {
-      for (const { sourceLinks, targetLinks } of nodes) {
-        sourceLinks.sort(linkSort);
-        targetLinks.sort(linkSort);
-      }
+  let minValue;
+  for (const columnNodes of columns) {
+    const newValue =
+      (y1 - y0 - (columnNodes.length - 1) * nodePadding) /
+      sum(columnNodes, (v) => v.value);
+    if (minValue == null || newValue < minValue) {
+      minValue = newValue;
     }
   }
+  // @ts-ignore
+  return minValue;
+}
 
-  function computeNodeValues({ nodes }: { nodes: any[] }) {
-    for (const node of nodes) {
-      node.value =
-        node.fixedValue === undefined
-          ? Math.max(sum(node.sourceLinks, value), sum(node.targetLinks, value))
-          : node.fixedValue;
-    }
-  }
-
-  function computeNodeDepths({ nodes }: { nodes: any[] }) {
-    const n = nodes.length;
-    let current = new Set(nodes);
-    let next = new Set();
-    let x = 0;
-    while (current.size) {
-      for (const node of current) {
-        node.depth = x;
-        for (const { target } of node.sourceLinks) {
-          next.add(target);
-        }
-      }
-      if (++x > n) throw new Error("circular link");
-      current = next;
-      next = new Set();
-    }
-  }
-
-  function computeNodeHeights({ nodes }: { nodes: any[] }) {
-    const n = nodes.length;
-    let current = new Set(nodes);
-    let next = new Set();
-    let x = 0;
-    while (current.size) {
-      for (const node of current) {
-        node.height = x;
-        for (const { source } of node.targetLinks) {
-          next.add(source);
-        }
-      }
-      if (++x > n) throw new Error("circular link");
-      current = next;
-      next = new Set();
-    }
-  }
-
-  function computeNodeLayers({ nodes }: { nodes: any[] }) {
-    const x = max(nodes, (d) => d.depth) + 1;
-    const kx = (x1 - x0 - dx) / (x - 1);
-    const columns = new Array(x);
-    for (const node of nodes) {
-      const i = Math.max(
-        0,
-        Math.min(x - 1, Math.floor(align.call(null, node, x)))
-      );
-      node.layer = i;
-      node.x0 = x0 + i * kx;
-      node.x1 = node.x0 + dx;
-      if (columns[i]) columns[i].push(node);
-      else columns[i] = [node];
-    }
-    if (sort)
-      for (const column of columns) {
-        column.sort(sort);
-      }
-    return columns;
-  }
-
-  function initializeNodeBreadths(columns: any[]) {
-    const ky = min(
-      columns,
-      (c) => (y1 - y0 - (c.length - 1) * py) / sum(c, value)
-    );
-    for (const nodes of columns) {
-      let y = y0;
-      for (const node of nodes) {
-        node.y0 = y;
-        // @ts-ignore
-        node.y1 = y + node.value * ky;
-        y = node.y1 + py;
-        for (const link of node.sourceLinks) {
-          // @ts-ignore
-          link.width = link.value * ky;
-        }
-      }
-      y = (y1 - y + py) / (nodes.length + 1);
-      for (let i = 0; i < nodes.length; ++i) {
-        const node = nodes[i];
-        node.y0 += y * (i + 1);
-        node.y1 += y * (i + 1);
-      }
-      reorderLinks(nodes);
-    }
-  }
-
-  function computeNodeBreadths(graph: any) {
-    const columns = computeNodeLayers(graph);
-    // @ts-ignore
-    py = Math.min(dy, (y1 - y0) / (max(columns, (c) => c.length) - 1));
-    initializeNodeBreadths(columns);
-    for (let i = 0; i < iterations; ++i) {
-      const alpha = Math.pow(0.99, i);
-      const beta = Math.max(1 - alpha, (i + 1) / iterations);
-      relaxRightToLeft(columns, alpha, beta);
-      relaxLeftToRight(columns, alpha, beta);
-    }
-  }
-
-  // Reposition each node based on its incoming (target) links.
-  function relaxLeftToRight(columns: any, alpha: any, beta: any) {
-    for (let i = 1, n = columns.length; i < n; ++i) {
-      const column = columns[i];
-      for (const target of column) {
-        let y = 0;
-        let w = 0;
-        for (const { source, value } of target.targetLinks) {
-          let v = value * (target.layer - source.layer);
-          y += targetTop(source, target) * v;
-          w += v;
-        }
-        if (!(w > 0)) continue;
-        let dy = (y / w - target.y0) * alpha;
-        target.y0 += dy;
-        target.y1 += dy;
-        reorderNodeLinks(target);
-      }
-      if (sort === undefined) column.sort(ascendingBreadth);
-      resolveCollisions(column, beta);
-    }
-  }
-
-  // Reposition each node based on its outgoing (source) links.
-  function relaxRightToLeft(columns: any, alpha: any, beta: any) {
-    for (let n = columns.length, i = n - 2; i >= 0; --i) {
-      const column = columns[i];
-      for (const source of column) {
-        let y = 0;
-        let w = 0;
-        for (const { target, value } of source.sourceLinks) {
-          let v = value * (target.layer - source.layer);
-          y += sourceTop(source, target) * v;
-          w += v;
-        }
-        if (!(w > 0)) continue;
-        let dy = (y / w - source.y0) * alpha;
-        source.y0 += dy;
-        source.y1 += dy;
-        reorderNodeLinks(source);
-      }
-      if (sort === undefined) column.sort(ascendingBreadth);
-      resolveCollisions(column, beta);
-    }
-  }
-
-  function resolveCollisions(nodes: any, alpha: any) {
-    const i = nodes.length >> 1;
-    const subject = nodes[i];
-    resolveCollisionsBottomToTop(nodes, subject.y0 - py, i - 1, alpha);
-    resolveCollisionsTopToBottom(nodes, subject.y1 + py, i + 1, alpha);
-    resolveCollisionsBottomToTop(nodes, y1, nodes.length - 1, alpha);
-    resolveCollisionsTopToBottom(nodes, y0, 0, alpha);
-  }
-
-  // Push any overlapping nodes down.
-  function resolveCollisionsTopToBottom(
-    nodes: any,
-    y: any,
-    i: any,
-    alpha: any
-  ) {
-    for (; i < nodes.length; ++i) {
-      const node = nodes[i];
-      const dy = (y - node.y0) * alpha;
-      if (dy > 1e-6) (node.y0 += dy), (node.y1 += dy);
-      y = node.y1 + py;
-    }
-  }
-
-  // Push any overlapping nodes up.
-  function resolveCollisionsBottomToTop(
-    nodes: any,
-    y: any,
-    i: any,
-    alpha: any
-  ) {
-    for (; i >= 0; --i) {
-      const node = nodes[i];
-      const dy = (node.y1 - y) * alpha;
-      if (dy > 1e-6) (node.y0 -= dy), (node.y1 -= dy);
-      y = node.y0 - py;
-    }
-  }
-
-  function reorderNodeLinks({
-    sourceLinks,
-    targetLinks,
-  }: {
-    sourceLinks: any;
-    targetLinks: any;
-  }) {
-    if (linkSort === undefined) {
-      for (const {
-        source: { sourceLinks },
-      } of targetLinks) {
-        sourceLinks.sort(ascendingTargetBreadth);
-      }
-      for (const {
-        target: { targetLinks },
-      } of sourceLinks) {
-        targetLinks.sort(ascendingSourceBreadth);
-      }
-    }
-  }
-
-  function reorderLinks(nodes: any) {
-    if (linkSort === undefined) {
-      for (const { sourceLinks, targetLinks } of nodes) {
-        sourceLinks.sort(ascendingTargetBreadth);
-        targetLinks.sort(ascendingSourceBreadth);
-      }
-    }
-  }
-
-  // Returns the target.y0 that would produce an ideal link from source to target.
-  function targetTop(source: any, target: any) {
-    let y = source.y0 - ((source.sourceLinks.length - 1) * py) / 2;
-    for (const { target: node, width } of source.sourceLinks) {
-      if (node === target) break;
-      y += width + py;
-    }
-    for (const { source: node, width } of target.targetLinks) {
-      if (node === source) break;
-      y -= width;
-    }
-    return y;
-  }
-
-  // Returns the source.y0 that would produce an ideal link from source to target.
-  function sourceTop(source: any, target: any) {
-    let y = target.y0 - ((target.targetLinks.length - 1) * py) / 2;
-    for (const { source: node, width } of target.targetLinks) {
-      if (node === source) break;
-      y += width + py;
-    }
-    for (const { target: node, width } of source.sourceLinks) {
-      if (node === target) break;
-      y -= width;
-    }
-    return y;
-  }
-
-  return sankey;
+function sum<T>(values: T[], getValue: (value: T) => number): number {
+  return values.reduce((sum, nextValue) => sum + getValue(nextValue), 0);
 }
