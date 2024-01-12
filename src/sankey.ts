@@ -31,7 +31,7 @@ interface SankeyConfig {
   align: (node: NodeMeta, n: number) => number;
 }
 
-interface LinkMeta {
+export interface LinkMeta {
   source: NodeMeta;
   target: NodeMeta;
   value: number; //
@@ -39,7 +39,7 @@ interface LinkMeta {
   y0?: number;
   y1?: number;
 }
-interface NodeMeta {
+export interface NodeMeta {
   id: string;
   // TODO: shouldn't use reference here unless updating when graph changes
   // TODO: What do they really mean?
@@ -57,24 +57,56 @@ interface NodeMeta {
   y1?: number;
 }
 
-export function computeSankey(graph: SankeyGraph) {
-  const sankeyConfig: SankeyConfig = {
-    extent: [
-      [0, 0],
-      [1, 1],
-    ],
-    nodeWidth: 24,
-    nodeHeight: 8,
-    nodePadding: 0,
-    iterations: 6,
-    // @ts-ignore
-    align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
-  };
+interface SankeyOptions {
+  extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+  nodeWidth?: number; // 24
+  nodeHeight?: number; // 8
+  // TODO: This appears to be fully auto-computed, don't allow as param
+  // nodePadding?: number; // 0
+  iterations?: number; // 6
+  align?: (node: NodeMeta, n: number) => number;
+}
+
+interface GraphMeta {
+  nodes: Required<NodeMeta>[];
+  links: Required<LinkMeta>[];
+}
+
+export function computeSankey(
+  graph: SankeyGraph,
+  options: SankeyOptions = {}
+): GraphMeta {
+  const sankeyConfig: SankeyConfig = Object.assign(
+    {
+      extent: [
+        [0, 0],
+        [1, 1],
+      ],
+      nodeWidth: 24,
+      nodeHeight: 8,
+      nodePadding: 0,
+      iterations: 6,
+      // @ts-ignore
+      align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
+    },
+    options
+  );
   // Infer graph
   // TODO:
   const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
 
-  return nodeIdToMeta;
+  return {
+    // @ts-ignore
+    nodes: [...nodeIdToMeta.values()],
+    // @ts-ignore
+    links: [
+      ...new Set(
+        [...nodeIdToMeta.values()]
+          .map((v) => [...v.sourceLinks, ...v.targetLinks])
+          .flat()
+      ),
+    ],
+  };
   //   computeNodeLinks(graph); - covered by above, use d3 optimization
   //   computeNodeValues(graph); -  covered
   //   computeNodeDepths(graph); - covered setNodeDepths
@@ -266,7 +298,6 @@ function initializeNodeBreadths(
   const [[x0, y0], [x1, y1]] = extent;
   const ky = getMinColumnWhat(columns, sankeyConfig);
 
-  console.log("ky", ky);
   for (const nodes of columns) {
     let y = y0;
     for (const node of nodes) {
