@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 // import { sankey } from "../src";
 import { computeSankey } from "../src";
-import { setNodeDepths } from "../src/adamSankey";
+// import { setNodeDepths } from "../src/adamSankey";
 // import { sum } from './sum'
 
 // A ->(100) B
@@ -12,7 +12,7 @@ test("should produce a basic sankey", () => {
       {
         sourceId: "A",
         targetId: "B",
-        value: 10,
+        value: 1,
       },
     ],
   });

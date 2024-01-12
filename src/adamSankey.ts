@@ -43,8 +43,9 @@ interface NodeMeta {
   id: string;
   // TODO: shouldn't use reference here unless updating when graph changes
   // TODO: What do they really mean?
-  sourceLinks: LinkMeta[];
-  targetLinks: LinkMeta[];
+  sourceLinks: LinkMeta[]; // If source of link, in sourcelinks
+  targetLinks: LinkMeta[]; // if target of link, in targetlinks
+  // means we get 2x links
   value: number;
   depth?: number; // How many iterations of BFS needed to hit the node
   height?: number;
@@ -59,15 +60,15 @@ interface NodeMeta {
 export function computeSankey(graph: SankeyGraph) {
   const sankeyConfig: SankeyConfig = {
     extent: [
-      [0, 1],
-      [0, 1],
+      [0, 0],
+      [1, 1],
     ],
     nodeWidth: 24,
     nodeHeight: 8,
     nodePadding: 0,
     iterations: 6,
     // @ts-ignore
-    align: (node, n) => (node.inboundLinks.length ? node.depth : n - 1),
+    align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
   };
   // Infer graph
   // TODO:
@@ -95,56 +96,30 @@ function computeNodeMetas(
   // Create object placeholder to allow for wiring referentially
   const idToRawNodeMeta = new Map<string, NodeMeta>(
     // @ts-ignore - Allow invalid NodeMeta because we don't have the
-    graph.nodes.map((n) => [n.id, {}])
+    graph.nodes.map((n) => [n.id, { id: n.id }])
   );
+  const linkMetas = graph.links.map((v) => ({
+    source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
+    target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
+    value: v.value,
+    width: 0,
+  }));
   const idToNodeMeta = new Map<string, NodeMeta>();
 
   for (const node of graph.nodes) {
-    // const inboundLinks = computeInboundLinks(node.id, graph);
-    // const outboundLinks = computeOutboundLinks(node.id, graph);
-    // TODO: Fix n^2
-    // const inboundLinks = graph.links
-    //   .filter((l) => l.sourceId === node.id)
-    //   .map((v) => ({
-    //     source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
-    //     target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-    //     value: v.value,
-    //     width: 0,
-    //   }));
-    // const outboundLinks = graph.links
-    //   .filter((l) => l.targetId === node.id)
-    //   .map((v) => ({
-    //     source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
-    //     target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-    //     value: v.value,
-    //     width: 0,
-    //   }));
-    const inboundLinks = graph.links
-      .filter((l) => l.targetId === node.id)
-      .map((v) => ({
-        source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
-        target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-        value: v.value,
-        width: 0,
-      }));
-    const outboundLinks = graph.links
-      .filter((l) => l.sourceId === node.id)
-      .map((v) => ({
-        source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
-        target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-        value: v.value,
-        width: 0,
-      }));
+    const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
+    const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
+
     idToNodeMeta.set(
       node.id,
       Object.assign(idToRawNodeMeta.get(node.id) as NodeMeta, {
         id: node.id,
 
-        inboundLinks,
-        outboundLinks,
+        sourceLinks,
+        targetLinks,
         value: Math.max(
-          getSumOfLinkValues(inboundLinks),
-          getSumOfLinkValues(outboundLinks)
+          getSumOfLinkValues(sourceLinks),
+          getSumOfLinkValues(targetLinks)
         ),
       })
     );
@@ -158,31 +133,31 @@ function computeNodeMetas(
   return idToNodeMeta;
 }
 
-function computeNodeLinks({ nodes, links }: SankeyGraph) {
-  for (const [i, node] of nodes.entries()) {
-    node.index = i;
-    node.sourceLinks = [];
-    node.targetLinks = [];
-  }
-  // @ts-ignore
-  const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
-  for (const [i, link] of links.entries()) {
-    link.index = i;
-    let { source, target } = link;
-    if (typeof source !== "object")
-      source = link.source = find(nodeById, source);
-    if (typeof target !== "object")
-      target = link.target = find(nodeById, target);
-    source.sourceLinks.push(link);
-    target.targetLinks.push(link);
-  }
-  if (linkSort != null) {
-    for (const { sourceLinks, targetLinks } of nodes) {
-      sourceLinks.sort(linkSort);
-      targetLinks.sort(linkSort);
-    }
-  }
-}
+// function computeNodeLinks({ nodes, links }: SankeyGraph) {
+//   for (const [i, node] of nodes.entries()) {
+//     // node.index = i;
+//     node.sourceLinks = [];
+//     node.targetLinks = [];
+//   }
+//   // @ts-ignore
+//   const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
+//   for (const [i, link] of links.entries()) {
+//     // link.index = i;
+//     let { source, target } = link;
+//     if (typeof source !== "object")
+//       source = link.source = find(nodeById, source);
+//     if (typeof target !== "object")
+//       target = link.target = find(nodeById, target);
+//     source.sourceLinks.push(link);
+//     target.targetLinks.push(link);
+//   }
+//   if (linkSort != null) {
+//     for (const { sourceLinks, targetLinks } of nodes) {
+//       sourceLinks.sort(linkSort);
+//       targetLinks.sort(linkSort);
+//     }
+//   }
+// }
 
 // TODO - perf, description
 function setNodeBreadths(
@@ -217,7 +192,7 @@ function setNodeHeights(idToNodeMeta: Map<string, NodeMeta>) {
   while (current.size) {
     for (const node of current) {
       node.height = x;
-      for (const { source } of node.outboundLinks) {
+      for (const { source } of node.targetLinks) {
         next.add(source);
       }
     }
@@ -238,7 +213,7 @@ function setNodeDepths(idToNodeMeta: Map<string, NodeMeta>) {
   while (nodesToIterate.size) {
     for (const node of nodesToIterate) {
       node.depth = depthCounter;
-      for (const { target } of node.inboundLinks) {
+      for (const { target } of node.sourceLinks) {
         nextNodesToIterate.add(target);
       }
     }
@@ -254,9 +229,6 @@ function getSumOfLinkValues(links: LinkMeta[]): number {
   return links.reduce((sum, v) => sum + v.value, 0);
 }
 
-function getSumOfNodeValues(nodes: NodeMeta[]): number {
-  return nodes.reduce((sum, v) => sum + v.value, 0);
-}
 function getMaxNodeDepth(nodes: NodeMeta[]): number {
   // @ts-ignore
   return nodes.reduce((maxDepth, v) => Math.max(maxDepth, v.depth), 0);
@@ -288,14 +260,13 @@ function computeNodeLayers(
 
 function initializeNodeBreadths(
   columns: NodeMeta[][],
-  { extent, nodePadding }: SankeyConfig
+  sankeyConfig: SankeyConfig
 ) {
+  const { extent, nodePadding } = sankeyConfig;
   const [[x0, y0], [x1, y1]] = extent;
-  const ky = Math.min(
-    ...columns.map(
-      (c) => (y1 - y0 - (c.length - 1) * nodePadding) / getSumOfNodeValues(c)
-    )
-  );
+  const ky = getMinColumnWhat(columns, sankeyConfig);
+
+  console.log("ky", ky);
   for (const nodes of columns) {
     let y = y0;
     for (const node of nodes) {
@@ -303,7 +274,7 @@ function initializeNodeBreadths(
       node.y1 = y + node.value * ky;
       y = node.y1 + nodePadding;
       // TODO:
-      for (const link of node.inboundLinks) {
+      for (const link of node.sourceLinks) {
         link.width = link.value * ky;
       }
     }
@@ -322,9 +293,9 @@ function initializeNodeBreadths(
 function reorderLinks(nodes: NodeMeta[]) {
   // TODO:
   // if (linkSort === undefined) {
-  for (const { inboundLinks, outboundLinks } of nodes) {
-    inboundLinks.sort(ascendingTargetBreadth);
-    outboundLinks.sort(ascendingSourceBreadth);
+  for (const { sourceLinks, targetLinks } of nodes) {
+    sourceLinks.sort(ascendingTargetBreadth);
+    targetLinks.sort(ascendingSourceBreadth);
   }
   // }
 }
@@ -353,7 +324,7 @@ function relaxLeftToRight(
     for (const target of column) {
       let y = 0;
       let w = 0;
-      for (const { source, value } of target.outboundLinks) {
+      for (const { source, value } of target.targetLinks) {
         if (target.layer == null || source.layer == null) {
           throw new Error(
             "target.layer and source.layer should be defined already!"
@@ -390,7 +361,7 @@ function relaxRightToLeft(
     for (const source of column) {
       let y = 0;
       let w = 0;
-      for (const { target, value } of source.inboundLinks) {
+      for (const { target, value } of source.sourceLinks) {
         if (target.layer == null || source.layer == null) {
           throw new Error(
             "target.layer and source.layer should be defined already!"
@@ -476,18 +447,18 @@ function resolveCollisionsBottomToTop(
 }
 
 function reorderNodeLinks({
-  inboundLinks,
-  outboundLinks,
+  sourceLinks,
+  targetLinks,
 }: {
-  inboundLinks: LinkMeta[];
-  outboundLinks: LinkMeta[];
+  sourceLinks: LinkMeta[];
+  targetLinks: LinkMeta[];
 }) {
   // TODO: if (linkSort === undefined) {
-  for (const link of outboundLinks) {
-    link.source.inboundLinks.sort(ascendingTargetBreadth);
+  for (const link of targetLinks) {
+    link.source.sourceLinks.sort(ascendingTargetBreadth);
   }
-  for (const link of inboundLinks) {
-    link.target.outboundLinks.sort(ascendingSourceBreadth);
+  for (const link of sourceLinks) {
+    link.target.targetLinks.sort(ascendingSourceBreadth);
   }
   // TODO }
 }
@@ -497,15 +468,15 @@ function targetTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
   if (source.y0 == null) {
     throw new Error("source.y0 should not be empty here!");
   }
-  let y = source.y0 - ((source.inboundLinks.length - 1) * nodePadding) / 2;
-  for (const { target: node, width } of source.inboundLinks) {
+  let y = source.y0 - ((source.sourceLinks.length - 1) * nodePadding) / 2;
+  for (const { target: node, width } of source.sourceLinks) {
     if (node === target) break;
     if (width == null) {
       throw new Error("width should not be empty here!");
     }
     y += width + nodePadding;
   }
-  for (const { source: node, width } of target.outboundLinks) {
+  for (const { source: node, width } of target.targetLinks) {
     if (node === source) break;
     if (width == null) {
       throw new Error("width should not be empty here!");
@@ -520,15 +491,15 @@ function sourceTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
   if (target.y0 == null) {
     throw new Error("target.y0 should not be empty here!");
   }
-  let y = target.y0 - ((target.outboundLinks.length - 1) * nodePadding) / 2;
-  for (const { source: node, width } of target.outboundLinks) {
+  let y = target.y0 - ((target.targetLinks.length - 1) * nodePadding) / 2;
+  for (const { source: node, width } of target.targetLinks) {
     if (node === source) break;
     if (width == null) {
       throw new Error("width should not be empty here!");
     }
     y += width + nodePadding;
   }
-  for (const { target: node, width } of source.inboundLinks) {
+  for (const { target: node, width } of source.sourceLinks) {
     if (node === target) break;
     if (width == null) {
       throw new Error("width should not be empty here!");
@@ -545,14 +516,14 @@ function setLinkBreadths(idToNodeMeta: Map<string, NodeMeta>) {
     }
     let y0 = node.y0;
     let y1 = y0;
-    for (const link of node.inboundLinks) {
+    for (const link of node.sourceLinks) {
       if (link.width == null) {
         throw new Error("link.width should not be empty!");
       }
       link.y0 = y0 + link.width / 2;
       y0 += link.width as number;
     }
-    for (const link of node.outboundLinks) {
+    for (const link of node.targetLinks) {
       if (link.width == null) {
         throw new Error("link.width should not be empty!");
       }
@@ -560,4 +531,27 @@ function setLinkBreadths(idToNodeMeta: Map<string, NodeMeta>) {
       y1 += link.width;
     }
   }
+}
+// TODO: What is this doing?
+function getMinColumnWhat(
+  columns: NodeMeta[][],
+  { extent, nodePadding }: SankeyConfig
+): number {
+  const [[x0, y0], [x1, y1]] = extent;
+
+  let minValue;
+  for (const columnNodes of columns) {
+    const newValue =
+      (y1 - y0 - (columnNodes.length - 1) * nodePadding) /
+      sum(columnNodes, (v) => v.value);
+    if (minValue == null || newValue < minValue) {
+      minValue = newValue;
+    }
+  }
+  // @ts-ignore
+  return minValue;
+}
+
+function sum<T>(values: T[], getValue: (value: T) => number): number {
+  return values.reduce((sum, nextValue) => sum + getValue(nextValue), 0);
 }
