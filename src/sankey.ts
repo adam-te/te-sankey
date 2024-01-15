@@ -17,10 +17,6 @@ interface SankeyGraph {
   links: SankeyLink[];
 }
 
-// interface SankeyOptions {
-//   numColumns: number;
-// }
-
 interface SankeyConfig {
   extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
   nodeWidth: number; // 24
@@ -29,6 +25,7 @@ interface SankeyConfig {
   nodePadding: number; // 0
   iterations: number; // 6
   align: (node: NodeMeta, n: number) => number;
+  visibleColumns?: [number, number];
 }
 
 export interface LinkMeta {
@@ -60,11 +57,15 @@ export interface NodeMeta {
 interface SankeyOptions {
   extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
   nodeWidth?: number; // 24
+
+  // TODO: Does this do anything?
   nodeHeight?: number; // 8
   // TODO: This appears to be fully auto-computed, don't allow as param
   // nodePadding?: number; // 0
   iterations?: number; // 6
   align?: (node: NodeMeta, n: number) => number;
+
+  visibleColumns?: [number, number];
 }
 
 interface GraphMeta {

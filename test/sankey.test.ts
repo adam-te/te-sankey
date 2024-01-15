@@ -2,54 +2,54 @@ import { expect, test } from "vitest";
 import { computeSankey } from "../src";
 import { LinkMeta, NodeMeta } from "../src/sankey";
 
-// test("A -> B", () => {
-//   const nodeWidth = 10;
-//   const graph = computeSankey(
-//     {
-//       nodes: [{ id: "A" }, { id: "B" }],
-//       links: [
-//         {
-//           sourceId: "A",
-//           targetId: "B",
-//           value: 1,
-//         },
-//       ],
-//     },
-//     {
-//       // nodeHeight: 2,
-//       nodeWidth,
-//       extent: [
-//         [0, 0],
-//         [100, 100],
-//       ],
-//     }
-//   );
+test("A -> B", () => {
+  const nodeWidth = 10;
+  const graph = computeSankey(
+    {
+      nodes: [{ id: "A" }, { id: "B" }],
+      links: [
+        {
+          sourceId: "A",
+          targetId: "B",
+          value: 1,
+        },
+      ],
+    },
+    {
+      // nodeHeight: 2,
+      nodeWidth,
+      extent: [
+        [0, 0],
+        [100, 100],
+      ],
+    }
+  );
 
-//   // const result = getPrettified(r);
+  // const result = getPrettified(r);
 
-//   expect(graph.nodes.length).toBe(2);
-//   expect(getNodeDetails(graph.nodes[0])).toEqual({
-//     id: "A",
-//     width: nodeWidth,
-//     height: 100,
-//     depth: 0,
-//   });
-//   expect(getNodeDetails(graph.nodes[1])).toEqual({
-//     id: "B",
-//     width: nodeWidth,
-//     height: 100,
-//     depth: 1,
-//   });
+  expect(graph.nodes.length).toBe(2);
+  expect(getNodeDetails(graph.nodes[0])).toEqual({
+    id: "A",
+    width: nodeWidth,
+    height: 100,
+    depth: 0,
+  });
+  expect(getNodeDetails(graph.nodes[1])).toEqual({
+    id: "B",
+    width: nodeWidth,
+    height: 100,
+    depth: 1,
+  });
 
-//   expect(graph.links.length).toBe(1);
-//   expect(getLinkDetails(graph.links[0])).toEqual({
-//     source: "A",
-//     target: "B",
-//     strokeWidth: 100,
-//     y0: 50,
-//     y1: 50,
-//   });
-// });
+  expect(graph.links.length).toBe(1);
+  expect(getLinkDetails(graph.links[0])).toEqual({
+    source: "A",
+    target: "B",
+    strokeWidth: 100,
+    y0: 50,
+    y1: 50,
+  });
+});
 
 // A -> C
 // B ->
@@ -129,7 +129,7 @@ function getNodeDetails(node: Required<NodeMeta>) {
     depth: node.depth,
     width: node.x1 - node.x0,
     height: node.y1 - node.y0,
-    // TODO: What is this height really? in the AonB -> C case, height is 1, 1, 0
+    // TODO: What is this height really? in the AonB -> C case, height is 1, 1, 0. Is it inverse of depth?
     // ht: node.height,
   };
 }
