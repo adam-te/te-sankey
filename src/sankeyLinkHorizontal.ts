@@ -23,6 +23,27 @@ function horizontalTarget(d: any): [number, number] {
  * Sankey layout generator. These properties are IN EXCESS to the properties explicitly identified in the
  * SankeyLinkMinimal interface.
  */
-export function sankeyLinkHorizontal() {
-  return linkHorizontal().source(horizontalSource).target(horizontalTarget);
+
+const internalComputeSankeyLinkD = linkHorizontal()
+  .source(horizontalSource)
+  .target(horizontalTarget);
+
+interface DisplayNode {
+  x0: number; // 10,
+  x1: number; // 70,
+  y0: number; // 30,
+  y1: number; // 50,
+}
+
+interface DisplayLink {
+  source: DisplayNode;
+  target: DisplayNode;
+  y0: number; // 40,
+  y1: number; // 140,
+  width?: number; // 10
+}
+
+export function computeSankeyLinkD(link: DisplayLink): string {
+  // @ts-ignore
+  return internalComputeSankeyLinkD(link);
 }

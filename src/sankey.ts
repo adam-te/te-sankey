@@ -25,7 +25,7 @@ interface SankeyConfig {
   nodePadding: number; // 0
   iterations: number; // 6
   align: (node: NodeMeta, n: number) => number;
-  visibleColumns?: [number, number];
+  visibleColumnsFromCenter: number;
 }
 
 export interface LinkMeta {
@@ -45,6 +45,9 @@ export interface NodeMeta {
   // means we get 2x links
   value: number;
   depth?: number; // How many iterations of BFS needed to hit the node
+  inverseDepth?: number; // How many iterations of BFS needed to hit the node (from other side)
+
+  isHidden: boolean;
   height?: number;
   layer?: number;
 
@@ -65,7 +68,7 @@ interface SankeyOptions {
   iterations?: number; // 6
   align?: (node: NodeMeta, n: number) => number;
 
-  visibleColumns?: [number, number];
+  visibleColumnsFromCenter?: number;
 }
 
 interface GraphMeta {
@@ -77,21 +80,22 @@ export function computeSankey(
   graph: SankeyGraph,
   options: SankeyOptions = {}
 ): GraphMeta {
-  const sankeyConfig: SankeyConfig = Object.assign(
-    {
-      extent: [
-        [0, 0],
-        [1, 1],
-      ],
-      nodeWidth: 24,
-      nodeHeight: 8,
-      nodePadding: 0,
-      iterations: 6,
-      // @ts-ignore
-      align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
-    },
-    options
-  );
+  const sankeyConfig: SankeyConfig = {
+    extent: [
+      [0, 0],
+      [100, 100],
+    ],
+    nodeWidth: 24,
+    nodeHeight: 8,
+    nodePadding: 0,
+    iterations: 6,
+    // @ts-ignore
+    align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
+    // Show all by default
+    visibleColumnsFromCenter: Infinity,
+    ...options,
+  };
+
   // Infer graph
   // TODO:
   const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
@@ -108,18 +112,6 @@ export function computeSankey(
       ),
     ],
   };
-  //   computeNodeLinks(graph); - covered by above, use d3 optimization
-  //   computeNodeValues(graph); -  covered
-  //   computeNodeDepths(graph); - covered setNodeDepths
-  //   computeNodeHeights(graph);
-  //   computeNodeBreadths(graph);
-
-  //   computeLinkBreadths(graph);
-
-  //   function getNodeMeta(node: SankeyNode): NodeMeta {
-  //     // @ts-ignore
-  //     return nodeIdToMeta.get(node.id);
-  //   }
 }
 
 function computeNodeMetas(
@@ -159,6 +151,10 @@ function computeNodeMetas(
   }
 
   setNodeDepths(idToNodeMeta);
+  setNodeInverseDepths(idToNodeMeta);
+
+  setNodeIsHidden(idToNodeMeta, sankeyConfig);
+
   setNodeHeights(idToNodeMeta);
   setNodeBreadths(idToNodeMeta, sankeyConfig);
   setLinkBreadths(idToNodeMeta);
@@ -248,6 +244,29 @@ function setNodeDepths(idToNodeMeta: Map<string, NodeMeta>) {
       node.depth = depthCounter;
       for (const { target } of node.sourceLinks) {
         nextNodesToIterate.add(target);
+      }
+    }
+    if (++depthCounter > numberOfNodes) {
+      throw new Error("circular link");
+    }
+    nodesToIterate = nextNodesToIterate;
+    nextNodesToIterate = new Set();
+  }
+}
+
+// Columns - how many hops to that node from the leftern-most source node
+function setNodeInverseDepths(idToNodeMeta: Map<string, NodeMeta>) {
+  let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
+  let nextNodesToIterate = new Set<NodeMeta>();
+
+  const numberOfNodes = nodesToIterate.size;
+
+  let depthCounter = 0;
+  while (nodesToIterate.size) {
+    for (const node of nodesToIterate) {
+      node.inverseDepth = depthCounter;
+      for (const { source } of node.targetLinks) {
+        nextNodesToIterate.add(source);
       }
     }
     if (++depthCounter > numberOfNodes) {
@@ -586,4 +605,77 @@ function getMinColumnWhat(
 
 function sum<T>(values: T[], getValue: (value: T) => number): number {
   return values.reduce((sum, nextValue) => sum + getValue(nextValue), 0);
+}
+
+// Can we ignore depth though?
+// WANT - show last X isSource and first Y isDest use DFS and track source/dest depth
+// forEachRoute
+// Columns - how many hops to that node from the leftern-most source node
+function setNodeIsHidden(
+  idToNodeMeta: Map<string, NodeMeta>,
+  config: SankeyConfig
+) {
+  const nodes = [...idToNodeMeta.values()];
+  const maxDepth = Math.max(...nodes.map((n) => n.depth as number));
+  const middleNodeDepth = maxDepth / 2;
+
+  for (const node of nodes) {
+    const isVisibleFromSource =
+      (node.depth as number) >
+      middleNodeDepth - config.visibleColumnsFromCenter;
+    const isVisibleFromDest =
+      (node.inverseDepth as number) >
+      middleNodeDepth - config.visibleColumnsFromCenter;
+    node.isHidden = !(isVisibleFromSource && isVisibleFromDest);
+  }
+}
+
+interface DisplayNode {
+  x0: number; // 10,
+  x1: number; // 70,
+  y0: number; // 30,
+  y1: number; // 50,
+}
+
+interface DisplayLink {
+  source: DisplayNode;
+  target: DisplayNode;
+  y0: number; // 40,
+  y1: number; // 140,
+  sourceHeight: number; // 10
+  targetHeight: number; // 10
+}
+
+export function computeSankeyLinkPath(link: DisplayLink): string {
+  const start = {
+    x: link.source.x1,
+    y: link.source.y0 + link.sourceHeight / 2,
+    height: link.sourceHeight,
+  };
+  const end = {
+    x: link.target.x0,
+    y: link.target.y0 + link.targetHeight / 2,
+    height: link.targetHeight,
+  };
+  // Calculate control points for smooth curves
+  const controlPointX1 = start.x + (end.x - start.x) / 3;
+  const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3;
+
+  // Calculate the top and bottom points for the start and end
+  const startTop = start.y - start.height / 2;
+  const startBottom = start.y + start.height / 2;
+  const endTop = end.y - end.height / 2;
+  const endBottom = end.y + end.height / 2;
+
+  // Construct the path with Bezier curves
+  const pathData = [
+    `M${start.x},${startTop}`, // Move to start top
+    `C${controlPointX1},${startTop} ${controlPointX2},${endTop} ${end.x},${endTop}`, // Curve to end top
+    `L${end.x},${endTop}`, // Line to end top (for clarity, technically redundant)
+    `L${end.x},${endBottom}`, // Line to end bottom
+    `C${controlPointX2},${endBottom} ${controlPointX1},${startBottom} ${start.x},${startBottom}`, // Curve to start bottom
+    "Z", // Close path
+  ].join(" ");
+
+  return pathData;
 }

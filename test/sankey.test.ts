@@ -1,6 +1,115 @@
-import { expect, test } from "vitest";
+import { expect, test, describe } from "vitest";
 import { computeSankey } from "../src";
 import { LinkMeta, NodeMeta } from "../src/sankey";
+
+// Middle nodes are where depth === inverse depth
+// Is it implicitly true that there will always be middle nodes like this?
+// More simply... max-depth / 2 signifies middle
+
+// Showing 4 columns per side...
+// SOURCE if middleNode - 4 < node.depth
+// DEST   if middleNode - 4 < node.inverseDepth
+
+describe("it should allow showing only subset of nodes", () => {
+  test("A -> B -> C", () => {
+    const graph = computeSankey(
+      {
+        nodes: [n("A"), n("B"), n("C")],
+        links: [l("A", "B"), l("B", "C")],
+      },
+      {
+        visibleColumnsFromCenter: 1,
+      }
+    );
+
+    const nodes = graph.nodes.map(({ id, isHidden }) => ({
+      id,
+      isHidden,
+    }));
+
+    expect(nodes).toEqual([
+      { id: "A", isHidden: true },
+      { id: "B", isHidden: false },
+      { id: "C", isHidden: true },
+    ]);
+  });
+
+  // A     ->    B
+  // C -> D ->
+  // test("A -> B | C -> D -> B", () => {
+  //   const graph = computeSankey(
+  //     {
+  //       nodes: [n("A"), n("B"), n("C"), n("D")],
+  //       links: [l("A", "B"), l("C", "D"), l("D", "B")],
+  //     },
+  //     {
+  //       visibleColumnsFromCenter: 1,
+  //     }
+  //   );
+
+  //   const nodes = graph.nodes
+  //     .map(({ id, isHidden }) => ({
+  //       id,
+  //       isHidden,
+  //     }))
+  //     .filter((v) => v.isHidden);
+  //   expect(nodes).toEqual([{ id: "D", isHidden: true }]);
+  // });
+});
+
+// A(0)     ->    B(2)
+// C(0) -> D(1) ->
+
+//         A(1)     ->    B(0)
+// C(2) -> D(1) ->
+test("A -> B | C -> D -> B | it should set depths correctly", () => {
+  const graph = computeSankey({
+    nodes: [{ id: "A" }, { id: "B" }, { id: "C" }, { id: "D" }],
+    links: [
+      {
+        sourceId: "A",
+        targetId: "B",
+        value: 1,
+      },
+      {
+        sourceId: "C",
+        targetId: "D",
+        value: 1,
+      },
+      {
+        sourceId: "D",
+        targetId: "B",
+        value: 1,
+      },
+    ],
+  });
+
+  const [A, B, C, D] = graph.nodes.map(({ id, depth, inverseDepth }) => ({
+    id,
+    depth,
+    inverseDepth,
+  }));
+  expect(A).toEqual({
+    id: "A",
+    depth: 0,
+    inverseDepth: 1,
+  });
+  expect(C).toEqual({
+    id: "C",
+    depth: 0,
+    inverseDepth: 2,
+  });
+  expect(D).toEqual({
+    id: "D",
+    depth: 1,
+    inverseDepth: 1,
+  });
+  expect(B).toEqual({
+    id: "B",
+    depth: 2,
+    inverseDepth: 0,
+  });
+});
 
 test("A -> B", () => {
   const nodeWidth = 10;
@@ -16,16 +125,9 @@ test("A -> B", () => {
       ],
     },
     {
-      // nodeHeight: 2,
       nodeWidth,
-      extent: [
-        [0, 0],
-        [100, 100],
-      ],
     }
   );
-
-  // const result = getPrettified(r);
 
   expect(graph.nodes.length).toBe(2);
   expect(getNodeDetails(graph.nodes[0])).toEqual({
@@ -141,5 +243,19 @@ function getLinkDetails(link: Required<LinkMeta>) {
     strokeWidth: link.width, // more like stroke-width
     y0: link.y0, // y value of left end of link band
     y1: link.y1, // y value of right end of link band
+  };
+}
+
+function n(id) {
+  return {
+    id,
+  };
+}
+
+function l(from, to) {
+  return {
+    sourceId: from,
+    targetId: to,
+    value: 1,
   };
 }
