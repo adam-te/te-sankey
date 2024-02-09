@@ -1,2 +1,1 @@
-export { computeSankey } from "./sankey";
-export { sankeyLinkHorizontal } from "./sankeyLinkHorizontal";
+export { computeSankey, computeSankeyLinkPath } from "./sankey";

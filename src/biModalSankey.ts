@@ -1,846 +1,839 @@
+// // interface SankeyNode {
+// //     id: string; // 'us-east-1'
+// //     // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
+// //   }
+
+// //   interface SankeyLink {
+// //     sourceId: string; // 'us-east-1'
+// //     targetId: string; // 'us-east-2'
+// //     value: number; //
+// //     //   successWeight: number; // 100,
+// //     //   failedWeight: number; //50,
+// //     // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
+// //   }
+
+// //   interface SankeyGraph {
+// //     nodes: SankeyNode[];
+// //     links: SankeyLink[];
+// //   }
+
+// //   interface SankeyConfig {
+// //     extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+// //     nodeWidth: number; // 24
+// //     // TODO: Not sure this was translated correctly
+// //     nodeHeight: number; // 8
+// //     nodePadding: number; // 0
+// //     iterations: number; // 6
+// //     align: (node: NodeMeta, n: number) => number;
+// //     visibleColumnsFromCenter: number;
+// //   }
+
+// //   export interface LinkMeta {
+// //     source: NodeMeta;
+// //     target: NodeMeta;
+// //     value: number; //
+// //     width?: number;
+// //     y0?: number;
+// //     y1?: number;
+// //   }
+// //   export interface NodeMeta {
+// //     id: string;
+// //     // TODO: shouldn't use reference here unless updating when graph changes
+// //     // TODO: What do they really mean?
+// //     sourceLinks: LinkMeta[]; // If source of link, in sourcelinks
+// //     targetLinks: LinkMeta[]; // if target of link, in targetlinks
+// //     // means we get 2x links
+// //     value: number;
+// //     depth?: number; // How many iterations of BFS needed to hit the node
+// //     inverseDepth?: number; // How many iterations of BFS needed to hit the node (from other side)
+
+// //     isHidden: boolean;
+// //     height?: number;
+// //     layer?: number;
+
+// //     x0?: number;
+// //     x1?: number;
+// //     y0?: number;
+// //     y1?: number;
+// //   }
+
+// //   interface SankeyOptions {
+// //     extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+// //     nodeWidth?: number; // 24
+
+// //     // TODO: Does this do anything?
+// //     nodeHeight?: number; // 8
+// //     // TODO: This appears to be fully auto-computed, don't allow as param
+// //     // nodePadding?: number; // 0
+// //     iterations?: number; // 6
+// //     align?: (node: NodeMeta, n: number) => number;
+
+// //     visibleColumnsFromCenter?: number;
+// //   }
+
+// //   interface GraphMeta {
+// //     nodes: Required<NodeMeta>[];
+// //     links: Required<LinkMeta>[];
+// //   }
+
+// //   export function computeSankey(
+// //     graph: SankeyGraph,
+// //     options: SankeyOptions = {}
+// //   ): GraphMeta {
+// //     const sankeyConfig: SankeyConfig = {
+// //       extent: [
+// //         [0, 0],
+// //         [100, 100],
+// //       ],
+// //       nodeWidth: 24,
+// //       nodeHeight: 8,
+// //       nodePadding: 0,
+// //       iterations: 6,
+// //       // @ts-ignore
+// //       // Show all by default
+// //       visibleColumnsFromCenter: Infinity,
+// //       ...options,
+// //     };
+
+// //     // Infer graph
+// //     // TODO:
+// //     const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
+
+// //     return {
+// //       // @ts-ignore
+// //       nodes: [...nodeIdToMeta.values()],
+// //       // @ts-ignore
+// //       links: [
+// //         ...new Set(
+// //           [...nodeIdToMeta.values()]
+// //             .map((v) => [...v.sourceLinks, ...v.targetLinks])
+// //             .flat()
+// //         ),
+// //       ],
+// //     };
+// //   }
+
+// //   function computeNodeMetas(
+// //     graph: SankeyGraph,
+// //     sankeyConfig: SankeyConfig
+// //   ): Map<string, NodeMeta> {
+// //     // Create object placeholder to allow for wiring referentially
+// //     const idToRawNodeMeta = new Map<string, NodeMeta>(
+// //       // @ts-ignore - Allow invalid NodeMeta because we don't have the
+// //       graph.nodes.map((n) => [n.id, { id: n.id }])
+// //     );
+// //     const linkMetas = graph.links.map((v) => ({
+// //       source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
+// //       target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
+// //       value: v.value,
+// //       width: 0,
+// //     }));
+// //     const idToNodeMeta = new Map<string, NodeMeta>();
+
+// //     for (const node of graph.nodes) {
+// //       const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
+// //       const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
+
+// //       idToNodeMeta.set(
+// //         node.id,
+// //         Object.assign(idToRawNodeMeta.get(node.id) as NodeMeta, {
+// //           id: node.id,
+
+// //           sourceLinks,
+// //           targetLinks,
+// //           value: Math.max(
+// //             getSumOfLinkValues(sourceLinks),
+// //             getSumOfLinkValues(targetLinks)
+// //           ),
+// //         })
+// //       );
+// //     }
+
+// //     setNodeDepths(idToNodeMeta);
+// //     setNodeInverseDepths(idToNodeMeta);
+
+// //     setNodeIsHidden(idToNodeMeta, sankeyConfig);
+
+// //     setNodeHeights(idToNodeMeta);
+// //     setNodeBreadths(idToNodeMeta, sankeyConfig);
+// //     setLinkBreadths(idToNodeMeta);
+
+// //     return idToNodeMeta;
+// //   }
+
+// //   // function computeNodeLinks({ nodes, links }: SankeyGraph) {
+// //   //   for (const [i, node] of nodes.entries()) {
+// //   //     // node.index = i;
+// //   //     node.sourceLinks = [];
+// //   //     node.targetLinks = [];
+// //   //   }
+// //   //   // @ts-ignore
+// //   //   const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
+// //   //   for (const [i, link] of links.entries()) {
+// //   //     // link.index = i;
+// //   //     let { source, target } = link;
+// //   //     if (typeof source !== "object")
+// //   //       source = link.source = find(nodeById, source);
+// //   //     if (typeof target !== "object")
+// //   //       target = link.target = find(nodeById, target);
+// //   //     source.sourceLinks.push(link);
+// //   //     target.targetLinks.push(link);
+// //   //   }
+// //   //   if (linkSort != null) {
+// //   //     for (const { sourceLinks, targetLinks } of nodes) {
+// //   //       sourceLinks.sort(linkSort);
+// //   //       targetLinks.sort(linkSort);
+// //   //     }
+// //   //   }
+// //   // }
+
+// //   // TODO - perf, description
+// //   function setNodeBreadths(
+// //     idToNodeMeta: Map<string, NodeMeta>,
+// //     sankeyConfig: SankeyConfig
+// //   ) {
+// //     const { extent, nodeHeight } = sankeyConfig;
+// //     const [[x0, y0], [x1, y1]] = extent;
+// //     const columns = computeNodeLayers([...idToNodeMeta.values()], sankeyConfig);
+
+// //     // TODO: can we avoid mutations?
+// //     sankeyConfig.nodePadding = Math.min(
+// //       nodeHeight,
+// //       (y1 - y0) / (Math.max(...columns.map((c) => c.length)) - 1)
+// //     );
+// //     initializeNodeBreadths(columns, sankeyConfig);
+// //     for (let i = 0; i < sankeyConfig.iterations; ++i) {
+// //       const alpha = Math.pow(0.99, i);
+// //       const beta = Math.max(1 - alpha, (i + 1) / sankeyConfig.iterations);
+// //       relaxRightToLeft(columns, alpha, beta, sankeyConfig);
+// //       relaxLeftToRight(columns, alpha, beta, sankeyConfig);
+// //     }
+// //   }
+
+// //   // rows - TODO
+// //   function setNodeHeights(idToNodeMeta: Map<string, NodeMeta>) {
+// //     const nodes = [...idToNodeMeta.values()];
+// //     const n = nodes.length;
+// //     let current = new Set<NodeMeta>(nodes);
+// //     let next = new Set<NodeMeta>();
+// //     let x = 0;
+// //     while (current.size) {
+// //       for (const node of current) {
+// //         node.height = x;
+// //         for (const { source } of node.targetLinks) {
+// //           next.add(source);
+// //         }
+// //       }
+// //       if (++x > n) throw new Error("circular link");
+// //       current = next;
+// //       next = new Set();
+// //     }
+// //   }
+
+// //   // Columns - how many hops to that node from the leftern-most source node
+// //   function setNodeDepths(idToNodeMeta: Map<string, NodeMeta>) {
+// //     let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
+// //     let nextNodesToIterate = new Set<NodeMeta>();
+
+// //     const numberOfNodes = nodesToIterate.size;
+
+// //     let depthCounter = 0;
+// //     while (nodesToIterate.size) {
+// //       for (const node of nodesToIterate) {
+// //         node.depth = depthCounter;
+// //         for (const { target } of node.sourceLinks) {
+// //           nextNodesToIterate.add(target);
+// //         }
+// //       }
+// //       if (++depthCounter > numberOfNodes) {
+// //         throw new Error("circular link");
+// //       }
+// //       nodesToIterate = nextNodesToIterate;
+// //       nextNodesToIterate = new Set();
+// //     }
+// //   }
+
+// //   // Columns - how many hops to that node from the leftern-most source node
+// //   function setNodeInverseDepths(idToNodeMeta: Map<string, NodeMeta>) {
+// //     let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
+// //     let nextNodesToIterate = new Set<NodeMeta>();
+
+// //     const numberOfNodes = nodesToIterate.size;
+
+// //     let depthCounter = 0;
+// //     while (nodesToIterate.size) {
+// //       for (const node of nodesToIterate) {
+// //         node.inverseDepth = depthCounter;
+// //         for (const { source } of node.targetLinks) {
+// //           nextNodesToIterate.add(source);
+// //         }
+// //       }
+// //       if (++depthCounter > numberOfNodes) {
+// //         throw new Error("circular link");
+// //       }
+// //       nodesToIterate = nextNodesToIterate;
+// //       nextNodesToIterate = new Set();
+// //     }
+// //   }
+
+// //   function getSumOfLinkValues(links: LinkMeta[]): number {
+// //     return links.reduce((sum, v) => sum + v.value, 0);
+// //   }
+
+// //   function getMaxNodeDepth(nodes: NodeMeta[]): number {
+// //     // @ts-ignore
+// //     return nodes.reduce((maxDepth, v) => Math.max(maxDepth, v.depth), 0);
+// //   }
+
+// //   function computeNodeLayers(
+// //     nodes: NodeMeta[],
+// //     { extent, nodeWidth, align }: SankeyConfig
+// //   ): NodeMeta[][] {
+// //     const [[x0, y0], [x1, y1]] = extent;
+// //     const x = getMaxNodeDepth(nodes) + 1;
+// //     const kx = (x1 - x0 - nodeWidth) / (x - 1);
+// //     const columns: NodeMeta[][] = new Array(x);
+// //     for (const node of nodes) {
+// //       const i = Math.max(0, Math.min(x - 1, Math.floor(align(node, x))));
+// //       node.layer = i;
+// //       node.x0 = x0 + i * kx;
+// //       node.x1 = node.x0 + nodeWidth;
+// //       if (columns[i]) columns[i].push(node);
+// //       else columns[i] = [node];
+// //     }
+// //     // TODO:
+// //     // if (sort)
+// //     //   for (const column of columns) {
+// //     //     column.sort(sort);
+// //     //   }
+// //     return columns;
+// //   }
+
+// //   function initializeNodeBreadths(
+// //     columns: NodeMeta[][],
+// //     sankeyConfig: SankeyConfig
+// //   ) {
+// //     const { extent, nodePadding } = sankeyConfig;
+// //     const [[x0, y0], [x1, y1]] = extent;
+// //     const ky = getMinColumnWhat(columns, sankeyConfig);
+
+// //     for (const nodes of columns) {
+// //       let y = y0;
+// //       for (const node of nodes) {
+// //         node.y0 = y;
+// //         node.y1 = y + node.value * ky;
+// //         y = node.y1 + nodePadding;
+// //         // TODO:
+// //         for (const link of node.sourceLinks) {
+// //           link.width = link.value * ky;
+// //         }
+// //       }
+// //       y = (y1 - y + nodePadding) / (nodes.length + 1);
+// //       for (let i = 0; i < nodes.length; ++i) {
+// //         const node = nodes[i];
+// //         // @ts-ignore
+// //         node.y0 += y * (i + 1);
+// //         // @ts-ignore
+// //         node.y1 += y * (i + 1);
+// //       }
+// //       reorderLinks(nodes);
+// //     }
+// //   }
+
+// //   function reorderLinks(nodes: NodeMeta[]) {
+// //     // TODO:
+// //     // if (linkSort === undefined) {
+// //     for (const { sourceLinks, targetLinks } of nodes) {
+// //       sourceLinks.sort(ascendingTargetBreadth);
+// //       targetLinks.sort(ascendingSourceBreadth);
+// //     }
+// //     // }
+// //   }
+
+// //   function ascendingSourceBreadth(a: any, b: any) {
+// //     return ascendingBreadth(a.source, b.source) || a.index - b.index;
+// //   }
+
+// //   function ascendingTargetBreadth(a: any, b: any) {
+// //     return ascendingBreadth(a.target, b.target) || a.index - b.index;
+// //   }
+
+// //   function ascendingBreadth(a: any, b: any) {
+// //     return a.y0 - b.y0;
+// //   }
+
+// //   // Reposition each node based on its incoming (target) links.
+// //   function relaxLeftToRight(
+// //     columns: NodeMeta[][],
+// //     alpha: any,
+// //     beta: any,
+// //     sankeyConfig: SankeyConfig
+// //   ) {
+// //     for (let i = 1, n = columns.length; i < n; ++i) {
+// //       const column = columns[i];
+// //       for (const target of column) {
+// //         let y = 0;
+// //         let w = 0;
+// //         for (const { source, value } of target.targetLinks) {
+// //           if (target.layer == null || source.layer == null) {
+// //             throw new Error(
+// //               "target.layer and source.layer should be defined already!"
+// //             );
+// //           }
+// //           let v = value * (target.layer - source.layer);
+// //           y += targetTop(source, target, sankeyConfig.nodePadding) * v;
+// //           w += v;
+// //         }
+// //         if (!(w > 0)) continue;
+// //         if (target.y0 == null || target.y1 == null) {
+// //           throw new Error("target.y0 and target.y1 should be defined already!");
+// //         }
+// //         let dy = (y / w - target.y0) * alpha;
+// //         target.y0 += dy;
+// //         target.y1 += dy;
+// //         reorderNodeLinks(target);
+// //       }
+
+// //       /* TODO: if (sort === undefined)*/ column.sort(ascendingBreadth);
+// //       resolveCollisions(column, beta, sankeyConfig);
+// //     }
+// //   }
+
+// //   // Reposition each node based on its outgoing (source) links.
+// //   function relaxRightToLeft(
+// //     columns: NodeMeta[][],
+// //     alpha: any,
+// //     beta: any,
+// //     sankeyConfig: SankeyConfig
+// //   ) {
+// //     for (let n = columns.length, i = n - 2; i >= 0; --i) {
+// //       const column = columns[i];
+// //       for (const source of column) {
+// //         let y = 0;
+// //         let w = 0;
+// //         for (const { target, value } of source.sourceLinks) {
+// //           if (target.layer == null || source.layer == null) {
+// //             throw new Error(
+// //               "target.layer and source.layer should be defined already!"
+// //             );
+// //           }
+// //           let v = value * (target.layer - source.layer);
+// //           y += sourceTop(source, target, sankeyConfig.nodePadding) * v;
+// //           w += v;
+// //         }
+// //         if (!(w > 0)) continue;
+// //         if (source.y0 == null || source.y1 == null) {
+// //           throw new Error(
+// //             "target.layer and source.layer should be defined already!"
+// //           );
+// //         }
+// //         let dy = (y / w - source.y0) * alpha;
+// //         source.y0 += dy;
+// //         source.y1 += dy;
+// //         reorderNodeLinks(source);
+// //       }
+// //       /* TODO: if (sort === undefined) */ column.sort(ascendingBreadth);
+// //       resolveCollisions(column, beta, sankeyConfig);
+// //     }
+// //   }
+
+// //   function resolveCollisions(
+// //     nodes: any,
+// //     alpha: any,
+// //     { extent, nodePadding }: SankeyConfig
+// //   ) {
+// //     const [[x0, y0], [x1, y1]] = extent;
+
+// //     const i = nodes.length >> 1;
+// //     const subject = nodes[i];
+// //     resolveCollisionsBottomToTop(
+// //       nodes,
+// //       subject.y0 - nodePadding,
+// //       i - 1,
+// //       alpha,
+// //       nodePadding
+// //     );
+// //     resolveCollisionsTopToBottom(
+// //       nodes,
+// //       subject.y1 + nodePadding,
+// //       i + 1,
+// //       alpha,
+// //       nodePadding
+// //     );
+// //     resolveCollisionsBottomToTop(nodes, y1, nodes.length - 1, alpha, nodePadding);
+// //     resolveCollisionsTopToBottom(nodes, y0, 0, alpha, nodePadding);
+// //   }
+
+// //   // Push any overlapping nodes down.
+// //   function resolveCollisionsTopToBottom(
+// //     nodes: any,
+// //     y: any,
+// //     i: any,
+// //     alpha: any,
+// //     nodePadding: number
+// //   ) {
+// //     for (; i < nodes.length; ++i) {
+// //       const node = nodes[i];
+// //       const dy = (y - node.y0) * alpha;
+// //       if (dy > 1e-6) (node.y0 += dy), (node.y1 += dy);
+// //       y = node.y1 + nodePadding;
+// //     }
+// //   }
+
+// //   // Push any overlapping nodes up.
+// //   function resolveCollisionsBottomToTop(
+// //     nodes: any,
+// //     y: any,
+// //     i: any,
+// //     alpha: any,
+// //     nodePadding: number
+// //   ) {
+// //     for (; i >= 0; --i) {
+// //       const node = nodes[i];
+// //       const dy = (node.y1 - y) * alpha;
+// //       if (dy > 1e-6) (node.y0 -= dy), (node.y1 -= dy);
+// //       y = node.y0 - nodePadding;
+// //     }
+// //   }
+
+// //   function reorderNodeLinks({
+// //     sourceLinks,
+// //     targetLinks,
+// //   }: {
+// //     sourceLinks: LinkMeta[];
+// //     targetLinks: LinkMeta[];
+// //   }) {
+// //     // TODO: if (linkSort === undefined) {
+// //     for (const link of targetLinks) {
+// //       link.source.sourceLinks.sort(ascendingTargetBreadth);
+// //     }
+// //     for (const link of sourceLinks) {
+// //       link.target.targetLinks.sort(ascendingSourceBreadth);
+// //     }
+// //     // TODO }
+// //   }
+
+// //   // Returns the target.y0 that would produce an ideal link from source to target.
+// //   function targetTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
+// //     if (source.y0 == null) {
+// //       throw new Error("source.y0 should not be empty here!");
+// //     }
+// //     let y = source.y0 - ((source.sourceLinks.length - 1) * nodePadding) / 2;
+// //     for (const { target: node, width } of source.sourceLinks) {
+// //       if (node === target) break;
+// //       if (width == null) {
+// //         throw new Error("width should not be empty here!");
+// //       }
+// //       y += width + nodePadding;
+// //     }
+// //     for (const { source: node, width } of target.targetLinks) {
+// //       if (node === source) break;
+// //       if (width == null) {
+// //         throw new Error("width should not be empty here!");
+// //       }
+// //       y -= width;
+// //     }
+// //     return y;
+// //   }
+
+// //   // Returns the source.y0 that would produce an ideal link from source to target.
+// //   function sourceTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
+// //     if (target.y0 == null) {
+// //       throw new Error("target.y0 should not be empty here!");
+// //     }
+// //     let y = target.y0 - ((target.targetLinks.length - 1) * nodePadding) / 2;
+// //     for (const { source: node, width } of target.targetLinks) {
+// //       if (node === source) break;
+// //       if (width == null) {
+// //         throw new Error("width should not be empty here!");
+// //       }
+// //       y += width + nodePadding;
+// //     }
+// //     for (const { target: node, width } of source.sourceLinks) {
+// //       if (node === target) break;
+// //       if (width == null) {
+// //         throw new Error("width should not be empty here!");
+// //       }
+// //       y -= width;
+// //     }
+// //     return y;
+// //   }
+
+// //   function setLinkBreadths(idToNodeMeta: Map<string, NodeMeta>) {
+// //     for (const node of idToNodeMeta.values()) {
+// //       if (node.y0 == null) {
+// //         throw new Error("node.y0 should not be empty!");
+// //       }
+// //       let y0 = node.y0;
+// //       let y1 = y0;
+// //       for (const link of node.sourceLinks) {
+// //         if (link.width == null) {
+// //           throw new Error("link.width should not be empty!");
+// //         }
+// //         link.y0 = y0 + link.width / 2;
+// //         y0 += link.width as number;
+// //       }
+// //       for (const link of node.targetLinks) {
+// //         if (link.width == null) {
+// //           throw new Error("link.width should not be empty!");
+// //         }
+// //         link.y1 = y1 + link.width / 2;
+// //         y1 += link.width;
+// //       }
+// //     }
+// //   }
+// //   // TODO: What is this doing?
+// //   function getMinColumnWhat(
+// //     columns: NodeMeta[][],
+// //     { extent, nodePadding }: SankeyConfig
+// //   ): number {
+// //     const [[x0, y0], [x1, y1]] = extent;
+
+// //     let minValue;
+// //     for (const columnNodes of columns) {
+// //       const newValue =
+// //         (y1 - y0 - (columnNodes.length - 1) * nodePadding) /
+// //         sum(columnNodes, (v) => v.value);
+// //       if (minValue == null || newValue < minValue) {
+// //         minValue = newValue;
+// //       }
+// //     }
+// //     // @ts-ignore
+// //     return minValue;
+// //   }
+
+// //   function sum<T>(values: T[], getValue: (value: T) => number): number {
+// //     return values.reduce((sum, nextValue) => sum + getValue(nextValue), 0);
+// //   }
+
+// //   // Can we ignore depth though?
+// //   // WANT - show last X isSource and first Y isDest use DFS and track source/dest depth
+// //   // forEachRoute
+// //   // Columns - how many hops to that node from the leftern-most source node
+// //   function setNodeIsHidden(
+// //     idToNodeMeta: Map<string, NodeMeta>,
+// //     config: SankeyConfig
+// //   ) {
+// //     const nodes = [...idToNodeMeta.values()];
+// //     const maxDepth = Math.max(...nodes.map((n) => n.depth as number));
+// //     const middleNodeDepth = maxDepth / 2;
+
+// //     for (const node of nodes) {
+// //       const isVisibleFromSource =
+// //         (node.depth as number) >
+// //         middleNodeDepth - config.visibleColumnsFromCenter;
+// //       const isVisibleFromDest =
+// //         (node.inverseDepth as number) >
+// //         middleNodeDepth - config.visibleColumnsFromCenter;
+// //       console.log(node.id, isVisibleFromSource, isVisibleFromDest);
+// //       node.isHidden = !(isVisibleFromSource && isVisibleFromDest);
+// //     }
+// //   }
+
+// //   // BiModalSankey
+// //   // Input: Graph
+// //   /* Options: {
+// //     getIsSourceNode: node => node.isSource // Should go in left grouping
+// //     getIsDestNode: node => node.isSource // Should go in right grouping
+// //     middlePadding: 0,  // The unit (pixel) gap between source and dest cols
+// //     numberOfColumns: Infinity // Number of source and destination columns to show. TODO: Can support separate for source and dest. Could we specify this as a function instead?}
+// //     numberOfRows: Infinity // Anything beyond this gets scrolled vertically
+// //     // May want to scroll rows independently...
+// //   */
+
+// //   /*
+// //    output:
+// //    {
+// //       nodes: [],
+// //       links: [],
+// //    }
+// //     [ // columns
+// //       { isSource: true, nodes: [{}, {}, {}],
+// //     ]
+// //   */
+
+// //   // Subdivide graph into sourceGraph -> destGraph
+// //   //
+
 // interface SankeyNode {
-//     id: string; // 'us-east-1'
-//     // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
-//   }
+//   id: string; // 'us-east-1'
+//   // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
+// }
 
-//   interface SankeyLink {
-//     sourceId: string; // 'us-east-1'
-//     targetId: string; // 'us-east-2'
-//     value: number; //
-//     //   successWeight: number; // 100,
-//     //   failedWeight: number; //50,
-//     // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
-//   }
+// interface SankeyLink {
+//   sourceId: string; // 'us-east-1'
+//   targetId: string; // 'us-east-2'
+//   //   value: number; //
+//   //   successWeight: number; // 100,
+//   //   failedWeight: number; //50,
+//   // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
+// }
 
-//   interface SankeyGraph {
-//     nodes: SankeyNode[];
-//     links: SankeyLink[];
-//   }
+// interface SankeyGraph {
+//   nodes: SankeyNode[];
+//   links: SankeyLink[];
+// }
 
-//   interface SankeyConfig {
-//     extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-//     nodeWidth: number; // 24
-//     // TODO: Not sure this was translated correctly
-//     nodeHeight: number; // 8
-//     nodePadding: number; // 0
-//     iterations: number; // 6
-//     align: (node: NodeMeta, n: number) => number;
-//     visibleColumnsFromCenter: number;
-//   }
+// interface SankeyMetaGraph {
+//   nodes: SankeyMetaNode[];
+//   links: SankeyLink[];
+// }
 
-//   export interface LinkMeta {
-//     source: NodeMeta;
-//     target: NodeMeta;
-//     value: number; //
-//     width?: number;
-//     y0?: number;
-//     y1?: number;
-//   }
-//   export interface NodeMeta {
-//     id: string;
-//     // TODO: shouldn't use reference here unless updating when graph changes
-//     // TODO: What do they really mean?
-//     sourceLinks: LinkMeta[]; // If source of link, in sourcelinks
-//     targetLinks: LinkMeta[]; // if target of link, in targetlinks
-//     // means we get 2x links
-//     value: number;
-//     depth?: number; // How many iterations of BFS needed to hit the node
-//     inverseDepth?: number; // How many iterations of BFS needed to hit the node (from other side)
+// interface SankeyConfig {
+//   extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+//   nodeWidth: number; // 24
+//   // TODO: Not sure this was translated correctly
+//   nodeHeight: number; // 8
+//   //   nodePadding: number; // 0
+//   iterations: number; // 6
+//   //   align: (node: NodeMeta, n: number) => number;
+//   //   visibleColumnsFromCenter: number;
+// }
 
-//     isHidden: boolean;
-//     height?: number;
-//     layer?: number;
+// interface SankeyOptions {
+//   getIsSourceNode: (node: SankeyMetaNode) => boolean;
+//   getIsTargetNode: (node: SankeyMetaNode) => boolean;
+// }
 
-//     x0?: number;
-//     x1?: number;
-//     y0?: number;
-//     y1?: number;
-//   }
+// interface SankeyMetaNode {
+//   id: string;
+//   inboundLinks: SankeyLink[];
+//   outboundLinks: SankeyLink[];
+// }
 
-//   interface SankeyOptions {
-//     extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-//     nodeWidth?: number; // 24
+// function computeBiModalSankey(graph: SankeyGraph, options: SankeyOptions) {
+//   // const nodeIdToMeta = new Map<string, NodeMeta>()
+//   const metaGraph = computeNodeMeta(graph);
+//   const sourceGraph = computeSubgraph(metaGraph, options.getIsSourceNode);
+//   const targetGraph = computeSubgraph(metaGraph, options.getIsTargetNode);
 
-//     // TODO: Does this do anything?
-//     nodeHeight?: number; // 8
-//     // TODO: This appears to be fully auto-computed, don't allow as param
-//     // nodePadding?: number; // 0
-//     iterations?: number; // 6
-//     align?: (node: NodeMeta, n: number) => number;
+//   const idToSourceNodeDistance = computeDistanceFromTerminalNodes(sourceGraph)
+//   const idToTargetNodeDistance = computeDistanceFromSourceNodes(targetGraph)
 
-//     visibleColumnsFromCenter?: number;
-//   }
+//   const idToIsSourceNodeHidden = getHiddenNodes(sourceGraph, idToSourceNodeDistance) // Show last N
+//   const idToIsTargetNodeHidden = getHiddenNodes(targetGraph, idToTargetNodeDistance) // Show last M
 
-//   interface GraphMeta {
-//     nodes: Required<NodeMeta>[];
-//     links: Required<LinkMeta>[];
-//   }
+//   const idToNodeMeta = // construct from prior
 
-//   export function computeSankey(
-//     graph: SankeyGraph,
-//     options: SankeyOptions = {}
-//   ): GraphMeta {
-//     const sankeyConfig: SankeyConfig = {
-//       extent: [
-//         [0, 0],
-//         [100, 100],
-//       ],
-//       nodeWidth: 24,
-//       nodeHeight: 8,
-//       nodePadding: 0,
-//       iterations: 6,
-//       // @ts-ignore
-//       // Show all by default
-//       visibleColumnsFromCenter: Infinity,
-//       ...options,
-//     };
+//   // Compute UI graph
+//   // for source graph
+//   // BFS through graph, depth 0 is column 1, depth 1 is column 2. Mark number of nodes per col
 
-//     // Infer graph
-//     // TODO:
-//     const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
+//   const visibleSourceGraph = getColumnRankedNodes(sourceGraph) // [[A, B], [C, D, E, F]][]
+//     for (const column of )
 
-//     return {
-//       // @ts-ignore
-//       nodes: [...nodeIdToMeta.values()],
-//       // @ts-ignore
-//       links: [
-//         ...new Set(
-//           [...nodeIdToMeta.values()]
-//             .map((v) => [...v.sourceLinks, ...v.targetLinks])
-//             .flat()
-//         ),
-//       ],
-//     };
-//   }
+//   // TODO:
 
-//   function computeNodeMetas(
-//     graph: SankeyGraph,
-//     sankeyConfig: SankeyConfig
-//   ): Map<string, NodeMeta> {
-//     // Create object placeholder to allow for wiring referentially
-//     const idToRawNodeMeta = new Map<string, NodeMeta>(
-//       // @ts-ignore - Allow invalid NodeMeta because we don't have the
-//       graph.nodes.map((n) => [n.id, { id: n.id }])
-//     );
-//     const linkMetas = graph.links.map((v) => ({
-//       source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
-//       target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-//       value: v.value,
-//       width: 0,
-//     }));
-//     const idToNodeMeta = new Map<string, NodeMeta>();
+//   // Get terminal nodes
+//   sourceGraph.nodes;
 
-//     for (const node of graph.nodes) {
-//       const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
-//       const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
-
-//       idToNodeMeta.set(
-//         node.id,
-//         Object.assign(idToRawNodeMeta.get(node.id) as NodeMeta, {
-//           id: node.id,
-
-//           sourceLinks,
-//           targetLinks,
-//           value: Math.max(
-//             getSumOfLinkValues(sourceLinks),
-//             getSumOfLinkValues(targetLinks)
-//           ),
-//         })
-//       );
-//     }
-
-//     setNodeDepths(idToNodeMeta);
-//     setNodeInverseDepths(idToNodeMeta);
-
-//     setNodeIsHidden(idToNodeMeta, sankeyConfig);
-
-//     setNodeHeights(idToNodeMeta);
-//     setNodeBreadths(idToNodeMeta, sankeyConfig);
-//     setLinkBreadths(idToNodeMeta);
-
-//     return idToNodeMeta;
-//   }
-
-//   // function computeNodeLinks({ nodes, links }: SankeyGraph) {
-//   //   for (const [i, node] of nodes.entries()) {
-//   //     // node.index = i;
-//   //     node.sourceLinks = [];
-//   //     node.targetLinks = [];
-//   //   }
-//   //   // @ts-ignore
-//   //   const nodeById = new Map(nodes.map((d, i) => [id(d, i, nodes), d]));
-//   //   for (const [i, link] of links.entries()) {
-//   //     // link.index = i;
-//   //     let { source, target } = link;
-//   //     if (typeof source !== "object")
-//   //       source = link.source = find(nodeById, source);
-//   //     if (typeof target !== "object")
-//   //       target = link.target = find(nodeById, target);
-//   //     source.sourceLinks.push(link);
-//   //     target.targetLinks.push(link);
-//   //   }
-//   //   if (linkSort != null) {
-//   //     for (const { sourceLinks, targetLinks } of nodes) {
-//   //       sourceLinks.sort(linkSort);
-//   //       targetLinks.sort(linkSort);
-//   //     }
-//   //   }
-//   // }
-
-//   // TODO - perf, description
-//   function setNodeBreadths(
-//     idToNodeMeta: Map<string, NodeMeta>,
-//     sankeyConfig: SankeyConfig
-//   ) {
-//     const { extent, nodeHeight } = sankeyConfig;
-//     const [[x0, y0], [x1, y1]] = extent;
-//     const columns = computeNodeLayers([...idToNodeMeta.values()], sankeyConfig);
-
-//     // TODO: can we avoid mutations?
-//     sankeyConfig.nodePadding = Math.min(
-//       nodeHeight,
-//       (y1 - y0) / (Math.max(...columns.map((c) => c.length)) - 1)
-//     );
-//     initializeNodeBreadths(columns, sankeyConfig);
-//     for (let i = 0; i < sankeyConfig.iterations; ++i) {
-//       const alpha = Math.pow(0.99, i);
-//       const beta = Math.max(1 - alpha, (i + 1) / sankeyConfig.iterations);
-//       relaxRightToLeft(columns, alpha, beta, sankeyConfig);
-//       relaxLeftToRight(columns, alpha, beta, sankeyConfig);
-//     }
-//   }
-
-//   // rows - TODO
-//   function setNodeHeights(idToNodeMeta: Map<string, NodeMeta>) {
-//     const nodes = [...idToNodeMeta.values()];
-//     const n = nodes.length;
-//     let current = new Set<NodeMeta>(nodes);
-//     let next = new Set<NodeMeta>();
-//     let x = 0;
-//     while (current.size) {
-//       for (const node of current) {
-//         node.height = x;
-//         for (const { source } of node.targetLinks) {
-//           next.add(source);
-//         }
-//       }
-//       if (++x > n) throw new Error("circular link");
-//       current = next;
-//       next = new Set();
-//     }
-//   }
-
-//   // Columns - how many hops to that node from the leftern-most source node
-//   function setNodeDepths(idToNodeMeta: Map<string, NodeMeta>) {
-//     let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
-//     let nextNodesToIterate = new Set<NodeMeta>();
-
-//     const numberOfNodes = nodesToIterate.size;
-
-//     let depthCounter = 0;
-//     while (nodesToIterate.size) {
-//       for (const node of nodesToIterate) {
-//         node.depth = depthCounter;
-//         for (const { target } of node.sourceLinks) {
-//           nextNodesToIterate.add(target);
-//         }
-//       }
-//       if (++depthCounter > numberOfNodes) {
-//         throw new Error("circular link");
-//       }
-//       nodesToIterate = nextNodesToIterate;
-//       nextNodesToIterate = new Set();
-//     }
-//   }
-
-//   // Columns - how many hops to that node from the leftern-most source node
-//   function setNodeInverseDepths(idToNodeMeta: Map<string, NodeMeta>) {
-//     let nodesToIterate = new Set<NodeMeta>(idToNodeMeta.values());
-//     let nextNodesToIterate = new Set<NodeMeta>();
-
-//     const numberOfNodes = nodesToIterate.size;
-
-//     let depthCounter = 0;
-//     while (nodesToIterate.size) {
-//       for (const node of nodesToIterate) {
-//         node.inverseDepth = depthCounter;
-//         for (const { source } of node.targetLinks) {
-//           nextNodesToIterate.add(source);
-//         }
-//       }
-//       if (++depthCounter > numberOfNodes) {
-//         throw new Error("circular link");
-//       }
-//       nodesToIterate = nextNodesToIterate;
-//       nextNodesToIterate = new Set();
-//     }
-//   }
-
-//   function getSumOfLinkValues(links: LinkMeta[]): number {
-//     return links.reduce((sum, v) => sum + v.value, 0);
-//   }
-
-//   function getMaxNodeDepth(nodes: NodeMeta[]): number {
-//     // @ts-ignore
-//     return nodes.reduce((maxDepth, v) => Math.max(maxDepth, v.depth), 0);
-//   }
-
-//   function computeNodeLayers(
-//     nodes: NodeMeta[],
-//     { extent, nodeWidth, align }: SankeyConfig
-//   ): NodeMeta[][] {
-//     const [[x0, y0], [x1, y1]] = extent;
-//     const x = getMaxNodeDepth(nodes) + 1;
-//     const kx = (x1 - x0 - nodeWidth) / (x - 1);
-//     const columns: NodeMeta[][] = new Array(x);
-//     for (const node of nodes) {
-//       const i = Math.max(0, Math.min(x - 1, Math.floor(align(node, x))));
-//       node.layer = i;
-//       node.x0 = x0 + i * kx;
-//       node.x1 = node.x0 + nodeWidth;
-//       if (columns[i]) columns[i].push(node);
-//       else columns[i] = [node];
-//     }
-//     // TODO:
-//     // if (sort)
-//     //   for (const column of columns) {
-//     //     column.sort(sort);
-//     //   }
-//     return columns;
-//   }
-
-//   function initializeNodeBreadths(
-//     columns: NodeMeta[][],
-//     sankeyConfig: SankeyConfig
-//   ) {
-//     const { extent, nodePadding } = sankeyConfig;
-//     const [[x0, y0], [x1, y1]] = extent;
-//     const ky = getMinColumnWhat(columns, sankeyConfig);
-
-//     for (const nodes of columns) {
-//       let y = y0;
-//       for (const node of nodes) {
-//         node.y0 = y;
-//         node.y1 = y + node.value * ky;
-//         y = node.y1 + nodePadding;
-//         // TODO:
-//         for (const link of node.sourceLinks) {
-//           link.width = link.value * ky;
-//         }
-//       }
-//       y = (y1 - y + nodePadding) / (nodes.length + 1);
-//       for (let i = 0; i < nodes.length; ++i) {
-//         const node = nodes[i];
-//         // @ts-ignore
-//         node.y0 += y * (i + 1);
-//         // @ts-ignore
-//         node.y1 += y * (i + 1);
-//       }
-//       reorderLinks(nodes);
-//     }
-//   }
-
-//   function reorderLinks(nodes: NodeMeta[]) {
-//     // TODO:
-//     // if (linkSort === undefined) {
-//     for (const { sourceLinks, targetLinks } of nodes) {
-//       sourceLinks.sort(ascendingTargetBreadth);
-//       targetLinks.sort(ascendingSourceBreadth);
-//     }
-//     // }
-//   }
-
-//   function ascendingSourceBreadth(a: any, b: any) {
-//     return ascendingBreadth(a.source, b.source) || a.index - b.index;
-//   }
-
-//   function ascendingTargetBreadth(a: any, b: any) {
-//     return ascendingBreadth(a.target, b.target) || a.index - b.index;
-//   }
-
-//   function ascendingBreadth(a: any, b: any) {
-//     return a.y0 - b.y0;
-//   }
-
-//   // Reposition each node based on its incoming (target) links.
-//   function relaxLeftToRight(
-//     columns: NodeMeta[][],
-//     alpha: any,
-//     beta: any,
-//     sankeyConfig: SankeyConfig
-//   ) {
-//     for (let i = 1, n = columns.length; i < n; ++i) {
-//       const column = columns[i];
-//       for (const target of column) {
-//         let y = 0;
-//         let w = 0;
-//         for (const { source, value } of target.targetLinks) {
-//           if (target.layer == null || source.layer == null) {
-//             throw new Error(
-//               "target.layer and source.layer should be defined already!"
-//             );
-//           }
-//           let v = value * (target.layer - source.layer);
-//           y += targetTop(source, target, sankeyConfig.nodePadding) * v;
-//           w += v;
-//         }
-//         if (!(w > 0)) continue;
-//         if (target.y0 == null || target.y1 == null) {
-//           throw new Error("target.y0 and target.y1 should be defined already!");
-//         }
-//         let dy = (y / w - target.y0) * alpha;
-//         target.y0 += dy;
-//         target.y1 += dy;
-//         reorderNodeLinks(target);
-//       }
-
-//       /* TODO: if (sort === undefined)*/ column.sort(ascendingBreadth);
-//       resolveCollisions(column, beta, sankeyConfig);
-//     }
-//   }
-
-//   // Reposition each node based on its outgoing (source) links.
-//   function relaxRightToLeft(
-//     columns: NodeMeta[][],
-//     alpha: any,
-//     beta: any,
-//     sankeyConfig: SankeyConfig
-//   ) {
-//     for (let n = columns.length, i = n - 2; i >= 0; --i) {
-//       const column = columns[i];
-//       for (const source of column) {
-//         let y = 0;
-//         let w = 0;
-//         for (const { target, value } of source.sourceLinks) {
-//           if (target.layer == null || source.layer == null) {
-//             throw new Error(
-//               "target.layer and source.layer should be defined already!"
-//             );
-//           }
-//           let v = value * (target.layer - source.layer);
-//           y += sourceTop(source, target, sankeyConfig.nodePadding) * v;
-//           w += v;
-//         }
-//         if (!(w > 0)) continue;
-//         if (source.y0 == null || source.y1 == null) {
-//           throw new Error(
-//             "target.layer and source.layer should be defined already!"
-//           );
-//         }
-//         let dy = (y / w - source.y0) * alpha;
-//         source.y0 += dy;
-//         source.y1 += dy;
-//         reorderNodeLinks(source);
-//       }
-//       /* TODO: if (sort === undefined) */ column.sort(ascendingBreadth);
-//       resolveCollisions(column, beta, sankeyConfig);
-//     }
-//   }
-
-//   function resolveCollisions(
-//     nodes: any,
-//     alpha: any,
-//     { extent, nodePadding }: SankeyConfig
-//   ) {
-//     const [[x0, y0], [x1, y1]] = extent;
-
-//     const i = nodes.length >> 1;
-//     const subject = nodes[i];
-//     resolveCollisionsBottomToTop(
-//       nodes,
-//       subject.y0 - nodePadding,
-//       i - 1,
-//       alpha,
-//       nodePadding
-//     );
-//     resolveCollisionsTopToBottom(
-//       nodes,
-//       subject.y1 + nodePadding,
-//       i + 1,
-//       alpha,
-//       nodePadding
-//     );
-//     resolveCollisionsBottomToTop(nodes, y1, nodes.length - 1, alpha, nodePadding);
-//     resolveCollisionsTopToBottom(nodes, y0, 0, alpha, nodePadding);
-//   }
-
-//   // Push any overlapping nodes down.
-//   function resolveCollisionsTopToBottom(
-//     nodes: any,
-//     y: any,
-//     i: any,
-//     alpha: any,
-//     nodePadding: number
-//   ) {
-//     for (; i < nodes.length; ++i) {
-//       const node = nodes[i];
-//       const dy = (y - node.y0) * alpha;
-//       if (dy > 1e-6) (node.y0 += dy), (node.y1 += dy);
-//       y = node.y1 + nodePadding;
-//     }
-//   }
-
-//   // Push any overlapping nodes up.
-//   function resolveCollisionsBottomToTop(
-//     nodes: any,
-//     y: any,
-//     i: any,
-//     alpha: any,
-//     nodePadding: number
-//   ) {
-//     for (; i >= 0; --i) {
-//       const node = nodes[i];
-//       const dy = (node.y1 - y) * alpha;
-//       if (dy > 1e-6) (node.y0 -= dy), (node.y1 -= dy);
-//       y = node.y0 - nodePadding;
-//     }
-//   }
-
-//   function reorderNodeLinks({
-//     sourceLinks,
-//     targetLinks,
-//   }: {
-//     sourceLinks: LinkMeta[];
-//     targetLinks: LinkMeta[];
-//   }) {
-//     // TODO: if (linkSort === undefined) {
-//     for (const link of targetLinks) {
-//       link.source.sourceLinks.sort(ascendingTargetBreadth);
-//     }
-//     for (const link of sourceLinks) {
-//       link.target.targetLinks.sort(ascendingSourceBreadth);
-//     }
-//     // TODO }
-//   }
-
-//   // Returns the target.y0 that would produce an ideal link from source to target.
-//   function targetTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
-//     if (source.y0 == null) {
-//       throw new Error("source.y0 should not be empty here!");
-//     }
-//     let y = source.y0 - ((source.sourceLinks.length - 1) * nodePadding) / 2;
-//     for (const { target: node, width } of source.sourceLinks) {
-//       if (node === target) break;
-//       if (width == null) {
-//         throw new Error("width should not be empty here!");
-//       }
-//       y += width + nodePadding;
-//     }
-//     for (const { source: node, width } of target.targetLinks) {
-//       if (node === source) break;
-//       if (width == null) {
-//         throw new Error("width should not be empty here!");
-//       }
-//       y -= width;
-//     }
-//     return y;
-//   }
-
-//   // Returns the source.y0 that would produce an ideal link from source to target.
-//   function sourceTop(source: NodeMeta, target: NodeMeta, nodePadding: number) {
-//     if (target.y0 == null) {
-//       throw new Error("target.y0 should not be empty here!");
-//     }
-//     let y = target.y0 - ((target.targetLinks.length - 1) * nodePadding) / 2;
-//     for (const { source: node, width } of target.targetLinks) {
-//       if (node === source) break;
-//       if (width == null) {
-//         throw new Error("width should not be empty here!");
-//       }
-//       y += width + nodePadding;
-//     }
-//     for (const { target: node, width } of source.sourceLinks) {
-//       if (node === target) break;
-//       if (width == null) {
-//         throw new Error("width should not be empty here!");
-//       }
-//       y -= width;
-//     }
-//     return y;
-//   }
-
-//   function setLinkBreadths(idToNodeMeta: Map<string, NodeMeta>) {
-//     for (const node of idToNodeMeta.values()) {
-//       if (node.y0 == null) {
-//         throw new Error("node.y0 should not be empty!");
-//       }
-//       let y0 = node.y0;
-//       let y1 = y0;
-//       for (const link of node.sourceLinks) {
-//         if (link.width == null) {
-//           throw new Error("link.width should not be empty!");
-//         }
-//         link.y0 = y0 + link.width / 2;
-//         y0 += link.width as number;
-//       }
-//       for (const link of node.targetLinks) {
-//         if (link.width == null) {
-//           throw new Error("link.width should not be empty!");
-//         }
-//         link.y1 = y1 + link.width / 2;
-//         y1 += link.width;
-//       }
-//     }
-//   }
-//   // TODO: What is this doing?
-//   function getMinColumnWhat(
-//     columns: NodeMeta[][],
-//     { extent, nodePadding }: SankeyConfig
-//   ): number {
-//     const [[x0, y0], [x1, y1]] = extent;
-
-//     let minValue;
-//     for (const columnNodes of columns) {
-//       const newValue =
-//         (y1 - y0 - (columnNodes.length - 1) * nodePadding) /
-//         sum(columnNodes, (v) => v.value);
-//       if (minValue == null || newValue < minValue) {
-//         minValue = newValue;
-//       }
-//     }
-//     // @ts-ignore
-//     return minValue;
-//   }
-
-//   function sum<T>(values: T[], getValue: (value: T) => number): number {
-//     return values.reduce((sum, nextValue) => sum + getValue(nextValue), 0);
-//   }
-
-//   // Can we ignore depth though?
-//   // WANT - show last X isSource and first Y isDest use DFS and track source/dest depth
-//   // forEachRoute
-//   // Columns - how many hops to that node from the leftern-most source node
-//   function setNodeIsHidden(
-//     idToNodeMeta: Map<string, NodeMeta>,
-//     config: SankeyConfig
-//   ) {
-//     const nodes = [...idToNodeMeta.values()];
-//     const maxDepth = Math.max(...nodes.map((n) => n.depth as number));
-//     const middleNodeDepth = maxDepth / 2;
-
-//     for (const node of nodes) {
-//       const isVisibleFromSource =
-//         (node.depth as number) >
-//         middleNodeDepth - config.visibleColumnsFromCenter;
-//       const isVisibleFromDest =
-//         (node.inverseDepth as number) >
-//         middleNodeDepth - config.visibleColumnsFromCenter;
-//       console.log(node.id, isVisibleFromSource, isVisibleFromDest);
-//       node.isHidden = !(isVisibleFromSource && isVisibleFromDest);
-//     }
-//   }
-
-//   // BiModalSankey
-//   // Input: Graph
-//   /* Options: {
-//     getIsSourceNode: node => node.isSource // Should go in left grouping
-//     getIsDestNode: node => node.isSource // Should go in right grouping
-//     middlePadding: 0,  // The unit (pixel) gap between source and dest cols
-//     numberOfColumns: Infinity // Number of source and destination columns to show. TODO: Can support separate for source and dest. Could we specify this as a function instead?}
-//     numberOfRows: Infinity // Anything beyond this gets scrolled vertically
-//     // May want to scroll rows independently...
-//   */
-
-//   /*
-//    output:
-//    {
-//       nodes: [],
-//       links: [],
-//    }
-//     [ // columns
-//       { isSource: true, nodes: [{}, {}, {}],
-//     ]
-//   */
-
-//   // Subdivide graph into sourceGraph -> destGraph
 //   //
+//   // const targetGraph =
+// }
+// function getColumnRankedNodes(): SankeyMetaNode[][] {
 
-interface SankeyNode {
-  id: string; // 'us-east-1'
-  // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
-}
+// }
+// function computeDistanceFromSourceNodes(graph: SankeyMetaGraph) {
 
-interface SankeyLink {
-  sourceId: string; // 'us-east-1'
-  targetId: string; // 'us-east-2'
-  //   value: number; //
-  //   successWeight: number; // 100,
-  //   failedWeight: number; //50,
-  // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
-}
+// }
 
-interface SankeyGraph {
-  nodes: SankeyNode[];
-  links: SankeyLink[];
-}
+// function computeDistanceFromTerminalNodes(graph: SankeyMetaGraph): Map<string, NodeMeta> {
+//     // const terminalNodes = graph.nodes.filter(isTerminalNode)
+//     // breadthFirstSearch(terminalNodes)
 
-interface SankeyMetaGraph {
-  nodes: SankeyMetaNode[];
-  links: SankeyLink[];
-}
+// }
 
-interface SankeyConfig {
-  extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-  nodeWidth: number; // 24
-  // TODO: Not sure this was translated correctly
-  nodeHeight: number; // 8
-  //   nodePadding: number; // 0
-  iterations: number; // 6
-  //   align: (node: NodeMeta, n: number) => number;
-  //   visibleColumnsFromCenter: number;
-}
+// // TODO: Fill in AI
+// function breadthFirstSearch(startingNodes: SankeyMetaNode[], onNodeVisit: (node: SankeyMetaNode, depth: number)) {
+//     // const nextNodes: SankeyMetaNode[] = startingNodes;
 
-interface SankeyOptions {
-  getIsSourceNode: (node: SankeyMetaNode) => boolean;
-  getIsTargetNode: (node: SankeyMetaNode) => boolean;
-}
+//     // let depth = 0;
+//     // for (const node of nextNodes) {
+//     //     onNodeVisit(node, 0)
+//     // }
 
-interface SankeyMetaNode {
-  id: string;
-  inboundLinks: SankeyLink[];
-  outboundLinks: SankeyLink[];
-}
+// }
 
-function computeBiModalSankey(graph: SankeyGraph, options: SankeyOptions) {
-  // const nodeIdToMeta = new Map<string, NodeMeta>()
-  const metaGraph = computeNodeMeta(graph);
-  const sourceGraph = computeSubgraph(metaGraph, options.getIsSourceNode);
-  const targetGraph = computeSubgraph(metaGraph, options.getIsTargetNode);
+// function isTerminalNode(node: SankeyMetaNode) {
+//   return !node.outboundLinks.length;
+// }
 
+// function isSourceNode(node: SankeyMetaNode) {
+//   return !node.inboundLinks.length;
+// }
 
-  const idToSourceNodeDistance = computeDistanceFromTerminalNodes(sourceGraph)
-  const idToTargetNodeDistance = computeDistanceFromSourceNodes(targetGraph)
+// interface SubgraphMeta {
+//   nodes: SankeyMetaNode[];
+//   links: SankeyLink[];
+//   inboundLinks: SankeyLink[];
+//   outboundLinks: SankeyLink[];
 
-  const idToIsSourceNodeHidden = getHiddenNodes(sourceGraph, idToSourceNodeDistance) // Show last N
-  const idToIsTargetNodeHidden = getHiddenNodes(targetGraph, idToTargetNodeDistance) // Show last M
+//   // MaxDepth
+//   maxDepth: number
+// }
 
+// // re-wires links
+// function computeSubgraph(
+//   graph: SankeyMetaGraph,
+//   getIsPartOfSubgraph: (node: SankeyMetaNode) => boolean
+// ): SubgraphMeta {
+//   // TODO: perf(unnecessary comparisons)
+//   const subgraphNodes = graph.nodes.filter(getIsPartOfSubgraph);
+//   const nodeInSubgraph = new Set(subgraphNodes.map((n) => n.id));
+//   const subgraphLinks = graph.links.filter(isLinkInSubgraph);
 
-  const idToNodeMeta = // construct from prior
+//   return {
+//     nodes: subgraphNodes.map((n) => ({
+//       ...n,
+//       inboundLinks: n.inboundLinks.filter(isLinkInSubgraph),
+//       outboundLinks: n.outboundLinks.filter(isLinkInSubgraph),
+//     })),
+//     links: subgraphLinks,
+//     inboundLinks: graph.links.filter(isEnteringSubgraph),
+//     outboundLinks: graph.links.filter(isExitingSubgraph),
+//   };
 
-  // Compute UI graph
-  // for source graph
-  // BFS through graph, depth 0 is column 1, depth 1 is column 2. Mark number of nodes per col
+//   function isLinkInSubgraph(link: SankeyLink) {
+//     return (
+//       nodeInSubgraph.has(link.sourceId) && nodeInSubgraph.has(link.targetId)
+//     );
+//   }
 
-  const visibleSourceGraph = getColumnRankedNodes(sourceGraph) // [[A, B], [C, D, E, F]][]
-    for (const column of )
+//   function isEnteringSubgraph(link: SankeyLink) {
+//     return (
+//       nodeInSubgraph.has(link.targetId) && !nodeInSubgraph.has(link.sourceId)
+//     );
+//   }
 
-  
+//   function isExitingSubgraph(link: SankeyLink) {
+//     return (
+//       !nodeInSubgraph.has(link.targetId) && nodeInSubgraph.has(link.sourceId)
+//     );
+//   }
+// }
 
+// function computeNodeMeta(graph: SankeyGraph): SankeyMetaGraph {
+//   // const idToNode = new Map<string, SankeyNode>(graph.nodes.map(n => [n.id, n]));
+//   const idToInboundLinks = new Map<string, SankeyLink[]>(
+//     graph.nodes.map((n) => [n.id, []])
+//   );
+//   const idToOutboundLinks = new Map<string, SankeyLink[]>(
+//     graph.nodes.map((n) => [n.id, []])
+//   );
+//   for (const link of graph.links) {
+//     // TODO: Throw if link points to invalid node
+//     // @ts-ignore
+//     idToInboundLinks.get(link.targetId).push(link);
+//     // @ts-ignore
+//     idToOutboundLinks.get(link.sourceId).push(link);
+//   }
 
-  // TODO:
-  
-
-  
-  // Get terminal nodes
-  sourceGraph.nodes;
-
-  //
-  // const targetGraph =
-}
-function getColumnRankedNodes(): SankeyMetaNode[][] {
-
-}
-function computeDistanceFromSourceNodes(graph: SankeyMetaGraph) {
-
-}
-
-function computeDistanceFromTerminalNodes(graph: SankeyMetaGraph): Map<string, NodeMeta> {
-    // const terminalNodes = graph.nodes.filter(isTerminalNode)
-    // breadthFirstSearch(terminalNodes)
-
-}
-
-// TODO: Fill in AI
-function breadthFirstSearch(startingNodes: SankeyMetaNode[], onNodeVisit: (node: SankeyMetaNode, depth: number)) {
-    // const nextNodes: SankeyMetaNode[] = startingNodes;
-
-    // let depth = 0;
-    // for (const node of nextNodes) {
-    //     onNodeVisit(node, 0)
-    // }
-
-}
-
-function isTerminalNode(node: SankeyMetaNode) {
-  return !node.outboundLinks.length;
-}
-
-function isSourceNode(node: SankeyMetaNode) {
-  return !node.inboundLinks.length;
-}
-
-interface SubgraphMeta {
-  nodes: SankeyMetaNode[];
-  links: SankeyLink[];
-  inboundLinks: SankeyLink[];
-  outboundLinks: SankeyLink[];
-
-  // MaxDepth
-  maxDepth: number
-}
-
-// re-wires links
-function computeSubgraph(
-  graph: SankeyMetaGraph,
-  getIsPartOfSubgraph: (node: SankeyMetaNode) => boolean
-): SubgraphMeta {
-  // TODO: perf(unnecessary comparisons)
-  const subgraphNodes = graph.nodes.filter(getIsPartOfSubgraph);
-  const nodeInSubgraph = new Set(subgraphNodes.map((n) => n.id));
-  const subgraphLinks = graph.links.filter(isLinkInSubgraph);
-
-  return {
-    nodes: subgraphNodes.map((n) => ({
-      ...n,
-      inboundLinks: n.inboundLinks.filter(isLinkInSubgraph),
-      outboundLinks: n.outboundLinks.filter(isLinkInSubgraph),
-    })),
-    links: subgraphLinks,
-    inboundLinks: graph.links.filter(isEnteringSubgraph),
-    outboundLinks: graph.links.filter(isExitingSubgraph),
-  };
-
-  function isLinkInSubgraph(link: SankeyLink) {
-    return (
-      nodeInSubgraph.has(link.sourceId) && nodeInSubgraph.has(link.targetId)
-    );
-  }
-
-  function isEnteringSubgraph(link: SankeyLink) {
-    return (
-      nodeInSubgraph.has(link.targetId) && !nodeInSubgraph.has(link.sourceId)
-    );
-  }
-
-  function isExitingSubgraph(link: SankeyLink) {
-    return (
-      !nodeInSubgraph.has(link.targetId) && nodeInSubgraph.has(link.sourceId)
-    );
-  }
-}
-
-function computeNodeMeta(graph: SankeyGraph): SankeyMetaGraph {
-  // const idToNode = new Map<string, SankeyNode>(graph.nodes.map(n => [n.id, n]));
-  const idToInboundLinks = new Map<string, SankeyLink[]>(
-    graph.nodes.map((n) => [n.id, []])
-  );
-  const idToOutboundLinks = new Map<string, SankeyLink[]>(
-    graph.nodes.map((n) => [n.id, []])
-  );
-  for (const link of graph.links) {
-    // TODO: Throw if link points to invalid node
-    // @ts-ignore
-    idToInboundLinks.get(link.targetId).push(link);
-    // @ts-ignore
-    idToOutboundLinks.get(link.sourceId).push(link);
-  }
-
-  return {
-    nodes: graph.nodes.map((n) => ({
-      id: n.id,
-      inboundLinks: idToInboundLinks.get(n.id) as SankeyLink[],
-      outboundLinks: idToOutboundLinks.get(n.id) as SankeyLink[],
-    })),
-    links: graph.links,
-  };
-}
+//   return {
+//     nodes: graph.nodes.map((n) => ({
+//       id: n.id,
+//       inboundLinks: idToInboundLinks.get(n.id) as SankeyLink[],
+//       outboundLinks: idToOutboundLinks.get(n.id) as SankeyLink[],
+//     })),
+//     links: graph.links,
+//   };
+// }

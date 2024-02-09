@@ -1,7 +1,5 @@
 <template>
   <div>
-    <div>{{ message }}</div>
-
     <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
       <!-- Nodes -->
       <g v-for="node in nodes" :key="node.name">
@@ -18,34 +16,47 @@
       </g>
 
       <!-- Link -->
-      <!-- <path
-        v-for="link in links"
-        :key="link.source.name + '_' + link.target.name"
-        :d="computeSankeyLinkD(mockLink)"
-        fill="none"
-        stroke="black"
-        :stroke-width="mockLink.width"
-      /> -->
-
-      <!--  -->
       <path
         v-for="link in links"
         :key="link.source.name + '_' + link.target.name"
         :d="computeSankeyLinkPath(link)"
         fill="black"
       />
-      <!-- :stroke-width="Math.max(link.sourceHeight, link.targetHeight)" -->
+    </svg>
+
+    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
+      <!-- Nodes -->
+      <g v-for="node of output.nodes" :key="node.name">
+        <rect
+          :x="node.x0"
+          :y="node.y0"
+          :width="node.x1 - node.x0"
+          :height="node.y1 - node.y0"
+          fill="navy"
+        />
+        <text :x="node.x0 + 10" :y="node.y0 + 14" fill="white" font-size="12px">
+          {{ node.name }}
+        </text>
+      </g>
+
+      <!-- Link -->
+      <path
+        v-for="link of output.links"
+        :key="link.source.name + '_' + link.target.name"
+        :d="computeSankeyLinkPath(link)"
+        fill="black"
+      />
     </svg>
   </div>
 </template>
 
 <script setup>
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
-// import { computeSankeyLinkD } from "../src/sankeyLinkHorizontal";
 // @ts-ignore
 import { ref } from "vue";
 
 const mockSource = {
+  id: "A",
   x0: 10,
   x1: 70,
   y0: 30,
@@ -53,6 +64,7 @@ const mockSource = {
   name: "Node A",
 };
 const mockTarget = {
+  id: "B",
   x0: 300,
   x1: 360,
   y0: 130,
@@ -65,14 +77,34 @@ const mockLink = {
   target: mockTarget,
   y0: 40,
   y1: 140,
-  sourceHeight: 20,
+  sourceHeight: 8,
   targetHeight: 20,
 };
 
 const nodes = [mockSource, mockTarget];
 const links = [mockLink];
 
-const message = ref("Hello, World!");
+const output = computeSankey({
+  nodes: nodes.map((v) => ({
+    ...v,
+  })),
+  links: [
+    {
+      ...mockLink,
+      sourceId: "A",
+      targetId: "B",
+      // value: 10,
+    },
+  ],
+});
+
+// TODO: Integrate this into the sankey natively
+const outputLink = output.links[0];
+outputLink.sourceHeight = outputLink.value;
+outputLink.targetHeight = outputLink.value;
+delete outputLink.value;
+
+console.log(output);
 
 const graph = computeSankey(
   {

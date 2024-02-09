@@ -1,80 +1,11 @@
-interface SankeyNode {
-  id: string; // 'us-east-1'
-  // alignment: "right"; // if isDestNode - needed to know which side to show the flow on. if no alignment then stretched
-}
-
-interface SankeyLink {
-  sourceId: string; // 'us-east-1'
-  targetId: string; // 'us-east-2'
-  value: number; //
-  //   successWeight: number; // 100,
-  //   failedWeight: number; //50,
-  // TODO: Need more granular structure here, so can highlight selected types of flows. get clarification
-}
-
-interface SankeyGraph {
-  nodes: SankeyNode[];
-  links: SankeyLink[];
-}
-
-interface SankeyConfig {
-  extent: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-  nodeWidth: number; // 24
-  // TODO: Not sure this was translated correctly
-  nodeHeight: number; // 8
-  nodePadding: number; // 0
-  iterations: number; // 6
-  align: (node: NodeMeta, n: number) => number;
-  visibleColumnsFromCenter: number;
-}
-
-export interface LinkMeta {
-  source: NodeMeta;
-  target: NodeMeta;
-  value: number; //
-  width?: number;
-  y0?: number;
-  y1?: number;
-}
-export interface NodeMeta {
-  id: string;
-  // TODO: shouldn't use reference here unless updating when graph changes
-  // TODO: What do they really mean?
-  sourceLinks: LinkMeta[]; // If source of link, in sourcelinks
-  targetLinks: LinkMeta[]; // if target of link, in targetlinks
-  // means we get 2x links
-  value: number;
-  depth?: number; // How many iterations of BFS needed to hit the node
-  inverseDepth?: number; // How many iterations of BFS needed to hit the node (from other side)
-
-  isHidden: boolean;
-  height?: number;
-  layer?: number;
-
-  x0?: number;
-  x1?: number;
-  y0?: number;
-  y1?: number;
-}
-
-interface SankeyOptions {
-  extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-  nodeWidth?: number; // 24
-
-  // TODO: Does this do anything?
-  nodeHeight?: number; // 8
-  // TODO: This appears to be fully auto-computed, don't allow as param
-  // nodePadding?: number; // 0
-  iterations?: number; // 6
-  align?: (node: NodeMeta, n: number) => number;
-
-  visibleColumnsFromCenter?: number;
-}
-
-interface GraphMeta {
-  nodes: Required<NodeMeta>[];
-  links: Required<LinkMeta>[];
-}
+import {
+  GraphMeta,
+  SankeyOptions,
+  SankeyConfig,
+  NodeMeta,
+  LinkMeta,
+  SankeyGraph,
+} from "./models";
 
 export function computeSankey(
   graph: SankeyGraph,
@@ -126,7 +57,7 @@ function computeNodeMetas(
   const linkMetas = graph.links.map((v) => ({
     source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,
     target: idToRawNodeMeta.get(v.targetId) as NodeMeta,
-    value: v.value,
+    value: v.value || 1,
     width: 0,
   }));
   const idToNodeMeta = new Map<string, NodeMeta>();
@@ -158,6 +89,8 @@ function computeNodeMetas(
   setNodeHeights(idToNodeMeta);
   setNodeBreadths(idToNodeMeta, sankeyConfig);
   setLinkBreadths(idToNodeMeta);
+
+  // TODO: integrate into links
 
   return idToNodeMeta;
 }
@@ -330,6 +263,7 @@ function initializeNodeBreadths(
       }
     }
     y = (y1 - y + nodePadding) / (nodes.length + 1);
+
     for (let i = 0; i < nodes.length; ++i) {
       const node = nodes[i];
       // @ts-ignore
@@ -390,6 +324,7 @@ function relaxLeftToRight(
         throw new Error("target.y0 and target.y1 should be defined already!");
       }
       let dy = (y / w - target.y0) * alpha;
+
       target.y0 += dy;
       target.y1 += dy;
       reorderNodeLinks(target);
@@ -599,6 +534,9 @@ function getMinColumnWhat(
       minValue = newValue;
     }
   }
+
+  // NaN
+  // console.log(columns);
   // @ts-ignore
   return minValue;
 }
@@ -646,7 +584,11 @@ interface DisplayLink {
   targetHeight: number; // 10
 }
 
+// TODO: Optimize
 export function computeSankeyLinkPath(link: DisplayLink): string {
+  // TODO: Don't put into production build
+  assertValidDisplayLink(link);
+
   const start = {
     x: link.source.x1,
     y: link.source.y0 + link.sourceHeight / 2,
@@ -667,8 +609,8 @@ export function computeSankeyLinkPath(link: DisplayLink): string {
   const endTop = end.y - end.height / 2;
   const endBottom = end.y + end.height / 2;
 
-  // Construct the path with Bezier curves
-  const pathData = [
+  // Construct the Bezier curve
+  return [
     `M${start.x},${startTop}`, // Move to start top
     `C${controlPointX1},${startTop} ${controlPointX2},${endTop} ${end.x},${endTop}`, // Curve to end top
     `L${end.x},${endTop}`, // Line to end top (for clarity, technically redundant)
@@ -676,6 +618,13 @@ export function computeSankeyLinkPath(link: DisplayLink): string {
     `C${controlPointX2},${endBottom} ${controlPointX1},${startBottom} ${start.x},${startBottom}`, // Curve to start bottom
     "Z", // Close path
   ].join(" ");
+}
 
-  return pathData;
+function assertValidDisplayLink(link: DisplayLink) {
+  if (!link.sourceHeight) {
+    throw new Error("Invalid Link! Missing sourceHeight");
+  }
+  if (!link.targetHeight) {
+    throw new Error("Invalid Link! Missing targetHeight");
+  }
 }

@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 
 export default defineConfig(({ command, mode }) => {
-  if (command === "serve") {
+  if (command === "serve" && mode !== "test") {
     // Development-specific config
     return {
       root: "./demo",
