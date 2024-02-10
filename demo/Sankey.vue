@@ -14,7 +14,7 @@
           {{ node.name }}
         </text>
       </g>
-      
+
       <path
         v-for="link in links"
         :key="link.source.name + '_' + link.target.name"
@@ -35,7 +35,7 @@
           fill="navy"
         />
         <text :x="node.x0 + 10" :y="node.y0 + 14" fill="white" font-size="12px">
-          {{ node.name }}
+          {{ node.id }}
         </text>
       </g>
 
@@ -56,48 +56,36 @@ import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
 import { ref } from "vue";
 
 const mockSource = {
-  id: "A",
-  x0: 10,
-  x1: 70,
-  y0: 30,
-  y1: 50,
-  name: "Node A",
+  id: "A", // TODO: why does changing break? BECAUSE LINK didnt match
+};
+const mockSourceC = {
+  id: "C", // TODO: why does changing break? BECAUSE LINK didnt match
 };
 const mockTarget = {
   id: "B",
-  x0: 300,
-  x1: 360,
-  y0: 130,
-  y1: 150,
-  name: "Node B",
 };
 
 const mockLink = {
-  source: mockSource,
-  target: mockTarget,
-  y0: 40,
-  y1: 140,
-  sourceHeight: 8,
-  targetHeight: 20,
+  sourceId: "A",
+  targetId: "B",
   value: 10,
 };
 
-const nodes = [mockSource, mockTarget];
-const links = [mockLink];
+const mockLink2 = {
+  sourceId: "C",
+  targetId: "B",
+  value: 20,
+};
+
+const nodes = [mockSource, mockSourceC, mockTarget];
+// const links = [mockLink mo];
 
 const output = computeSankey(
   {
     nodes: nodes.map((v) => ({
       ...v,
     })),
-    links: [
-      {
-        ...mockLink,
-        sourceId: "A",
-        targetId: "B",
-        // value: 10,
-      },
-    ],
+    links: [mockLink, mockLink2],
   },
   {
     extent: [
