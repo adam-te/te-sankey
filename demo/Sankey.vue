@@ -1,7 +1,7 @@
 <template>
   <div>
-    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
-      <!-- Nodes -->
+    <!-- Hardcoded -->
+    <!-- <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
       <g v-for="node in nodes" :key="node.name">
         <rect
           :x="node.x0"
@@ -14,16 +14,16 @@
           {{ node.name }}
         </text>
       </g>
-
-      <!-- Link -->
+      
       <path
         v-for="link in links"
         :key="link.source.name + '_' + link.target.name"
         :d="computeSankeyLinkPath(link)"
         fill="black"
       />
-    </svg>
+    </svg> -->
 
+    <!-- Transformed -->
     <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
       <!-- Nodes -->
       <g v-for="node of output.nodes" :key="node.name">
@@ -79,30 +79,39 @@ const mockLink = {
   y1: 140,
   sourceHeight: 8,
   targetHeight: 20,
+  value: 10,
 };
 
 const nodes = [mockSource, mockTarget];
 const links = [mockLink];
 
-const output = computeSankey({
-  nodes: nodes.map((v) => ({
-    ...v,
-  })),
-  links: [
-    {
-      ...mockLink,
-      sourceId: "A",
-      targetId: "B",
-      // value: 10,
-    },
-  ],
-});
+const output = computeSankey(
+  {
+    nodes: nodes.map((v) => ({
+      ...v,
+    })),
+    links: [
+      {
+        ...mockLink,
+        sourceId: "A",
+        targetId: "B",
+        // value: 10,
+      },
+    ],
+  },
+  {
+    extent: [
+      [0, 0],
+      [400, 200],
+    ],
+  }
+);
 
 // TODO: Integrate this into the sankey natively
 const outputLink = output.links[0];
 outputLink.sourceHeight = outputLink.value;
 outputLink.targetHeight = outputLink.value;
-delete outputLink.value;
+// delete outputLink.value;
 
 console.log(output);
 

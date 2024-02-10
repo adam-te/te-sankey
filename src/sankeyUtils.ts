@@ -33,16 +33,15 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       node.x1 = x + sankeyConfig.nodeWidth;
       node.y0 = y0;
       node.y1 = y0 + nodeHeight;
-      y0 += nodeHeight + sankeyConfig.nodePadding; // TODO: incorporate padding
 
       let linkStartY0 = 0;
       for (const link of node.sourceLinks) {
         const linkHeight = yScale(link.value);
         // @ts-ignore
         link.start = {
-          x,
-          y0: linkStartY0,
-          y1: linkStartY0 + linkHeight,
+          x: x + sankeyConfig.nodeWidth,
+          y0: y0 + linkStartY0,
+          y1: y0 + linkStartY0 + linkHeight,
         };
         linkStartY0 += linkHeight;
       }
@@ -53,11 +52,12 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
         // @ts-ignore
         link.end = {
           x,
-          y0: linkEndY0,
-          y1: linkEndY0 + linkHeight,
+          y0: y0 + linkEndY0,
+          y1: y0 + linkEndY0 + linkHeight,
         };
         linkEndY0 += linkHeight;
       }
+      y0 += nodeHeight + sankeyConfig.nodePadding; // TODO: incorporate padding
     }
 
     x += spacingBetweenColumns;
