@@ -34,7 +34,7 @@ export interface SankeyConfig {
   //     };
   //   };
   iterations: number; // 6
-  //   numVisibleRows?: number; // All
+  numberOfVisibleRows: number; // All
   align: (node: NodeMeta, n: number) => number;
   visibleColumnsFromCenter: number;
 }
@@ -46,6 +46,17 @@ export interface LinkMeta {
   width?: number;
   y0?: number;
   y1?: number;
+  isHidden?: boolean;
+  start?: {
+    x: number;
+    y0: number;
+    y1: number;
+  };
+  end?: {
+    x: number;
+    y0: number;
+    y1: number;
+  };
 }
 export interface NodeMeta {
   id: string;
@@ -66,20 +77,6 @@ export interface NodeMeta {
   x1?: number;
   y0?: number;
   y1?: number;
-}
-
-export interface SankeyOptions {
-  extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-  nodeWidth?: number; // 24
-
-  // TODO: Does this do anything?
-  nodeHeight?: number; // 8
-  // TODO: This appears to be fully auto-computed, don't allow as param
-  // nodePadding?: number; // 0
-  iterations?: number; // 6
-  align?: (node: NodeMeta, n: number) => number;
-
-  visibleColumnsFromCenter?: number;
 }
 
 export interface GraphMeta {

@@ -1,6 +1,5 @@
 import {
   GraphMeta,
-  SankeyOptions,
   SankeyConfig,
   NodeMeta,
   LinkMeta,
@@ -8,6 +7,21 @@ import {
 } from "./models";
 
 import { setStartAndEnd } from "./sankeyUtils";
+
+export interface SankeyOptions {
+  extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
+  nodeWidth?: number; // 24
+
+  // TODO: Does this do anything?
+  nodeHeight?: number; // 8
+  // TODO: This appears to be fully auto-computed, don't allow as param
+  // nodePadding?: number; // 0
+  iterations?: number; // 6
+  align?: (node: NodeMeta, n: number) => number;
+
+  numberOfVisibleRows?: number;
+  visibleColumnsFromCenter?: number;
+}
 
 export function computeSankey(
   graph: SankeyGraph,
@@ -22,9 +36,8 @@ export function computeSankey(
     nodeHeight: 8,
     nodePadding: 0,
     iterations: 6,
-    // @ts-ignore
     align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
-    // Show all by default
+    numberOfVisibleRows: Infinity,
     visibleColumnsFromCenter: Infinity,
     ...options,
   };

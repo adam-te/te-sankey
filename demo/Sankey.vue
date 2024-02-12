@@ -1,165 +1,182 @@
 <template>
   <div>
-    <!-- Hardcoded -->
-    <!-- <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
-      <g v-for="node in nodes" :key="node.name">
-        <rect
-          :x="node.x0"
-          :y="node.y0"
-          :width="node.x1 - node.x0"
-          :height="node.y1 - node.y0"
-          fill="navy"
-        />
-        <text :x="node.x0 + 10" :y="node.y0 + 14" fill="white" font-size="12px">
-          {{ node.name }}
-        </text>
-      </g>
-
-      <path
-        v-for="link in links"
-        :key="link.source.name + '_' + link.target.name"
-        :d="computeSankeyLinkPath(link)"
-        fill="black"
-      />
-    </svg> -->
-
     <!-- Transformed -->
-    <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
-      <!-- Nodes -->
-      <g v-for="node of output.nodes" :key="node.name">
-        <rect
-          :x="node.x0"
-          :y="node.y0"
-          :width="node.x1 - node.x0"
-          :height="node.y1 - node.y0"
-          fill="navy"
-        />
-        <text :x="node.x0 + 10" :y="node.y0 + 14" fill="white" font-size="12px">
-          {{ node.id }}
-        </text>
-      </g>
-
-      <!-- Link -->
+    <svg
+      ref="chartContainer"
+      :width="containerMeta.width"
+      :height="containerMeta.height"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <!-- Links -->
       <path
-        v-for="link of output.links"
+        v-for="link of visibleLinks"
         :key="link.source.name + '_' + link.target.name"
         :d="computeSankeyLinkPath(link)"
-        fill="black"
+        class="sankey-link"
       />
+
+      <!-- Nodes -->
+      <rect
+        v-for="node of visibleNodes"
+        :key="node.name"
+        :transform="`translate(${node.x0}, ${node.y0})`"
+        :width="getNodeWidth(node)"
+        :height="getNodeHeight(node)"
+        class="sankey-node"
+      />
+      <!-- Labels -->
+      <text
+        v-for="node of visibleNodes"
+        :key="node.name"
+        :transform="`translate(${node.x0 + getNodeWidth(node) / 2}, ${
+          node.y0 + getNodeHeight(node) / 2
+        }) rotate(-90)`"
+        class="sankey-label"
+      >
+        {{ node.id }}
+      </text>
     </svg>
   </div>
 </template>
 
 <script setup>
+// import { notEqual } from "assert";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
-// @ts-ignore
-import { ref } from "vue";
-
-const mockSource = {
-  id: "A", // TODO: why does changing break? BECAUSE LINK didnt match
-};
-const mockSourceC = {
-  id: "C", // TODO: why does changing break? BECAUSE LINK didnt match
-};
-const mockTarget = {
-  id: "B",
+const containerMeta = {
+  width: 1200,
+  height: 600,
 };
 
-const mockLink = {
-  sourceId: "A",
-  targetId: "B",
-  value: 10,
-};
+const mockGraph = g();
+const { n, l } = mockGraph;
+const sourceRegion = n("sourceRegion");
+const sourceVpc = n("sourceVpc");
+const sourceSubnet1 = n("sourceSubnet1");
+const sourceSubnet2 = n("sourceSubnet2");
+const sourceSubnet3 = n("sourceSubnet3");
+const sourceSubnet4 = n("sourceSubnet4");
+const sourceSubnet5 = n("sourceSubnet5");
 
-const mockLink2 = {
-  sourceId: "C",
-  targetId: "B",
-  value: 20,
-};
+const targetSubnet1 = n("targetSubnet1");
+const targetSubnet2 = n("targetSubnet2");
+const targetSubnet3 = n("targetSubnet3");
+const targetSubnet4 = n("targetSubnet4");
+const targetSubnet5 = n("targetSubnet5");
+const targetVpc = n("targetVpc");
+const targetRegion = n("targetRegion");
 
-const nodes = [mockSource, mockSourceC, mockTarget];
-// const links = [mockLink mo];
+// Region (S)
+l(sourceRegion, sourceVpc);
 
-const output = computeSankey(
-  {
-    nodes: nodes.map((v) => ({
-      ...v,
-    })),
-    links: [mockLink, mockLink2],
-  },
-  {
-    extent: [
-      [0, 0],
-      [400, 200],
-    ],
-  }
+// VPC (S)
+l(sourceVpc, sourceSubnet1);
+l(sourceVpc, sourceSubnet2);
+l(sourceVpc, sourceSubnet3);
+l(sourceVpc, sourceSubnet4);
+l(sourceVpc, sourceSubnet5);
+
+// Subnets (S)
+l(sourceSubnet1, targetSubnet1);
+l(sourceSubnet1, targetSubnet2);
+l(sourceSubnet1, targetSubnet4);
+l(sourceSubnet1, targetSubnet4);
+
+l(sourceSubnet2, targetSubnet1);
+
+l(sourceSubnet3, targetSubnet1);
+l(sourceSubnet3, targetSubnet2);
+
+l(sourceSubnet4, targetSubnet3);
+l(sourceSubnet4, targetSubnet4);
+
+// Subnets (T)
+l(targetSubnet1, targetVpc);
+l(targetSubnet2, targetVpc);
+l(targetSubnet4, targetVpc);
+l(targetSubnet4, targetVpc);
+
+// VPC (T)
+l(targetVpc, targetRegion);
+
+// Hidden (TODO: Create hidden flows here)
+l(sourceSubnet5, targetSubnet5);
+
+const output = computeSankey(mockGraph, {
+  numberOfVisibleRows: 4,
+  extent: [
+    [0, 0],
+    [containerMeta.width, containerMeta.height],
+  ],
+});
+
+const visibleNodes = output.nodes.filter((v) => !v.isHidden);
+const visibleLinks = output.links.filter(
+  (v) => !v.source.isHidden && !v.target.isHidden
 );
-
-// TODO: Integrate this into the sankey natively
-const outputLink = output.links[0];
-outputLink.sourceHeight = outputLink.value;
-outputLink.targetHeight = outputLink.value;
-// delete outputLink.value;
-
-console.log(output);
-
-const graph = computeSankey(
-  {
-    nodes: [n("A"), n("B"), n("C")],
-    links: [l("A", "B"), l("B", "C")],
-  },
-  {
-    visibleColumnsFromCenter: 1,
-  }
-);
-
-function n(id) {
+function g() {
+  const nodes = [];
+  const links = [];
   return {
-    id,
+    n,
+    l,
+    nodes,
+    links,
   };
+  function n(id) {
+    const node = {
+      id,
+      sourceLinks: [],
+      targetLinks: [],
+    };
+    nodes.push(node);
+    return node;
+  }
+
+  function l(from, to) {
+    const link = {
+      sourceId: from.id,
+      targetId: to.id,
+      value: 1,
+    };
+
+    from.sourceLinks.push(link);
+    to.targetLinks.push(link);
+    links.push(link);
+    return link;
+  }
 }
 
-function l(from, to) {
-  return {
-    sourceId: from,
-    targetId: to,
-    value: 1,
-  };
+function getNodeWidth(node) {
+  return node.x1 - node.x0;
 }
 
-// /**
-//  * Generates SVG path data for a Sankey link with different endpoint heights.
-//  *
-//  * @param {Object} start - The start point { x, y, height }.
-//  * @param {Object} end - The end point { x, y, height }.
-//  * @returns {string} The SVG path data.
-//  */
-// // interface Typ {
-// //   x: Number;
-// //   y: Number;
-// //   height: Number;
-// // }
-// function generateSankeyLinkPathWithCurves(start, end) {
-//   // Calculate control points for smooth curves
-//   const controlPointX1 = start.x + (end.x - start.x) / 3;
-//   const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3;
-
-//   // Calculate the top and bottom points for the start and end
-//   const startTop = start.y - start.height / 2;
-//   const startBottom = start.y + start.height / 2;
-//   const endTop = end.y - end.height / 2;
-//   const endBottom = end.y + end.height / 2;
-
-//   // Construct the path with Bezier curves
-//   const pathData = [
-//     `M${start.x},${startTop}`, // Move to start top
-//     `C${controlPointX1},${startTop} ${controlPointX2},${endTop} ${end.x},${endTop}`, // Curve to end top
-//     `L${end.x},${endTop}`, // Line to end top (for clarity, technically redundant)
-//     `L${end.x},${endBottom}`, // Line to end bottom
-//     `C${controlPointX2},${endBottom} ${controlPointX1},${startBottom} ${start.x},${startBottom}`, // Curve to start bottom
-//     "Z", // Close path
-//   ].join(" ");
-
-//   return pathData;
-// }
+function getNodeHeight(node) {
+  return node.y1 - node.y0;
+}
 </script>
+
+<style>
+:root {
+  --sankeyLinkColor: #c9def0;
+  --sankeyLinkOpacity: 0.9;
+  --sankeyNodeActiveFlowColor: #2679c2;
+  --sankeyNodeActiveNoFlowColor: #195386;
+  --sankeyNodeInactiveFlowColor: #e0e5ea;
+  --sankeyNodeInactiveNoFlowColor: #a6aeb8;
+  --sankeyNodeLabelColor: #000;
+}
+
+.sankey-link {
+  fill: var(--sankeyLinkColor);
+  opacity: var(--sankeyLinkOpacity);
+}
+
+.sankey-node {
+  fill: var(--sankeyNodeActiveFlowColor);
+}
+
+.sankey-label {
+  fill: var(--sankeyNodeLabelColor);
+  font-size: 12px;
+}
+</style>
