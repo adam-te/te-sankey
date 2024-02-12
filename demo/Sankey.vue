@@ -23,6 +23,7 @@
         :width="getNodeWidth(node)"
         :height="getNodeHeight(node)"
         class="sankey-node flows"
+        :class="{ focus: node.focus }"
       />
 
       <!-- <rect
@@ -51,7 +52,7 @@
           }) rotate(-90)`"
           class="sankey-label"
         >
-          {{ node.id }}
+          {{ node.displayName || node.id }}
         </text>
 
         <text
@@ -61,7 +62,7 @@
           })`"
           class="sankey-label left"
         >
-          {{ node.id }}
+          {{ node.displayName || node.id }}
         </text>
 
         <text
@@ -71,7 +72,7 @@
           })`"
           class="sankey-label right"
         >
-          {{ node.id }}
+          {{ node.displayName || node.id }}
         </text>
       </template>
     </svg>
@@ -88,21 +89,61 @@ const containerMeta = {
 
 const mockGraph = g();
 const { n, l } = mockGraph;
-const sourceRegion = n("sourceRegion");
-const sourceVpc = n("sourceVpc");
-const sourceSubnet1 = n("sourceSubnet1", { label: "left" });
-const sourceSubnet2 = n("sourceSubnet2", { label: "left" });
-const sourceSubnet3 = n("sourceSubnet3", { label: "left" });
-const sourceSubnet4 = n("sourceSubnet4", { label: "left" });
-const sourceSubnet5 = n("sourceSubnet5", { label: "left" });
+const sourceRegion = n("sourceRegion", { displayName: "us-east-2" });
+const sourceVpc = n("sourceVpc", { displayName: "VPC ID 1" });
+const sourceSubnet1 = n("sourceSubnet1", {
+  label: "left",
+  focus: true,
+  displayName: "Subnet 1",
+});
+const sourceSubnet2 = n("sourceSubnet2", {
+  label: "left",
+  focus: true,
+  displayName: "Subnet 2",
+});
+const sourceSubnet3 = n("sourceSubnet3", {
+  label: "left",
+  focus: true,
+  displayName: "Subnet 3",
+});
+const sourceSubnet4 = n("sourceSubnet4", {
+  label: "left",
+  focus: true,
+  displayName: "Subnet 4",
+});
+const sourceSubnet5 = n("sourceSubnet5", {
+  label: "left",
+  focus: true,
+  displayName: "Subnet 5",
+});
 
-const targetSubnet1 = n("targetSubnet1", { label: "right" });
-const targetSubnet2 = n("targetSubnet2", { label: "right" });
-const targetSubnet3 = n("targetSubnet3", { label: "right" });
-const targetSubnet4 = n("targetSubnet4", { label: "right" });
-const targetSubnet5 = n("targetSubnet5", { label: "right" });
-const targetVpc = n("targetVpc");
-const targetRegion = n("targetRegion");
+const targetSubnet1 = n("targetSubnet1", {
+  label: "right",
+  focus: true,
+  displayName: "Subnet 1",
+});
+const targetSubnet2 = n("targetSubnet2", {
+  label: "right",
+  focus: true,
+  displayName: "Subnet 2",
+});
+const targetSubnet3 = n("targetSubnet3", {
+  label: "right",
+  focus: true,
+  displayName: "Subnet 3",
+});
+const targetSubnet4 = n("targetSubnet4", {
+  label: "right",
+  focus: true,
+  displayName: "Subnet 4",
+});
+const targetSubnet5 = n("targetSubnet5", {
+  label: "right",
+  focus: true,
+  displayName: "Subnet 5",
+});
+const targetVpc = n("targetVpc", { displayName: "VPC ID 1" });
+const targetRegion = n("targetRegion", { displayName: "us-east-2" });
 
 // Region (S)
 l(sourceRegion, sourceVpc);
@@ -143,6 +184,7 @@ l(sourceSubnet5, targetSubnet5);
 console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph, {
   numberOfVisibleRows: 4,
+  linkXPadding: 2,
   extent: [
     [0, 0],
     [containerMeta.width, containerMeta.height],
@@ -265,10 +307,12 @@ function getVisibleGraph(graph) {
 :root {
   --sankeyLinkColor: #c9def0;
   --sankeyLinkOpacity: 0.9;
-  --sankeyNodeActiveFlowColor: #2679c2;
-  --sankeyNodeActiveNoFlowColor: #195386;
-  --sankeyNodeInactiveFlowColor: #e0e5ea;
-  --sankeyNodeInactiveNoFlowColor: #a6aeb8;
+
+  --sankeyFlowNodeColor: #2679c2;
+  --sankeyNoFlowNodeColor: #195386;
+  --sankeyUnfocusedFlowNodeColor: #e0e5ea;
+  --sankeyUnfocusedNoFlowNodeColor: #a6aeb8;
+
   --sankeyNodeLabelColor: #000;
 }
 
@@ -277,12 +321,26 @@ function getVisibleGraph(graph) {
   opacity: var(--sankeyLinkOpacity);
 }
 
-.sankey-node.flows {
-  fill: var(--sankeyNodeActiveFlowColor);
+.sankey-node {
+  /* stroke: ; */
 }
 
+/* .sankey-node.flows.focus {
+  fill: var(--sankeyNodeActiveFlowColor);
+} */
+
+.sankey-node.focus.flows {
+  fill: var(--sankeyFlowNodeColor);
+}
+.sankey-node.focus.no-flows {
+  fill: var(--sankeyNoFlowNodeColor);
+}
+
+.sankey-node.flows {
+  fill: var(--sankeyUnfocusedFlowNodeColor);
+}
 .sankey-node.no-flows {
-  fill: var(--sankeyNodeActiveNoFlowColor);
+  fill: var(--sankeyUnfocusedNoFlowNodeColor);
 }
 
 .sankey-label {

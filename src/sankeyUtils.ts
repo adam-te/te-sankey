@@ -50,7 +50,7 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       )) {
         const linkHeight = yScale(link.value);
         link.start = {
-          x: x + sankeyConfig.nodeWidth,
+          x: x + sankeyConfig.nodeWidth + sankeyConfig.linkXPadding,
           y0: y0 + linkStartY0,
           y1: y0 + linkStartY0 + linkHeight,
         };
@@ -64,7 +64,7 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       )) {
         const linkHeight = yScale(link.value);
         link.end = {
-          x,
+          x: x - sankeyConfig.linkXPadding,
           y0: y0 + linkEndY0,
           y1: y0 + linkEndY0 + linkHeight,
         };

@@ -14,6 +14,7 @@ export interface SankeyOptions {
 
   // TODO: Does this do anything?
   nodeHeight?: number; // 8
+  linkXPadding?: number;
   // TODO: This appears to be fully auto-computed, don't allow as param
   // nodePadding?: number; // 0
   iterations?: number; // 6
@@ -35,6 +36,7 @@ export function computeSankey(
     nodeWidth: 24,
     nodeHeight: 8,
     nodePadding: 0,
+    linkXPadding: 0,
     iterations: 6,
     align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
     numberOfVisibleRows: Infinity,
