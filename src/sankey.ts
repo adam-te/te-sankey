@@ -66,8 +66,9 @@ function computeNodeMetas(
 ): Map<string, NodeMeta> {
   // Create object placeholder to allow for wiring referentially
   const idToRawNodeMeta = new Map<string, NodeMeta>(
+    // TODO: n.label and extra data should be sent.. Avoid mutation
     // @ts-ignore - Allow invalid NodeMeta because we don't have the
-    graph.nodes.map((n) => [n.id, { id: n.id }])
+    graph.nodes.map((n) => [n.id, { ...n, id: n.id }])
   );
   const linkMetas = graph.links.map((v) => ({
     source: idToRawNodeMeta.get(v.sourceId) as NodeMeta,

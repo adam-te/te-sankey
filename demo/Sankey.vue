@@ -22,19 +22,58 @@
         :transform="`translate(${node.x0}, ${node.y0})`"
         :width="getNodeWidth(node)"
         :height="getNodeHeight(node)"
-        class="sankey-node"
+        class="sankey-node flows"
       />
-      <!-- Labels -->
-      <text
-        v-for="node of visibleNodes"
+
+      <!-- <rect
+        v-for="node of displayNodes.activeNodes"
         :key="node.name"
-        :transform="`translate(${node.x0 + getNodeWidth(node) / 2}, ${
-          node.y0 + getNodeHeight(node) / 2
-        }) rotate(-90)`"
-        class="sankey-label"
-      >
-        {{ node.id }}
-      </text>
+        :transform="`translate(${node.x0}, ${node.y0})`"
+        :width="getNodeWidth(node)"
+        :height="getNodeHeight(node)"
+        class="sankey-node flows"
+      />
+
+      <rect
+        v-for="node of displayNodes.inactiveNodes"
+        :key="node.name"
+        :transform="`translate(${node.x0}, ${node.y0})`"
+        :width="getNodeWidth(node)"
+        :height="getNodeHeight(node)"
+        class="sankey-node no-flows"
+      /> -->
+      <!-- Labels -->
+      <template v-for="node of visibleNodes" :key="node.name">
+        <text
+          v-if="!node.label"
+          :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
+            node.y0 + getNodeHeight(node) / 2
+          }) rotate(-90)`"
+          class="sankey-label"
+        >
+          {{ node.id }}
+        </text>
+
+        <text
+          v-else-if="node.label === 'left'"
+          :transform="`translate(${node.x0 - 5}, ${
+            node.y0 + getNodeHeight(node) / 2
+          })`"
+          class="sankey-label left"
+        >
+          {{ node.id }}
+        </text>
+
+        <text
+          v-else-if="node.label === 'right'"
+          :transform="`translate(${node.x0 + getNodeWidth(node) + 5}, ${
+            node.y0 + getNodeHeight(node) / 2
+          })`"
+          class="sankey-label right"
+        >
+          {{ node.id }}
+        </text>
+      </template>
     </svg>
   </div>
 </template>
@@ -51,17 +90,17 @@ const mockGraph = g();
 const { n, l } = mockGraph;
 const sourceRegion = n("sourceRegion");
 const sourceVpc = n("sourceVpc");
-const sourceSubnet1 = n("sourceSubnet1");
-const sourceSubnet2 = n("sourceSubnet2");
-const sourceSubnet3 = n("sourceSubnet3");
-const sourceSubnet4 = n("sourceSubnet4");
-const sourceSubnet5 = n("sourceSubnet5");
+const sourceSubnet1 = n("sourceSubnet1", { label: "left" });
+const sourceSubnet2 = n("sourceSubnet2", { label: "left" });
+const sourceSubnet3 = n("sourceSubnet3", { label: "left" });
+const sourceSubnet4 = n("sourceSubnet4", { label: "left" });
+const sourceSubnet5 = n("sourceSubnet5", { label: "left" });
 
-const targetSubnet1 = n("targetSubnet1");
-const targetSubnet2 = n("targetSubnet2");
-const targetSubnet3 = n("targetSubnet3");
-const targetSubnet4 = n("targetSubnet4");
-const targetSubnet5 = n("targetSubnet5");
+const targetSubnet1 = n("targetSubnet1", { label: "right" });
+const targetSubnet2 = n("targetSubnet2", { label: "right" });
+const targetSubnet3 = n("targetSubnet3", { label: "right" });
+const targetSubnet4 = n("targetSubnet4", { label: "right" });
+const targetSubnet5 = n("targetSubnet5", { label: "right" });
 const targetVpc = n("targetVpc");
 const targetRegion = n("targetRegion");
 
@@ -101,6 +140,7 @@ l(targetVpc, targetRegion);
 // Hidden (TODO: Create hidden flows here)
 l(sourceSubnet5, targetSubnet5);
 
+console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph, {
   numberOfVisibleRows: 4,
   extent: [
@@ -109,10 +149,17 @@ const output = computeSankey(mockGraph, {
   ],
 });
 
-const visibleNodes = output.nodes.filter((v) => !v.isHidden);
-const visibleLinks = output.links.filter(
-  (v) => !v.source.isHidden && !v.target.isHidden
-);
+console.log("O", output.nodes);
+const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
+// const visibleNodes = output.nodes.filter((v) => !v.isHidden);
+// const visibleLinks = output.links.filter(
+//   (v) => !v.source.isHidden && !v.target.isHidden
+// );
+
+// console.log(visibleLinks.map((l) => l.end));
+// console.log(output.links.map((l) => l.end));
+// const displayNodes = getDisplayNodes(visibleNodes);
+console.log(visibleNodes);
 function g() {
   const nodes = [];
   const links = [];
@@ -122,8 +169,9 @@ function g() {
     nodes,
     links,
   };
-  function n(id) {
+  function n(id, props = {}) {
     const node = {
+      ...props,
       id,
       sourceLinks: [],
       targetLinks: [],
@@ -146,12 +194,70 @@ function g() {
   }
 }
 
+function getDisplayNodes(nodes) {
+  const activeNodes = [];
+  const inactiveNodes = [];
+  for (const node of nodes) {
+    if (!node.sourceLinks.length) {
+      inactiveNodes.push(node);
+      continue;
+    }
+
+    const maxY1 = 0;
+    let maxLink = null;
+    for (const link of node.sourceLinks) {
+      if (link == null || link.end.y1 >= maxY1) {
+        maxLink = link;
+      }
+    }
+    const finalLink = maxLink;
+    // const finalLink = node.sourceLinks.at(-1);
+
+    activeNodes.push({
+      x0: node.x0,
+      x1: node.x1,
+      y0: node.y0,
+      // TODO:
+      y1: finalLink.end.y1,
+      // node,
+    });
+
+    const isNodeFullFlows = finalLink.end.y1 >= node.y1;
+    if (!isNodeFullFlows) {
+      // console.log(node.y1, finalLink.y1);
+      inactiveNodes.push({
+        x0: node.x0,
+        x1: node.x1,
+        y0: finalLink.end.y1,
+        y1: node.y1,
+      });
+    }
+  }
+
+  return {
+    activeNodes,
+    inactiveNodes,
+  };
+}
 function getNodeWidth(node) {
   return node.x1 - node.x0;
 }
 
 function getNodeHeight(node) {
   return node.y1 - node.y0;
+}
+
+function getVisibleGraph(graph) {
+  return {
+    nodes: graph.nodes
+      .filter((v) => !v.isHidden)
+      .map((v) => ({
+        ...v,
+        sourceLinks: v.sourceLinks.filter((v) => !v.isHidden),
+        targetLinks: v.targetLinks.filter((v) => !v.isHidden),
+      })),
+    links: graph.links.filter((v) => !v.isHidden),
+  };
 }
 </script>
 
@@ -171,12 +277,20 @@ function getNodeHeight(node) {
   opacity: var(--sankeyLinkOpacity);
 }
 
-.sankey-node {
+.sankey-node.flows {
   fill: var(--sankeyNodeActiveFlowColor);
+}
+
+.sankey-node.no-flows {
+  fill: var(--sankeyNodeActiveNoFlowColor);
 }
 
 .sankey-label {
   fill: var(--sankeyNodeLabelColor);
   font-size: 12px;
+}
+
+.sankey-label.left {
+  text-anchor: end;
 }
 </style>
