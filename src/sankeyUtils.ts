@@ -13,15 +13,15 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
   );
 
   // TODO: Move back to loop
-  markVisibleNodes(graph.columns, sankeyConfig);
+  markHiddenNodes(graph.columns);
 
   let x = spacingBetweenColumns;
   let columnIdx = 0;
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const column of graph.columns) {
     const visibleColumnNodes = column.nodes.slice(
-      0,
-      sankeyConfig.numberOfVisibleRows
+      column.visibleExtent[0],
+      column.visibleExtent[1]
     );
 
     const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
@@ -148,16 +148,20 @@ function computeSpacingBetweenColumns(
   return (rectangleWidth - totalColumnsWidth) / totalSpaces;
 }
 
-function markVisibleNodes(columns: MetaColumn[], sankeyConfig: SankeyConfig) {
+function markHiddenNodes(columns: MetaColumn[]) {
   for (const column of columns) {
-    let row = 1;
+    let rowIdx = 0;
     for (const node of column.nodes) {
-      if (row > sankeyConfig.numberOfVisibleRows) {
+      console.log(rowIdx, column.visibleExtent);
+      if (
+        rowIdx < column.visibleExtent[0] ||
+        rowIdx >= column.visibleExtent[1]
+      ) {
         node.isHidden = true;
         node.sourceLinks.forEach((l) => (l.isHidden = true));
         node.targetLinks.forEach((l) => (l.isHidden = true));
       }
-      row += 1;
+      rowIdx += 1;
     }
   }
 }

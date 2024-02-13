@@ -20,11 +20,7 @@ export interface SankeyOptions {
   nodeHeight?: number; // 8
   nodePadding?: number; // 8
   linkXPadding?: number;
-  iterations?: number; // 6
   align?: (node: NodeMeta, n: number) => number;
-
-  numberOfVisibleRows?: number;
-  visibleColumnsFromCenter?: number;
 }
 
 export function computeSankey(
@@ -36,8 +32,6 @@ export function computeSankey(
     nodeHeight: 8,
     nodePadding: 8,
     linkXPadding: 0,
-    iterations: 6,
-    numberOfVisibleRows: Infinity,
     ...options,
   };
 
@@ -45,6 +39,7 @@ export function computeSankey(
   // TODO:
   // const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
   const metaGraph = getMetaGraph(graph);
+  console.log("meta", metaGraph);
   setStartAndEnd(metaGraph, sankeyConfig);
 
   return metaGraph;
@@ -92,6 +87,7 @@ function getMetaGraph(
     links: linkMetas,
     // @ts-ignore
     columns: graph.columns.map((v) => ({
+      visibleExtent: [0, v.nodes.length],
       visibleStartIdx: 0,
       rightPadding: 0,
       ...v,

@@ -15,7 +15,7 @@ export interface SankeyGraph {
 }
 export interface SankeyColumn {
   nodes: SankeyNode[];
-  visibleStartIdx?: number; // 0
+  visibleExtent?: [number, number];
   rightPadding?: number;
 }
 
@@ -27,6 +27,7 @@ export interface MetaGraph {
 
 export interface MetaColumn {
   nodes: NodeMeta[];
+  visibleExtent: [number, number];
   visibleStartIdx: number;
   rightPadding: number;
 }
@@ -72,7 +73,4 @@ export interface SankeyConfig {
   nodeHeight: number; // 8 DEPRECATED - height based on flows. Support minHeight though
   nodePadding: number; // 0 DEPRECATED - rename nodeYPadding
   linkXPadding: number;
-
-  iterations: number; // 6
-  numberOfVisibleRows: number; // All
 }
