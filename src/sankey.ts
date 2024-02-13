@@ -88,7 +88,7 @@ function getMetaGraph(
     // @ts-ignore
     columns: graph.columns.map((v) => ({
       visibleRows: [0, v.nodes.length],
-      visibleStartIdx: 0,
+      // visibleStartIdx: 0,
       rightPadding: 0,
       ...v,
       nodes: v.nodes.map((v) => idToNodeMeta.get(v.id)),

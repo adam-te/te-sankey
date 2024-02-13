@@ -28,7 +28,7 @@ export interface MetaGraph {
 export interface MetaColumn {
   nodes: NodeMeta[];
   visibleRows: [number, number];
-  visibleStartIdx: number;
+  //   visibleStartIdx: number;
   rightPadding: number;
 }
 

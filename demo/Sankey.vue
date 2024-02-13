@@ -99,7 +99,6 @@
 </template>
 
 <script setup>
-// import { notEqual } from "assert";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
 const containerMeta = {
   width: 1200,
@@ -290,65 +289,12 @@ function g() {
   }
 }
 
-function getDisplayNodes(nodes) {
-  const activeNodes = [];
-  const inactiveNodes = [];
-  for (const node of nodes) {
-    if (!node.sourceLinks.length) {
-      inactiveNodes.push(node);
-      continue;
-    }
-
-    const maxY1 = 0;
-    let maxLink = null;
-    for (const link of node.sourceLinks) {
-      if (link == null || link.end.y1 >= maxY1) {
-        maxLink = link;
-      }
-    }
-    const finalLink = maxLink;
-    // const finalLink = node.sourceLinks.at(-1);
-
-    activeNodes.push({
-      x0: node.x0,
-      x1: node.x1,
-      y0: node.y0,
-      // TODO:
-      y1: finalLink.end.y1,
-      // node,
-    });
-
-    const isNodeFullFlows = finalLink.end.y1 >= node.y1;
-    if (!isNodeFullFlows) {
-      // console.log(node.y1, finalLink.y1);
-      inactiveNodes.push({
-        x0: node.x0,
-        x1: node.x1,
-        y0: finalLink.end.y1,
-        y1: node.y1,
-      });
-    }
-  }
-
-  return {
-    activeNodes,
-    inactiveNodes,
-  };
-}
 function getNodeWidth(node) {
   return node.x1 - node.x0;
 }
 
 function getNodeHeight(node) {
   return node.y1 - node.y0;
-}
-
-function getNodeFocusHeight(node) {
-  return node.linksEndY - node.y0;
-}
-
-function getNodeMarkerHeight(node) {
-  return node.y1 - node.linksEndY;
 }
 
 function getFlowsEndPercentage(node) {
@@ -366,6 +312,33 @@ function getVisibleGraph(graph) {
       })),
     links: graph.links.filter((v) => !v.isHidden),
   };
+}
+
+// Get top buttons
+function getTopButtons(columns) {
+  return columns
+    .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
+    .map((c) => ({
+      x: c.nodes[0].x0,
+      onClick() {
+        c.visibleRows[0] -= 1;
+        c.visibleRows[1] -= 1;
+        // TODO: How to pass this back through?????
+      },
+    }));
+}
+
+function getBottomButtons(columns) {
+  return columns
+    .filter((c) => c.nodes.length && c.visibleRows[1] < c.nodes.length)
+    .map((c) => ({
+      x: c.nodes[0].x0,
+      onClick() {
+        c.visibleRows[0] += 1;
+        c.visibleRows[1] += 1;
+        // TODO: How to pass this back through?????
+      },
+    }));
 }
 </script>
 
