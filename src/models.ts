@@ -15,7 +15,7 @@ export interface SankeyGraph {
 }
 export interface SankeyColumn {
   nodes: SankeyNode[];
-  visibleExtent?: [number, number];
+  visibleRows?: [number, number];
   rightPadding?: number;
 }
 
@@ -27,7 +27,7 @@ export interface MetaGraph {
 
 export interface MetaColumn {
   nodes: NodeMeta[];
-  visibleExtent: [number, number];
+  visibleRows: [number, number];
   visibleStartIdx: number;
   rightPadding: number;
 }

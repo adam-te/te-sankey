@@ -20,8 +20,8 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const column of graph.columns) {
     const visibleColumnNodes = column.nodes.slice(
-      column.visibleExtent[0],
-      column.visibleExtent[1]
+      column.visibleRows[0],
+      column.visibleRows[1]
     );
 
     const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
@@ -152,11 +152,8 @@ function markHiddenNodes(columns: MetaColumn[]) {
   for (const column of columns) {
     let rowIdx = 0;
     for (const node of column.nodes) {
-      console.log(rowIdx, column.visibleExtent);
-      if (
-        rowIdx < column.visibleExtent[0] ||
-        rowIdx >= column.visibleExtent[1]
-      ) {
+      console.log(rowIdx, column.visibleRows);
+      if (rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1]) {
         node.isHidden = true;
         node.sourceLinks.forEach((l) => (l.isHidden = true));
         node.targetLinks.forEach((l) => (l.isHidden = true));

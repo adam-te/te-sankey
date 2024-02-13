@@ -9,11 +9,6 @@
     >
       <defs>
         <template v-for="node of visibleNodes" :key="node.id">
-          <!-- <linearGradient :id="node.id" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color: blue; stop-opacity: 1" />
-              <stop offset="100%" style="stop-color: red; stop-opacity: 1" />
-            </linearGradient> -->
-
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop
               class="flows-stop"
@@ -38,23 +33,6 @@
       />
 
       <!-- Nodes -->
-      <!-- <template v-for="node of visibleNodes" :key="node.name">
-          <rect
-            :transform="`translate(${node.x0}, ${node.y0})`"
-            :width="getNodeWidth(node)"
-            :height="getNodeFocusHeight(node)"
-            class="sankey-node flows"
-            :class="{ focus: node.focus }"
-          />
-          <rect
-            :transform="`translate(${node.x0}, ${node.linksEndY})`"
-            :width="getNodeWidth(node)"
-            :height="getNodeMarkerHeight(node)"
-            class="sankey-node no-flows"
-            :class="{ focus: node.focus }"
-          />
-        </template> -->
-
       <template v-for="node of visibleNodes" :key="node.name">
         <rect
           :transform="`translate(${node.x0}, ${node.y0})`"
@@ -66,7 +44,6 @@
           :fill="`url(#${node.id})`"
           :class="{ focus: node.focus }"
         />
-        <!-- ry="1" -->
       </template>
 
       <!-- Labels -->
@@ -102,6 +79,22 @@
         </text>
       </template>
     </svg>
+    <!--  -->
+    <button
+      style="
+        padding: 10px 20px;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 8px;
+        font-family: Arial, sans-serif;
+        color: black;
+        font-size: 16px;
+        cursor: pointer;
+        outline: none;
+      "
+    >
+      ▼
+    </button>
   </div>
 </template>
 
@@ -219,34 +212,22 @@ l(sourceSubnet4, targetSubnet5);
 c([sourceRegion]);
 c([sourceVpc]);
 c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
-  visibleExtent: [0, 4],
+  visibleRows: [0, 4],
   rightPadding: 300,
 });
 
 c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5], {
-  visibleExtent: [0, 4],
+  visibleRows: [0, 4],
 });
 c([targetVpc]);
 c([targetRegion]);
 
-// const columns = [{ nodes: [sourceRegion], links: [] }];
-// console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph.get(), {
   graphMeta: containerMeta,
-  //   numberOfVisibleRows: 4,
   linkXPadding: 3,
 });
 
-console.log("O", output.nodes);
 const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
-// const visibleNodes = output.nodes.filter((v) => !v.isHidden);
-// const visibleLinks = output.links.filter(
-//   (v) => !v.source.isHidden && !v.target.isHidden
-// );
-
-// console.log(visibleLinks.map((l) => l.end));
-// console.log(output.links.map((l) => l.end));
-// const displayNodes = getDisplayNodes(visibleNodes);
 
 function g() {
   const nodes = [];

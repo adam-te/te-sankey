@@ -87,7 +87,7 @@ function getMetaGraph(
     links: linkMetas,
     // @ts-ignore
     columns: graph.columns.map((v) => ({
-      visibleExtent: [0, v.nodes.length],
+      visibleRows: [0, v.nodes.length],
       visibleStartIdx: 0,
       rightPadding: 0,
       ...v,
