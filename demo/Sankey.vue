@@ -7,6 +7,28 @@
       :height="containerMeta.height"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <defs>
+        <template v-for="node of visibleNodes" :key="node.id">
+          <!-- <linearGradient :id="node.id" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color: blue; stop-opacity: 1" />
+            <stop offset="100%" style="stop-color: red; stop-opacity: 1" />
+          </linearGradient> -->
+
+          <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop
+              class="flows-stop"
+              :class="{ focus: node.focus }"
+              :offset="`${getFlowsEndPercentage(node)}%`"
+            />
+            <stop
+              class="no-flows-stop"
+              :class="{ focus: node.focus }"
+              :offset="`${getFlowsEndPercentage(node)}%`"
+            />
+          </linearGradient>
+        </template>
+      </defs>
+
       <!-- Links -->
       <path
         v-for="link of visibleLinks"
@@ -16,7 +38,7 @@
       />
 
       <!-- Nodes -->
-      <template v-for="node of visibleNodes" :key="node.name">
+      <!-- <template v-for="node of visibleNodes" :key="node.name">
         <rect
           :transform="`translate(${node.x0}, ${node.y0})`"
           :width="getNodeWidth(node)"
@@ -31,6 +53,20 @@
           class="sankey-node no-flows"
           :class="{ focus: node.focus }"
         />
+      </template> -->
+
+      <template v-for="node of visibleNodes" :key="node.name">
+        <rect
+          :transform="`translate(${node.x0}, ${node.y0})`"
+          :width="getNodeWidth(node)"
+          :height="getNodeHeight(node)"
+          class="sankey-node"
+          rx="3"
+          ry="3"
+          :fill="`url(#${node.id})`"
+          :class="{ focus: node.focus }"
+        />
+        <!-- ry="1" -->
       </template>
 
       <!-- Labels -->
@@ -148,7 +184,7 @@ l(sourceVpc, sourceSubnet5);
 // Subnets (S)
 l(sourceSubnet1, targetSubnet1);
 l(sourceSubnet1, targetSubnet2);
-l(sourceSubnet1, targetSubnet4);
+l(sourceSubnet1, targetSubnet3);
 l(sourceSubnet1, targetSubnet4);
 
 l(sourceSubnet2, targetSubnet1);
@@ -183,7 +219,10 @@ l(sourceSubnet4, targetSubnet5);
 console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph, {
   numberOfVisibleRows: 4,
-  linkXPadding: 2,
+  linkXPadding: 3,
+  columnIdxToPadding: {
+    2: 300,
+  },
   extent: [
     [0, 0],
     [containerMeta.width, containerMeta.height],
@@ -295,6 +334,10 @@ function getNodeMarkerHeight(node) {
   return node.y1 - node.linksEndY;
 }
 
+function getFlowsEndPercentage(node) {
+  return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100;
+}
+
 function getVisibleGraph(graph) {
   return {
     nodes: graph.nodes
@@ -325,36 +368,56 @@ function getVisibleGraph(graph) {
 .sankey-link {
   fill: var(--sankeyLinkColor);
   opacity: var(--sankeyLinkOpacity);
+  cursor: pointer;
+}
+
+.sankey-link:hover {
+  opacity: 1;
 }
 
 .sankey-node {
-  /* stroke: ; */
+  cursor: pointer;
+}
+
+.sankey-node:hover {
+  filter: brightness(110%);
 }
 
 /* .sankey-node.flows.focus {
   fill: var(--sankeyNodeActiveFlowColor);
 } */
 
-.sankey-node.focus.flows {
-  fill: var(--sankeyFlowNodeColor);
+.flows-stop.focus {
+  stop-color: var(--sankeyFlowNodeColor);
 }
-.sankey-node.focus.no-flows {
-  fill: var(--sankeyNoFlowNodeColor);
+.no-flows-stop.focus {
+  stop-color: var(--sankeyNoFlowNodeColor);
 }
 
-.sankey-node.flows {
-  fill: var(--sankeyUnfocusedFlowNodeColor);
+.flows-stop {
+  stop-color: var(--sankeyUnfocusedFlowNodeColor);
 }
-.sankey-node.no-flows {
-  fill: var(--sankeyUnfocusedNoFlowNodeColor);
+.no-flows-stop {
+  stop-color: var(--sankeyUnfocusedNoFlowNodeColor);
 }
 
 .sankey-label {
   fill: var(--sankeyNodeLabelColor);
   font-size: 12px;
+  pointer-events: none;
 }
 
 .sankey-label.left {
   text-anchor: end;
 }
+
+/* .flows-stop {
+  stop-color: blue;
+  stop-opacity: 1;
+}
+
+.no-flows-stop {
+  stop-color: red;
+  stop-opacity: 1;
+} */
 </style>

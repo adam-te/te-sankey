@@ -19,6 +19,7 @@ export interface SankeyOptions {
   // nodePadding?: number; // 0
   iterations?: number; // 6
   align?: (node: NodeMeta, n: number) => number;
+  columnIdxToPadding?: Record<number, number>;
 
   numberOfVisibleRows?: number;
   visibleColumnsFromCenter?: number;
@@ -38,6 +39,7 @@ export function computeSankey(
     nodePadding: 0,
     linkXPadding: 0,
     iterations: 6,
+    columnIdxToPadding: {},
     align: (node, n) => (node.sourceLinks.length ? node.depth : n - 1),
     numberOfVisibleRows: Infinity,
     visibleColumnsFromCenter: Infinity,

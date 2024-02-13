@@ -13,13 +13,15 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
   const columns = computeNodeColumns(nodes);
   const spacingBetweenColumns = computeSpacingBetweenColumns(
     globalWidth,
-    sankeyConfig.nodeWidth,
-    columns.length
+    columns.length,
+    sankeyConfig
   );
 
+  // TODO: Move back to loop
   markVisibleNodes(columns, sankeyConfig);
 
   let x = spacingBetweenColumns;
+  let columnIdx = 0;
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const columnNodes of columns) {
     const visibleColumnNodes = columnNodes.slice(
@@ -39,7 +41,6 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       // "Active" is visible, inactive is invisible
       const nodeHeight = yScale(getNodeTotalFlowValue(node));
 
-      // TODO: Add flow marker
       node.x0 = x;
       node.x1 = x + sankeyConfig.nodeWidth;
       node.y0 = y0;
@@ -82,7 +83,11 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
     // for each neighboring link on left that goes to contiguous block (must be max flow), join with neighbor
     // DONT DO THIS, due to mis-representing flows
 
-    x += spacingBetweenColumns;
+    console.log(sankeyConfig.columnIdxToPadding);
+    x +=
+      spacingBetweenColumns + (sankeyConfig.columnIdxToPadding[columnIdx] || 0);
+    // x += spacingBetweenColumns;
+    columnIdx += 1;
   }
 }
 
@@ -148,10 +153,15 @@ function getColumnTotalFlowValue(columnNodes: NodeMeta[]) {
 // Symmetric fit
 function computeSpacingBetweenColumns(
   rectangleWidth: number,
-  columnWidth: number,
-  numberOfColumns: number
+  numberOfColumns: number,
+  sankeyConfig: SankeyConfig
 ) {
-  const totalColumnsWidth = columnWidth * numberOfColumns; // Calculate total width needed for all columns
+  const columnWidth = sankeyConfig.nodeWidth;
+  const totalPadding = Object.values(sankeyConfig.columnIdxToPadding).reduce(
+    (a, b) => a + b,
+    0
+  );
+  const totalColumnsWidth = columnWidth * numberOfColumns + totalPadding; // Calculate total width needed for all columns
   const totalSpaces = numberOfColumns + 1; // Calculate total spaces between columns and on the edges
 
   // Calculate spacing based on the rectangle width, total columns width, and total spaces

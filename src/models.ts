@@ -24,6 +24,8 @@ export interface SankeyConfig {
   nodeHeight: number; // 8 DEPRECATED - height based on flows. Support minHeight though
   nodePadding: number; // 0 DEPRECATED - rename nodeYPadding
   linkXPadding: number;
+  columnIdxToPadding: Record<number, number>;
+
   //   padding: {
   //     column: {
   //       x: number;
