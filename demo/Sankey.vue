@@ -218,7 +218,9 @@ l(sourceSubnet4, targetSubnet5);
 
 c([sourceRegion]);
 c([sourceVpc]);
-c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5]);
+c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
+  rightPadding: 300,
+});
 
 c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5]);
 c([targetVpc]);
@@ -227,15 +229,9 @@ c([targetRegion]);
 // const columns = [{ nodes: [sourceRegion], links: [] }];
 // console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph.get(), {
+  graphMeta: containerMeta,
   numberOfVisibleRows: 4,
   linkXPadding: 3,
-  columnIdxToPadding: {
-    2: 300,
-  },
-  extent: [
-    [0, 0],
-    [containerMeta.width, containerMeta.height],
-  ],
 });
 
 console.log("O", output.nodes);

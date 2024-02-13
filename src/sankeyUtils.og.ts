@@ -1,25 +1,30 @@
-import { SankeyConfig, NodeMeta, MetaGraph, MetaColumn } from "./models";
+import { SankeyConfig, NodeMeta } from "./models";
 import { scaleLinear } from "d3-scale";
 
-export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
-  const globalWidth = sankeyConfig.graphMeta.width;
-  const globalHeight = sankeyConfig.graphMeta.height;
+export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
+  // start: { x, y0, y1 } // link left
+  // end: { x, y0, y1 } // link right
+  const { extent } = sankeyConfig;
 
-  //   const columns = computeNodeColumns(nodes);
+  const [[x0, y0], [x1, y1]] = extent;
+  const globalWidth = x1 - x0;
+  const globalHeight = y1 - y0;
+
+  const columns = computeNodeColumns(nodes);
   const spacingBetweenColumns = computeSpacingBetweenColumns(
     globalWidth,
-    graph.columns,
+    columns.length,
     sankeyConfig
   );
 
   // TODO: Move back to loop
-  markVisibleNodes(graph.columns, sankeyConfig);
+  markVisibleNodes(columns, sankeyConfig);
 
   let x = spacingBetweenColumns;
   let columnIdx = 0;
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
-  for (const column of graph.columns) {
-    const visibleColumnNodes = column.nodes.slice(
+  for (const columnNodes of columns) {
+    const visibleColumnNodes = columnNodes.slice(
       0,
       sankeyConfig.numberOfVisibleRows
     );
@@ -32,16 +37,17 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
     let y0 = 0;
     let rowCount = 1;
     for (const node of visibleColumnNodes) {
+      // TODO: nodeHeight must be based on both visible and non-visible nodes
+      // "Active" is visible, inactive is invisible
       const nodeHeight =
         yScale(getNodeTotalFlowValue(node)) - sankeyConfig.nodePadding;
 
-      Object.assign(node, {
-        x0: x,
-        x1: x + sankeyConfig.nodeWidth,
-        y0: y0,
-        y1: y0 + nodeHeight,
-        linksEndY: y0 + yScale(getNodeVisibleFlowValue(node)),
-      });
+      node.x0 = x;
+      node.x1 = x + sankeyConfig.nodeWidth;
+      node.y0 = y0;
+      // @ts-ignore
+      node.linksEndY = y0 + yScale(getNodeVisibleFlowValue(node));
+      node.y1 = y0 + nodeHeight;
 
       let linkStartY0 = 0;
       for (const link of node.sourceLinks.sort(
@@ -80,13 +86,37 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
         };
         linkEndY0 += linkHeight;
       }
-      y0 += nodeHeight + sankeyConfig.nodePadding;
+      y0 += nodeHeight + sankeyConfig.nodePadding; // TODO: incorporate padding
       rowCount += 1;
     }
 
-    x += spacingBetweenColumns + column.rightPadding;
+    // TODO: Add support for merging links
+    // for each neighboring link on left that goes to contiguous block (must be max flow), join with neighbor
+    // DONT DO THIS, due to mis-representing flows
+
+    x +=
+      spacingBetweenColumns + (sankeyConfig.columnIdxToPadding[columnIdx] || 0);
+    // x += spacingBetweenColumns;
     columnIdx += 1;
   }
+}
+
+function computeNodeColumns(nodes: NodeMeta[]): NodeMeta[][] {
+  // @ts-ignore
+  const numColumns = Math.max(...nodes.map((n) => n.depth + 1));
+
+  const columns: NodeMeta[][] = Array.from({ length: numColumns }, () => []);
+  for (const node of nodes) {
+    // @ts-ignore
+    const rowIdx = columns[node.depth].length;
+    // @ts-ignore
+    columns[node.depth].push(node); // TODO: sort?
+    // @ts-ignore
+    node.columnIdx = node.depth;
+    // @ts-ignore
+    node.rowIdx = rowIdx;
+  }
+  return columns;
 }
 
 // function getNodeMaxOutgoingValue(node: NodeMeta) {
@@ -133,25 +163,25 @@ function getColumnTotalFlowValue(columnNodes: NodeMeta[]) {
 // Symmetric fit
 function computeSpacingBetweenColumns(
   rectangleWidth: number,
-  columns: MetaColumn[],
+  numberOfColumns: number,
   sankeyConfig: SankeyConfig
 ) {
   const columnWidth = sankeyConfig.nodeWidth;
-  const totalPadding = Object.values(columns.map((c) => c.rightPadding)).reduce(
+  const totalPadding = Object.values(sankeyConfig.columnIdxToPadding).reduce(
     (a, b) => a + b,
     0
   );
-  const totalColumnsWidth = columnWidth * columns.length + totalPadding; // Calculate total width needed for all columns
-  const totalSpaces = columns.length + 1; // Calculate total spaces between columns and on the edges
+  const totalColumnsWidth = columnWidth * numberOfColumns + totalPadding; // Calculate total width needed for all columns
+  const totalSpaces = numberOfColumns + 1; // Calculate total spaces between columns and on the edges
 
   // Calculate spacing based on the rectangle width, total columns width, and total spaces
   return (rectangleWidth - totalColumnsWidth) / totalSpaces;
 }
 
-function markVisibleNodes(columns: MetaColumn[], sankeyConfig: SankeyConfig) {
-  for (const column of columns) {
+function markVisibleNodes(columns: NodeMeta[][], sankeyConfig: SankeyConfig) {
+  for (const columnNodes of columns) {
     let row = 1;
-    for (const node of column.nodes) {
+    for (const node of columnNodes) {
       if (row > sankeyConfig.numberOfVisibleRows) {
         node.isHidden = true;
         node.sourceLinks.forEach((l) => (l.isHidden = true));
