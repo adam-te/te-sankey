@@ -42,6 +42,17 @@ export interface SankeyConfig {
   visibleColumnsFromCenter: number;
 }
 
+export interface SankeyGraph2 {
+  nodes: SankeyNode[];
+  links: SankeyLink[];
+  columns: SankeyColumn[];
+}
+export interface SankeyColumn {
+  nodes: SankeyNode[];
+  visibleStartIdx?: number; // 0
+  rightPadding?: number;
+}
+
 export interface LinkMeta {
   source: NodeMeta;
   target: NodeMeta;

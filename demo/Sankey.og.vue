@@ -10,9 +10,9 @@
       <defs>
         <template v-for="node of visibleNodes" :key="node.id">
           <!-- <linearGradient :id="node.id" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" style="stop-color: blue; stop-opacity: 1" />
-              <stop offset="100%" style="stop-color: red; stop-opacity: 1" />
-            </linearGradient> -->
+            <stop offset="0%" style="stop-color: blue; stop-opacity: 1" />
+            <stop offset="100%" style="stop-color: red; stop-opacity: 1" />
+          </linearGradient> -->
 
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop
@@ -39,21 +39,21 @@
 
       <!-- Nodes -->
       <!-- <template v-for="node of visibleNodes" :key="node.name">
-          <rect
-            :transform="`translate(${node.x0}, ${node.y0})`"
-            :width="getNodeWidth(node)"
-            :height="getNodeFocusHeight(node)"
-            class="sankey-node flows"
-            :class="{ focus: node.focus }"
-          />
-          <rect
-            :transform="`translate(${node.x0}, ${node.linksEndY})`"
-            :width="getNodeWidth(node)"
-            :height="getNodeMarkerHeight(node)"
-            class="sankey-node no-flows"
-            :class="{ focus: node.focus }"
-          />
-        </template> -->
+        <rect
+          :transform="`translate(${node.x0}, ${node.y0})`"
+          :width="getNodeWidth(node)"
+          :height="getNodeFocusHeight(node)"
+          class="sankey-node flows"
+          :class="{ focus: node.focus }"
+        />
+        <rect
+          :transform="`translate(${node.x0}, ${node.linksEndY})`"
+          :width="getNodeWidth(node)"
+          :height="getNodeMarkerHeight(node)"
+          class="sankey-node no-flows"
+          :class="{ focus: node.focus }"
+        />
+      </template> -->
 
       <template v-for="node of visibleNodes" :key="node.name">
         <rect
@@ -114,7 +114,7 @@ const containerMeta = {
 };
 
 const mockGraph = g();
-const { n, l, c } = mockGraph;
+const { n, l } = mockGraph;
 const sourceRegion = n("sourceRegion", { displayName: "us-east-2" });
 const sourceVpc = n("sourceVpc", { displayName: "VPC ID 1" });
 const sourceSubnet1 = n("sourceSubnet1", {
@@ -216,17 +216,8 @@ l(sourceSubnet2, targetSubnet5);
 l(sourceSubnet3, targetSubnet5);
 l(sourceSubnet4, targetSubnet5);
 
-c([sourceRegion]);
-c([sourceVpc]);
-c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5]);
-
-c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5]);
-c([targetVpc]);
-c([targetRegion]);
-
-// const columns = [{ nodes: [sourceRegion], links: [] }];
-// console.log("I", mockGraph.nodes);
-const output = computeSankey(mockGraph.get(), {
+console.log("I", mockGraph.nodes);
+const output = computeSankey(mockGraph, {
   numberOfVisibleRows: 4,
   linkXPadding: 3,
   columnIdxToPadding: {
@@ -248,43 +239,15 @@ const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
 // console.log(visibleLinks.map((l) => l.end));
 // console.log(output.links.map((l) => l.end));
 // const displayNodes = getDisplayNodes(visibleNodes);
-
 function g() {
   const nodes = [];
   const links = [];
-  const columns = [];
   return {
     n,
     l,
-    c,
     nodes,
     links,
-    columns,
-    get,
   };
-
-  function get() {
-    return {
-      links,
-      nodes,
-      columns,
-    };
-  }
-
-  function c(nodes, props = {}) {
-    const columnNodes = nodes.filter((n) => nodes.includes(n));
-    if (columnNodes.length !== nodes.length) {
-      throw new Error("Invalid input!");
-    }
-    const col = {
-      ...props,
-      // TODO: Throw if lengths different
-      nodes: columnNodes,
-    };
-    columns.push(col);
-    return col;
-  }
-
   function n(id, props = {}) {
     const node = {
       ...props,
@@ -421,8 +384,8 @@ function getVisibleGraph(graph) {
 }
 
 /* .sankey-node.flows.focus {
-    fill: var(--sankeyNodeActiveFlowColor);
-  } */
+  fill: var(--sankeyNodeActiveFlowColor);
+} */
 
 .flows-stop.focus {
   stop-color: var(--sankeyFlowNodeColor);
@@ -449,12 +412,12 @@ function getVisibleGraph(graph) {
 }
 
 /* .flows-stop {
-    stop-color: blue;
-    stop-opacity: 1;
-  }
-  
-  .no-flows-stop {
-    stop-color: red;
-    stop-opacity: 1;
-  } */
+  stop-color: blue;
+  stop-opacity: 1;
+}
+
+.no-flows-stop {
+  stop-color: red;
+  stop-opacity: 1;
+} */
 </style>

@@ -39,7 +39,8 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
     for (const node of visibleColumnNodes) {
       // TODO: nodeHeight must be based on both visible and non-visible nodes
       // "Active" is visible, inactive is invisible
-      const nodeHeight = yScale(getNodeTotalFlowValue(node));
+      const nodeHeight =
+        yScale(getNodeTotalFlowValue(node)) - sankeyConfig.nodePadding;
 
       node.x0 = x;
       node.x1 = x + sankeyConfig.nodeWidth;
@@ -53,11 +54,16 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
         // @ts-ignore
         (a, b) => a.target.rowIdx - b.target.rowIdx
       )) {
+        const isLastLink = link === node.sourceLinks.at(-1);
         const linkHeight = yScale(link.value);
         link.start = {
           x: x + sankeyConfig.nodeWidth + sankeyConfig.linkXPadding,
           y0: y0 + linkStartY0,
-          y1: y0 + linkStartY0 + linkHeight,
+          y1:
+            y0 +
+            linkStartY0 +
+            linkHeight -
+            (isLastLink ? sankeyConfig.nodePadding : 0),
         };
         linkStartY0 += linkHeight;
       }
@@ -67,11 +73,16 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
         // @ts-ignore
         (a, b) => a.source.rowIdx - b.source.rowIdx
       )) {
+        const isLastLink = link === node.targetLinks.at(-1);
         const linkHeight = yScale(link.value);
         link.end = {
           x: x - sankeyConfig.linkXPadding,
           y0: y0 + linkEndY0,
-          y1: y0 + linkEndY0 + linkHeight,
+          y1:
+            y0 +
+            linkEndY0 +
+            linkHeight -
+            (isLastLink ? sankeyConfig.nodePadding : 0),
         };
         linkEndY0 += linkHeight;
       }
@@ -83,7 +94,6 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
     // for each neighboring link on left that goes to contiguous block (must be max flow), join with neighbor
     // DONT DO THIS, due to mis-representing flows
 
-    console.log(sankeyConfig.columnIdxToPadding);
     x +=
       spacingBetweenColumns + (sankeyConfig.columnIdxToPadding[columnIdx] || 0);
     // x += spacingBetweenColumns;

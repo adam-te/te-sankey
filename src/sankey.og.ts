@@ -5,9 +5,6 @@ import {
   LinkMeta,
   SankeyGraph,
   SankeyColumn,
-  SankeyLink,
-  SankeyNode,
-  SankeyGraph2,
 } from "./models";
 
 import { setStartAndEnd } from "./sankeyUtils";
@@ -18,8 +15,9 @@ export interface SankeyOptions {
 
   // TODO: Does this do anything?
   nodeHeight?: number; // 8
-  nodePadding?: number; // 8
   linkXPadding?: number;
+  // TODO: This appears to be fully auto-computed, don't allow as param
+  // nodePadding?: number; // 0
   iterations?: number; // 6
   align?: (node: NodeMeta, n: number) => number;
   columnIdxToPadding?: Record<number, number>;
@@ -29,7 +27,7 @@ export interface SankeyOptions {
 }
 
 export function computeSankey(
-  graph: SankeyGraph2,
+  graph: SankeyGraph,
   options: SankeyOptions = {}
 ): GraphMeta {
   const sankeyConfig: SankeyConfig = {
@@ -39,7 +37,7 @@ export function computeSankey(
     ],
     nodeWidth: 24,
     nodeHeight: 8,
-    nodePadding: 8,
+    nodePadding: 0,
     linkXPadding: 0,
     iterations: 6,
     columnIdxToPadding: {},
@@ -68,13 +66,9 @@ export function computeSankey(
 }
 
 function computeNodeMetas(
-  graph: SankeyGraph2,
+  graph: SankeyGraph,
   sankeyConfig: SankeyConfig
 ): Map<string, NodeMeta> {
-  // const graph = {
-  //   nodes: [...getGraphNodes(columns)],
-  //   links: [...getGraphLinks(columns)],
-  // };
   // Create object placeholder to allow for wiring referentially
   const idToRawNodeMeta = new Map<string, NodeMeta>(
     // TODO: n.label and extra data should be sent.. Avoid mutation
@@ -88,6 +82,7 @@ function computeNodeMetas(
     width: 0,
   }));
   const idToNodeMeta = new Map<string, NodeMeta>();
+
   for (const node of graph.nodes) {
     const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
     const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
@@ -108,13 +103,13 @@ function computeNodeMetas(
   }
 
   setNodeDepths(idToNodeMeta);
-  // setNodeInverseDepths(idToNodeMeta);
+  setNodeInverseDepths(idToNodeMeta);
 
-  // setNodeIsHidden(idToNodeMeta, sankeyConfig);
+  setNodeIsHidden(idToNodeMeta, sankeyConfig);
 
-  // setNodeHeights(idToNodeMeta);
-  // setNodeBreadths(idToNodeMeta, sankeyConfig);
-  // setLinkBreadths(idToNodeMeta);
+  setNodeHeights(idToNodeMeta);
+  setNodeBreadths(idToNodeMeta, sankeyConfig);
+  setLinkBreadths(idToNodeMeta);
 
   // ADAMTODO:
   setStartAndEnd([...idToNodeMeta.values()], sankeyConfig);
@@ -654,22 +649,56 @@ export function computeSankeyLinkPath(link: DisplayLink): string {
   ].join(" ");
 }
 
-function getGraphNodes(columns: SankeyColumn[]): Set<SankeyNode> {
-  const graphNodes = new Set<SankeyNode>();
-  for (const col of columns) {
-    for (const node of col.nodes) {
-      graphNodes.add(node);
-    }
-  }
-  return graphNodes;
-}
+// function assertValidDisplayLink(link: DisplayLink) {
+//   if (!link.sourceHeight) {
+//     throw new Error("Invalid Link! Missing sourceHeight");
+//   }
+//   if (!link.targetHeight) {
+//     throw new Error("Invalid Link! Missing targetHeight");
+//   }
+// }
 
-function getGraphLinks(columns: SankeyColumn[]): Set<SankeyLink> {
-  const graphLinks = new Set<SankeyLink>();
-  for (const col of columns) {
-    for (const link of col.links) {
-      graphLinks.add(link);
-    }
-  }
-  return graphLinks;
-}
+// TODO: Optimize
+// export function computeSankeyLinkPath(link: DisplayLink): string {
+//   // TODO: Don't put into production build
+//   assertValidDisplayLink(link);
+
+//   const start = {
+//     x: link.source.x1,
+//     y: link.source.y0 + link.sourceHeight / 2,
+//     height: link.sourceHeight,
+//   };
+//   const end = {
+//     x: link.target.x0,
+//     y: link.target.y0 + link.targetHeight / 2,
+//     height: link.targetHeight,
+//   };
+//   // Calculate control points for smooth curves
+//   const controlPointX1 = start.x + (end.x - start.x) / 3;
+//   const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3;
+
+//   // Calculate the top and bottom points for the start and end
+//   const startTop = start.y - start.height / 2;
+//   const startBottom = start.y + start.height / 2;
+//   const endTop = end.y - end.height / 2;
+//   const endBottom = end.y + end.height / 2;
+
+//   // Construct the Bezier curve
+//   return [
+//     `M${start.x},${startTop}`, // Move to start top
+//     `C${controlPointX1},${startTop} ${controlPointX2},${endTop} ${end.x},${endTop}`, // Curve to end top
+//     `L${end.x},${endTop}`, // Line to end top (for clarity, technically redundant)
+//     `L${end.x},${endBottom}`, // Line to end bottom
+//     `C${controlPointX2},${endBottom} ${controlPointX1},${startBottom} ${start.x},${startBottom}`, // Curve to start bottom
+//     "Z", // Close path
+//   ].join(" ");
+// }
+
+// function assertValidDisplayLink(link: DisplayLink) {
+//   if (!link.sourceHeight) {
+//     throw new Error("Invalid Link! Missing sourceHeight");
+//   }
+//   if (!link.targetHeight) {
+//     throw new Error("Invalid Link! Missing targetHeight");
+//   }
+// }
