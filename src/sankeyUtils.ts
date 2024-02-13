@@ -17,6 +17,8 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
     columns.length
   );
 
+  markVisibleNodes(columns, sankeyConfig);
+
   let x = spacingBetweenColumns;
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const columnNodes of columns) {
@@ -24,11 +26,7 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       0,
       sankeyConfig.numberOfVisibleRows
     );
-    for (const v of columnNodes.slice(sankeyConfig.numberOfVisibleRows)) {
-      v.isHidden = true;
-      v.sourceLinks.forEach((l) => (l.isHidden = true));
-      v.targetLinks.forEach((l) => (l.isHidden = true));
-    }
+
     const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
     const yScale = scaleLinear()
       .domain([0, totalColumnFlowValue])
@@ -37,10 +35,16 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
     let y0 = 0;
     let rowCount = 1;
     for (const node of visibleColumnNodes) {
+      // TODO: nodeHeight must be based on both visible and non-visible nodes
+      // "Active" is visible, inactive is invisible
       const nodeHeight = yScale(getNodeTotalFlowValue(node));
+
+      // TODO: Add flow marker
       node.x0 = x;
       node.x1 = x + sankeyConfig.nodeWidth;
       node.y0 = y0;
+      // @ts-ignore
+      node.linksEndY = y0 + yScale(getNodeVisibleFlowValue(node));
       node.y1 = y0 + nodeHeight;
 
       let linkStartY0 = 0;
@@ -73,6 +77,10 @@ export function setStartAndEnd(nodes: NodeMeta[], sankeyConfig: SankeyConfig) {
       y0 += nodeHeight + sankeyConfig.nodePadding; // TODO: incorporate padding
       rowCount += 1;
     }
+
+    // TODO: Add support for merging links
+    // for each neighboring link on left that goes to contiguous block (must be max flow), join with neighbor
+    // DONT DO THIS, due to mis-representing flows
 
     x += spacingBetweenColumns;
   }
@@ -114,6 +122,20 @@ function getNodeTotalFlowValue(node: NodeMeta) {
   return Math.max(totalColumnSourceFlowValue, totalColumnTargetFlowValue);
 }
 
+function getNodeVisibleFlowValue(node: NodeMeta) {
+  let totalColumnSourceFlowValue = 0;
+  for (const link of node.sourceLinks.filter((v) => !v.isHidden)) {
+    totalColumnSourceFlowValue += link.value;
+  }
+
+  let totalColumnTargetFlowValue = 0;
+  for (const link of node.targetLinks.filter((v) => !v.isHidden)) {
+    totalColumnTargetFlowValue += link.value;
+  }
+
+  return Math.max(totalColumnSourceFlowValue, totalColumnTargetFlowValue);
+}
+
 function getColumnTotalFlowValue(columnNodes: NodeMeta[]) {
   let totalColumnFlowValue = 0;
   for (const node of columnNodes) {
@@ -134,4 +156,18 @@ function computeSpacingBetweenColumns(
 
   // Calculate spacing based on the rectangle width, total columns width, and total spaces
   return (rectangleWidth - totalColumnsWidth) / totalSpaces;
+}
+
+function markVisibleNodes(columns: NodeMeta[][], sankeyConfig: SankeyConfig) {
+  for (const columnNodes of columns) {
+    let row = 1;
+    for (const node of columnNodes) {
+      if (row > sankeyConfig.numberOfVisibleRows) {
+        node.isHidden = true;
+        node.sourceLinks.forEach((l) => (l.isHidden = true));
+        node.targetLinks.forEach((l) => (l.isHidden = true));
+      }
+      row += 1;
+    }
+  }
 }

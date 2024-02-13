@@ -16,33 +16,23 @@
       />
 
       <!-- Nodes -->
-      <rect
-        v-for="node of visibleNodes"
-        :key="node.name"
-        :transform="`translate(${node.x0}, ${node.y0})`"
-        :width="getNodeWidth(node)"
-        :height="getNodeHeight(node)"
-        class="sankey-node flows"
-        :class="{ focus: node.focus }"
-      />
+      <template v-for="node of visibleNodes" :key="node.name">
+        <rect
+          :transform="`translate(${node.x0}, ${node.y0})`"
+          :width="getNodeWidth(node)"
+          :height="getNodeFocusHeight(node)"
+          class="sankey-node flows"
+          :class="{ focus: node.focus }"
+        />
+        <rect
+          :transform="`translate(${node.x0}, ${node.linksEndY})`"
+          :width="getNodeWidth(node)"
+          :height="getNodeMarkerHeight(node)"
+          class="sankey-node no-flows"
+          :class="{ focus: node.focus }"
+        />
+      </template>
 
-      <!-- <rect
-        v-for="node of displayNodes.activeNodes"
-        :key="node.name"
-        :transform="`translate(${node.x0}, ${node.y0})`"
-        :width="getNodeWidth(node)"
-        :height="getNodeHeight(node)"
-        class="sankey-node flows"
-      />
-
-      <rect
-        v-for="node of displayNodes.inactiveNodes"
-        :key="node.name"
-        :transform="`translate(${node.x0}, ${node.y0})`"
-        :width="getNodeWidth(node)"
-        :height="getNodeHeight(node)"
-        class="sankey-node no-flows"
-      /> -->
       <!-- Labels -->
       <template v-for="node of visibleNodes" :key="node.name">
         <text
@@ -172,14 +162,23 @@ l(sourceSubnet4, targetSubnet4);
 // Subnets (T)
 l(targetSubnet1, targetVpc);
 l(targetSubnet2, targetVpc);
-l(targetSubnet4, targetVpc);
+l(targetSubnet3, targetVpc);
 l(targetSubnet4, targetVpc);
 
 // VPC (T)
 l(targetVpc, targetRegion);
 
 // Hidden (TODO: Create hidden flows here)
+l(sourceSubnet5, targetSubnet1);
+l(sourceSubnet5, targetSubnet2);
+l(sourceSubnet5, targetSubnet3);
+l(sourceSubnet5, targetSubnet4);
 l(sourceSubnet5, targetSubnet5);
+
+l(sourceSubnet1, targetSubnet5);
+l(sourceSubnet2, targetSubnet5);
+l(sourceSubnet3, targetSubnet5);
+l(sourceSubnet4, targetSubnet5);
 
 console.log("I", mockGraph.nodes);
 const output = computeSankey(mockGraph, {
@@ -201,7 +200,6 @@ const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
 // console.log(visibleLinks.map((l) => l.end));
 // console.log(output.links.map((l) => l.end));
 // const displayNodes = getDisplayNodes(visibleNodes);
-console.log(visibleNodes);
 function g() {
   const nodes = [];
   const links = [];
@@ -287,6 +285,14 @@ function getNodeWidth(node) {
 
 function getNodeHeight(node) {
   return node.y1 - node.y0;
+}
+
+function getNodeFocusHeight(node) {
+  return node.linksEndY - node.y0;
+}
+
+function getNodeMarkerHeight(node) {
+  return node.y1 - node.linksEndY;
 }
 
 function getVisibleGraph(graph) {
