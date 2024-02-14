@@ -229,18 +229,27 @@ l(sourceSubnet2, targetSubnet5);
 l(sourceSubnet3, targetSubnet5);
 l(sourceSubnet4, targetSubnet5);
 
-c([sourceRegion]);
-c([sourceVpc]);
+c([sourceRegion], {
+  //   mergeLinks: true,
+});
+c([sourceVpc], {
+  mergeLinks: true,
+});
 c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
   visibleRows: [0, 4],
   rightPadding: 300,
 });
 
 c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5], {
+  mergeLinks: true,
   visibleRows: [0, 4],
 });
-c([targetVpc]);
-c([targetRegion]);
+c([targetVpc], {
+  //   mergeLinks: true,
+});
+c([targetRegion], {
+  //   mergeLinks: true,
+});
 
 const sankey = mockGraph.get();
 
@@ -262,6 +271,38 @@ function updateSankey() {
   });
 
   const visibleGraph = getVisibleGraph(output);
+  for (const col of visibleGraph.columns) {
+    if (!col.mergeLinks) {
+      continue;
+    }
+    const colLinks = col.nodes.flatMap((v) => v.sourceLinks);
+    if (!colLinks.length) {
+      continue;
+    }
+    console.log(colLinks);
+
+    // Remove existing links
+    visibleGraph.links = visibleGraph.links.filter(
+      (l) => !colLinks.includes(l)
+    );
+    const topLink = colLinks[0];
+    const bottomLink = colLinks.at(-1);
+    visibleGraph.links.push({
+      // TODO:
+      source: { name: "placeholder" },
+      target: { name: "placeholder" },
+      start: {
+        x: topLink.start.x,
+        y0: topLink.start.y0,
+        y1: bottomLink.start.y1,
+      },
+      end: {
+        x: bottomLink.end.x,
+        y0: topLink.end.y0,
+        y1: bottomLink.end.y1,
+      },
+    });
+  }
   visibleNodes = visibleGraph.nodes;
   visibleLinks = visibleGraph.links;
 }
@@ -341,6 +382,7 @@ function getFlowsEndPercentage(node) {
 }
 
 function getVisibleGraph(graph) {
+  const visibleLinks = graph.links.filter((v) => !v.isHidden);
   return {
     nodes: graph.nodes
       .filter((v) => !v.isHidden)
@@ -349,7 +391,18 @@ function getVisibleGraph(graph) {
         sourceLinks: v.sourceLinks.filter((v) => !v.isHidden),
         targetLinks: v.targetLinks.filter((v) => !v.isHidden),
       })),
-    links: graph.links.filter((v) => !v.isHidden),
+    links: visibleLinks,
+    // TODO:
+    columns: graph.columns.map((c) => ({
+      ...c,
+      nodes: c.nodes
+        .filter((v) => !v.isHidden)
+        .map((v) => ({
+          ...v,
+          sourceLinks: v.sourceLinks.filter((v) => !v.isHidden),
+          targetLinks: v.targetLinks.filter((v) => !v.isHidden),
+        })),
+    })),
   };
 }
 
