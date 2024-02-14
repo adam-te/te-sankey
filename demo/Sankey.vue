@@ -374,7 +374,6 @@ function getBottomButtons(sankey) {
     .map((c) => ({
       x: c.nodes[0].x0,
       onClick() {
-        console.log("ROWS", c.visibleRows);
         c.visibleRows[0] += 1;
         c.visibleRows[1] += 1;
         updateSankey();
