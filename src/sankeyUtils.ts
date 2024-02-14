@@ -152,7 +152,7 @@ function markHiddenNodes(columns: MetaColumn[]) {
   for (const column of columns) {
     let rowIdx = 0;
     for (const node of column.nodes) {
-      console.log(rowIdx, column.visibleRows);
+      console.log(column.visibleRows);
       if (rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1]) {
         node.isHidden = true;
         node.sourceLinks.forEach((l) => (l.isHidden = true));

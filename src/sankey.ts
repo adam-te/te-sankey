@@ -1,7 +1,7 @@
 import {
   SankeyConfig,
-  NodeMeta,
-  LinkMeta,
+  SankeyNode,
+  SankeyLink,
   SankeyGraph,
   MetaGraph,
 } from "./models";
@@ -20,7 +20,6 @@ export interface SankeyOptions {
   nodeHeight?: number; // 8
   nodePadding?: number; // 8
   linkXPadding?: number;
-  align?: (node: NodeMeta, n: number) => number;
 }
 
 export function computeSankey(
@@ -35,65 +34,9 @@ export function computeSankey(
     ...options,
   };
 
-  // Infer graph
-  // TODO:
-  // const nodeIdToMeta = computeNodeMetas(graph, sankeyConfig);
-  const metaGraph = getMetaGraph(graph);
-  console.log("meta", metaGraph);
-  setStartAndEnd(metaGraph, sankeyConfig);
+  setStartAndEnd(graph, sankeyConfig);
 
-  return metaGraph;
-}
-
-function getMetaGraph(
-  graph: SankeyGraph
-  // sankeyConfig: SankeyConfig
-): MetaGraph {
-  // Create object placeholder to allow for wiring referentially
-  const idToNodeMeta = new Map<string, Partial<NodeMeta>>(
-    graph.nodes.map((n) => [n.id, { ...n, id: n.id }])
-  );
-  const linkMetas: LinkMeta[] = graph.links.map((v) => {
-    const linkMeta = {
-      ...v,
-      source: idToNodeMeta.get(v.sourceId) as NodeMeta,
-      target: idToNodeMeta.get(v.targetId) as NodeMeta,
-      value: v.value || 1,
-    };
-
-    // @ts-ignore
-    delete linkMeta.sourceId;
-    // @ts-ignore
-    delete linkMeta.targetId;
-
-    return linkMeta;
-  });
-  for (const node of graph.nodes) {
-    const sourceLinks = linkMetas.filter((l) => l.source.id === node.id);
-    const targetLinks = linkMetas.filter((l) => l.target.id === node.id);
-
-    idToNodeMeta.set(
-      node.id,
-      Object.assign(idToNodeMeta.get(node.id) as NodeMeta, {
-        sourceLinks,
-        targetLinks,
-      })
-    );
-  }
-
-  return {
-    // @ts-ignore
-    nodes: [...idToNodeMeta.values()],
-    links: linkMetas,
-    // @ts-ignore
-    columns: graph.columns.map((v) => ({
-      visibleRows: [0, v.nodes.length],
-      // visibleStartIdx: 0,
-      rightPadding: 0,
-      ...v,
-      nodes: v.nodes.map((v) => idToNodeMeta.get(v.id)),
-    })),
-  };
+  return graph;
 }
 
 interface DisplayLink {

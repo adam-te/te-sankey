@@ -1,6 +1,16 @@
 <template>
   <div>
-    <!-- Transformed -->
+    <div class="sankey-row-btn-container top">
+      <button
+        v-for="button of getTopButtons(sankey)"
+        class="sankey-row-btn"
+        :style="{ left: `${button.x}px` }"
+        @click="button.onClick"
+      >
+        ▲
+      </button>
+    </div>
+
     <svg
       ref="chartContainer"
       :width="containerMeta.width"
@@ -79,27 +89,26 @@
         </text>
       </template>
     </svg>
-    <!--  -->
-    <button
-      style="
-        padding: 10px 20px;
-        background-color: white;
-        border: 2px solid black;
-        border-radius: 8px;
-        font-family: Arial, sans-serif;
-        color: black;
-        font-size: 16px;
-        cursor: pointer;
-        outline: none;
-      "
-    >
-      ▼
-    </button>
+    <div class="sankey-row-btn-container bottom">
+      <button
+        v-for="button of getBottomButtons(sankey)"
+        class="sankey-row-btn"
+        :style="{ left: `${button.x}px` }"
+        @click="button.onClick"
+      >
+        ▼
+      </button>
+    </div>
+    <!-- TODO: Make drawing work better -->
+    {{ drawCounter }}
   </div>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
+
+const drawCounter = ref(0);
 const containerMeta = {
   width: 1200,
   height: 600,
@@ -221,10 +230,16 @@ c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5], {
 c([targetVpc]);
 c([targetRegion]);
 
-const output = computeSankey(mockGraph.get(), {
-  graphMeta: containerMeta,
-  linkXPadding: 3,
-});
+const sankey = mockGraph.get();
+
+let output;
+updateSankey();
+function updateSankey() {
+  output = computeSankey(sankey, {
+    graphMeta: containerMeta,
+    linkXPadding: 3,
+  });
+}
 
 const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
 
@@ -256,9 +271,10 @@ function g() {
       throw new Error("Invalid input!");
     }
     const col = {
-      ...props,
-      // TODO: Throw if lengths different
+      visibleRows: [0, columnNodes.length],
+      rightPadding: 0,
       nodes: columnNodes,
+      ...props,
     };
     columns.push(col);
     return col;
@@ -277,8 +293,8 @@ function g() {
 
   function l(from, to) {
     const link = {
-      sourceId: from.id,
-      targetId: to.id,
+      source: from,
+      target: to,
       value: 1,
     };
 
@@ -315,30 +331,34 @@ function getVisibleGraph(graph) {
 }
 
 // Get top buttons
-function getTopButtons(columns) {
-  return columns
+function getTopButtons(sankey) {
+  return sankey.columns
     .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
     .map((c) => ({
       x: c.nodes[0].x0,
       onClick() {
         c.visibleRows[0] -= 1;
         c.visibleRows[1] -= 1;
-        // TODO: How to pass this back through?????
+        updateSankey();
+        drawCounter.value += 1;
       },
     }));
 }
 
-function getBottomButtons(columns) {
-  return columns
+function getBottomButtons(sankey) {
+  const r = sankey.columns
     .filter((c) => c.nodes.length && c.visibleRows[1] < c.nodes.length)
     .map((c) => ({
       x: c.nodes[0].x0,
       onClick() {
+        console.log("ROWS", c.visibleRows);
         c.visibleRows[0] += 1;
         c.visibleRows[1] += 1;
-        // TODO: How to pass this back through?????
+        updateSankey();
+        drawCounter.value += 1;
       },
     }));
+  return r;
 }
 </script>
 
@@ -399,6 +419,27 @@ function getBottomButtons(columns) {
 
 .sankey-label.left {
   text-anchor: end;
+}
+
+.sankey-row-btn-container {
+  position: relative;
+  height: 22px;
+}
+
+.sankey-row-btn-container.bottom {
+  /* TODO */
+  margin-top: -9px;
+}
+
+.sankey-row-btn {
+  position: absolute;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 4px;
+  font-size: 8px;
+  cursor: pointer;
+  width: 25px;
+  height: 20px;
 }
 
 /* .flows-stop {
