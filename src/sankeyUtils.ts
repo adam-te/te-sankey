@@ -1,7 +1,7 @@
-import { SankeyConfig, NodeMeta, MetaGraph, MetaColumn } from "./models";
+import { SankeyConfig, SankeyGraph } from "./models";
 import { scaleLinear } from "d3-scale";
 
-export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
+export function setStartAndEnd(graph: SankeyGraph, sankeyConfig: SankeyConfig) {
   const globalWidth = sankeyConfig.graphMeta.width;
   const globalHeight = sankeyConfig.graphMeta.height;
 
@@ -20,7 +20,9 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
   // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const column of graph.columns) {
     const visibleColumnNodes = column.nodes.slice(
+      // @ts-ignore
       column.visibleRows[0],
+      // @ts-ignore
       column.visibleRows[1]
     );
 
@@ -44,10 +46,12 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
       });
 
       let linkStartY0 = 0;
-      for (const link of node.sourceLinks.sort(
-        // @ts-ignore
-        (a, b) => a.target.rowIdx - b.target.rowIdx
-      )) {
+      for (const link of node.sourceLinks
+        .filter((v) => !v.isHidden)
+        .sort(
+          // @ts-ignore
+          (a, b) => a.target.rowIdx - b.target.rowIdx
+        )) {
         const isLastLink = link === node.sourceLinks.at(-1);
         const linkHeight = yScale(link.value);
         link.start = {
@@ -63,10 +67,12 @@ export function setStartAndEnd(graph: MetaGraph, sankeyConfig: SankeyConfig) {
       }
 
       let linkEndY0 = 0;
-      for (const link of node.targetLinks.sort(
-        // @ts-ignore
-        (a, b) => a.source.rowIdx - b.source.rowIdx
-      )) {
+      for (const link of node.targetLinks
+        .filter((v) => !v.isHidden)
+        .sort(
+          // @ts-ignore
+          (a, b) => a.source.rowIdx - b.source.rowIdx
+        )) {
         const isLastLink = link === node.targetLinks.at(-1);
         const linkHeight = yScale(link.value);
         link.end = {

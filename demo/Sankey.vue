@@ -2,12 +2,24 @@
   <div>
     <div class="sankey-row-btn-container top">
       <button
+        class="sankey-row-btn ttt"
+        :style="{ left: `${sankey.columns[0].nodes[0].x0}px` }"
+      >
+        ◀
+      </button>
+      <button
         v-for="button of getTopButtons(sankey)"
         class="sankey-row-btn"
         :style="{ left: `${button.x}px` }"
         @click="button.onClick"
       >
         ▲
+      </button>
+      <button
+        class="sankey-row-btn ttt"
+        :style="{ left: `${sankey.columns.at(-1).nodes[0].x0}px` }"
+      >
+        ▶
       </button>
     </div>
 
