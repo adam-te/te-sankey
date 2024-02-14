@@ -122,7 +122,7 @@ import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
 
 const drawCounter = ref(0);
 const containerMeta = {
-  width: 1200,
+  width: 1600,
   height: 600,
 };
 
@@ -200,7 +200,7 @@ l(sourceSubnet1, targetSubnet2);
 l(sourceSubnet1, targetSubnet3);
 l(sourceSubnet1, targetSubnet4);
 
-l(sourceSubnet2, targetSubnet1);
+l(sourceSubnet2, targetSubnet1, { value: 2 });
 
 l(sourceSubnet3, targetSubnet1);
 l(sourceSubnet3, targetSubnet2);
@@ -237,7 +237,7 @@ c([sourceVpc], {
 });
 c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
   visibleRows: [0, 4],
-  rightPadding: 300,
+  rightPadding: 600,
 });
 
 c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5], {
@@ -355,11 +355,12 @@ function g() {
     return node;
   }
 
-  function l(from, to) {
+  function l(from, to, props = {}) {
     const link = {
       source: from,
       target: to,
       value: 1,
+      ...props,
     };
 
     from.sourceLinks.push(link);
