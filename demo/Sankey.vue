@@ -233,15 +233,26 @@ c([targetRegion]);
 const sankey = mockGraph.get();
 
 let output;
+let visibleNodes;
+let visibleLinks;
 updateSankey();
 function updateSankey() {
+  // Clean graph (TODO: use immutable)
+  sankey.nodes.forEach((n) => {
+    n.isHidden = false;
+  });
+  sankey.links.forEach((l) => {
+    l.isHidden = false;
+  });
   output = computeSankey(sankey, {
     graphMeta: containerMeta,
     linkXPadding: 3,
   });
-}
 
-const { nodes: visibleNodes, links: visibleLinks } = getVisibleGraph(output);
+  const visibleGraph = getVisibleGraph(output);
+  visibleNodes = visibleGraph.nodes;
+  visibleLinks = visibleGraph.links;
+}
 
 function g() {
   const nodes = [];
