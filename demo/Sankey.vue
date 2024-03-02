@@ -130,6 +130,7 @@ const mockGraph = g();
 const { n, l, c } = mockGraph;
 const sourceRegion = n("sourceRegion", { displayName: "us-east-2" });
 const sourceVpc = n("sourceVpc", { displayName: "VPC ID 1" });
+const sourceVpc2 = n("sourceVpc2", { displayName: "VPC ID 1" });
 const sourceSubnet1 = n("sourceSubnet1", {
   label: "left",
   focus: true,
@@ -186,6 +187,7 @@ const targetRegion = n("targetRegion", { displayName: "us-east-2" });
 
 // Region (S)
 l(sourceRegion, sourceVpc);
+l(sourceRegion, sourceVpc2, { value: 2 });
 
 // VPC (S)
 l(sourceVpc, sourceSubnet1);
@@ -232,7 +234,8 @@ l(sourceSubnet4, targetSubnet5);
 c([sourceRegion], {
   //   mergeLinks: true,
 });
-c([sourceVpc], {
+c([sourceVpc, sourceVpc2], {
+  visibleRows: [0, 1],
   mergeLinks: true,
 });
 c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
@@ -441,7 +444,7 @@ function getBottomButtons(sankey) {
 <style>
 :root {
   --sankeyLinkColor: #c9def0;
-  --sankeyLinkOpacity: 0.9;
+  --sankeyLinkOpacity: 0.85;
 
   --sankeyFlowNodeColor: #2679c2;
   --sankeyNoFlowNodeColor: #195386;
@@ -466,7 +469,7 @@ function getBottomButtons(sankey) {
 }
 
 .sankey-node:hover {
-  filter: brightness(110%);
+  filter: brightness(115%);
 }
 
 /* .sankey-node.flows.focus {

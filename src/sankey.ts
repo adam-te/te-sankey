@@ -1,10 +1,4 @@
-import {
-  SankeyConfig,
-  SankeyNode,
-  SankeyLink,
-  SankeyGraph,
-  MetaGraph,
-} from "./models";
+import { SankeyConfig, SankeyGraph } from "./models";
 
 import { setStartAndEnd } from "./sankeyUtils";
 
@@ -25,7 +19,7 @@ export interface SankeyOptions {
 export function computeSankey(
   graph: SankeyGraph,
   options: SankeyOptions
-): MetaGraph {
+): SankeyGraph {
   const sankeyConfig: SankeyConfig = {
     nodeWidth: 24,
     nodeHeight: 8,

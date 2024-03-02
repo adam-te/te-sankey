@@ -17,7 +17,6 @@ export function setStartAndEnd(graph: SankeyGraph, sankeyConfig: SankeyConfig) {
 
   let x = spacingBetweenColumns;
   let columnIdx = 0;
-  // TODO: sort column nodes here to minimize crossings. Don't sort visible only
   for (const column of graph.columns) {
     const visibleColumnNodes = column.nodes.slice(
       // @ts-ignore
