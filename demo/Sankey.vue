@@ -116,9 +116,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
+import data from "./data.json";
+import { computeSankeyGrouping } from "../src/utils";
+console.log(computeSankeyGrouping(data, {}));
+
+// function computeSankey() {}
 
 const drawCounter = ref(0);
 const containerMeta = {
@@ -282,7 +287,6 @@ function updateSankey() {
     if (!colLinks.length) {
       continue;
     }
-    console.log(colLinks);
 
     // Remove existing links
     visibleGraph.links = visibleGraph.links.filter(
