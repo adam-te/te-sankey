@@ -1,4 +1,3 @@
-import { create } from "domain";
 import {
   SubnetData,
   Subnet,
@@ -51,14 +50,29 @@ export function computeSankeyGrouping(
   const groups: SubnetGroup[] = [];
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const columns = [];
+  const sankeyLinks: SankeyLink[] = [];
   if (visibility.isSourceRegionsVisible) {
     const column: SankeyColumn = { nodes: [] };
+    // Node
     regionGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
         groups.push(group);
+
+        // Links
+        const groupSourceLinks = computeGroupLinks(
+          groupIdToSankeyNode,
+          group,
+          visibility.columnTypes[columns.length + 1]
+        );
+        for (const link of groupSourceLinks) {
+          link.source.sourceLinks.push(link);
+          link.target.targetLinks.push(link);
+        }
+        sankeyLinks.push(...groupSourceLinks);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
@@ -124,40 +138,23 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
 
-  // const groupIdToSankeyNode = new Map<string, SankeyNode>();
-  // const sourceColumn: SankeyColumn = { nodes: [] };
-  // const targetColumn: SankeyColumn = { nodes: [] };
-  // // ADAMTODO: Integrate this into the visibility checks.
-  // // ADAMTODO:
-  // for (const group of groups) {
-  //   const sankeyNode: SankeyNode = {
-  //     id: group.id,
-  //     sourceLinks: [],
-  //     targetLinks: [],
-  //   };
-  //   groupIdToSankeyNode.set(group.id, sankeyNode);
-
-  //   // const column = group.isTarget ? targetColumn : sourceColumn;
-  //   // column.nodes.push(sankeyNode);
-  // }
-
   // Group -> Links
-  const sankeyLinks: SankeyLink[] = [];
-  for (const group of groups) {
-    const groupSourceLinks = computeGroupLinks(
-      groupIdToSankeyNode,
-      group,
-      GroupType.Region
-    );
+  // for (const group of groups) {
+  //   const groupSourceLinks = computeGroupLinks(
+  //     groupIdToSankeyNode,
+  //     group,
+  //     GroupType.Subnet
+  //   );
+  //   computeGroupLinks(groupIdToSankeyNode, group, GroupType.Vpc);
+  //   computeGroupLinks(groupIdToSankeyNode, group, GroupType.Region);
 
-    // Add link to relevant nodes
-    for (const link of groupSourceLinks) {
-      link.source.sourceLinks.push(link);
-      link.target.targetLinks.push(link);
-    }
-
-    sankeyLinks.push(...groupSourceLinks);
-  }
+  //   // Add link to relevant nodes
+  //   for (const link of groupSourceLinks) {
+  //     link.source.sourceLinks.push(link);
+  //     link.target.targetLinks.push(link);
+  //   }
+  //   sankeyLinks.push(...groupSourceLinks);
+  // }
 
   return {
     nodes: [...groupIdToSankeyNode.values()],
@@ -198,12 +195,6 @@ function computeGroupedSubnets(
     if (groupIdToGroup.has(sourceGroupId)) {
       groupIdToGroup.get(sourceGroupId)?.sourceLinks.push(subnetLink);
     }
-
-    // @ts-ignore
-    // const targetGroupId = groupType.getGroupId(subnetLink.target);
-    // if (groupIdToGroup.has(targetGroupId)) {
-    //   groupIdToGroup.get(targetGroupId)?.targetLinks.push(subnetLink);
-    // }
   }
 
   return [...groupIdToGroup.values()];
@@ -277,8 +268,9 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isTargetSubnetsVisible: boolean;
   isTargetVpcsVisible: boolean;
   isTargetRegionsVisible: boolean;
+  columnTypes: GroupType[];
 } {
-  return {
+  const visibility = {
     // Source defined by filter plus clicks
     isSourceRegionsVisible: ["REGION"].includes(options.sourceGroupType),
     isSourceVpcsVisible:
@@ -294,6 +286,18 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
     isTargetRegionsVisible: ["SUBNET", "VPC", "REGION"].includes(
       options.targetGroupType
     ),
+  };
+
+  return {
+    ...visibility,
+    columnTypes: [
+      visibility.isSourceRegionsVisible ? GroupType.Region : null,
+      visibility.isSourceVpcsVisible ? GroupType.Vpc : null,
+      visibility.isSourceSubnetsVisible ? GroupType.Subnet : null,
+      visibility.isTargetSubnetsVisible ? GroupType.Subnet : null,
+      visibility.isTargetVpcsVisible ? GroupType.Vpc : null,
+      visibility.isTargetRegionsVisible ? GroupType.Region : null,
+    ].filter((v) => v) as GroupType[],
   };
 }
 
