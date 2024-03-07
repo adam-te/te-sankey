@@ -119,9 +119,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
-import data from "./data.json";
-import { computeSankeyGrouping } from "../src/utils";
-console.log(computeSankeyGrouping(data, {}));
+import rawData from "./data.json";
+import { computeSankeyGrouping, computeWiredGraph } from "../src/utils";
+
+const data = computeWiredGraph(rawData);
+const result = computeSankeyGrouping(data, {
+  sourceGroupType: "REGION",
+  targetGroupType: "REGION",
+});
 
 // function computeSankey() {}
 

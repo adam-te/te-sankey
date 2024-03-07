@@ -6,6 +6,7 @@ import {
   SankeyLink,
   SubnetLink,
   SankeyColumn,
+  RawSubnetData,
 } from "../src/models";
 // const { vertices: subnets, edges: links } = data;
 
@@ -41,6 +42,19 @@ const GroupType: Record<string, GroupType> = {
     getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
   },
 };
+
+export function computeWiredGraph(data: RawSubnetData): SubnetData {
+  const { vertices: subnetIdToSubnet, edges: links } = data;
+  return {
+    subnets: [...Object.values(subnetIdToSubnet)],
+    links: links.map((v) => ({
+      source: subnetIdToSubnet[v.localId] as Subnet,
+      target: subnetIdToSubnet[v.remoteId] as Subnet,
+      egressBytes: v.egressBytes,
+      ingressBytes: v.ingressBytes,
+    })),
+  };
+}
 
 export function computeSankeyGrouping(
   data: SubnetData,

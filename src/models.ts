@@ -78,7 +78,7 @@ export interface SubnetLink {
 
 export interface RawSubnetData {
   vertices: Record<string, Subnet>;
-  edges: SubnetLink[];
+  edges: RawSubnetLink[];
 }
 
 export interface SubnetData {
