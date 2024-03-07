@@ -7,7 +7,6 @@ import {
   SubnetLink,
   SankeyColumn,
   RawSubnetData,
-  RawSubnetLink,
 } from "../src/models";
 // const { vertices: subnets, edges: links } = data;
 
@@ -15,7 +14,17 @@ export interface ComputeSankeyGroupingOptions {
   sourceGroupType: "REGION" | "VPC" | "SUBNET";
   targetGroupType: "REGION" | "VPC" | "SUBNET";
   focusedNode?: string;
+  // ADAMTODO: make cleaner
+  visibleRowState: [
+    [number, number], // Source Region
+    [number, number], // Source VPC
+    [number, number], // Source Subnet
+    [number, number], // Target Subnet
+    [number, number], // Target VPC
+    [number, number] // Target Region
+  ];
 }
+
 interface GroupType {
   id: string;
   getGroupId: (subnet: Subnet) => string;
@@ -97,7 +106,7 @@ export function computeSankeyGrouping(
   const columns = [];
 
   if (visibility.isSourceRegionsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 0 };
 
     regionGroups
       .filter((v) => !v.isTarget)
@@ -111,11 +120,15 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[0];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
   if (visibility.isSourceVpcsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 1 };
     vpcGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
@@ -128,11 +141,15 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[1];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
   if (visibility.isSourceSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 2 };
     subnetGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
@@ -145,7 +162,11 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[2];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
   // TODO: Cleanup
@@ -154,7 +175,7 @@ export function computeSankeyGrouping(
   columns.at(-1).rightPadding = 600;
 
   if (visibility.isTargetSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 3 };
     subnetGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -167,11 +188,15 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[3];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
   if (visibility.isTargetVpcsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 4 };
     vpcGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -184,11 +209,15 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[4];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
   if (visibility.isTargetRegionsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 5 };
     regionGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -201,7 +230,11 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    column.visibleRows = [0, column.nodes.length];
+    const [prevMin, prevMax] = options.visibleRowState[5];
+    column.visibleRows = [
+      Math.max(prevMin, 0),
+      Math.min(prevMax, column.nodes.length),
+    ];
     columns.push(column);
   }
 

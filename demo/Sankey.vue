@@ -168,7 +168,6 @@ const containerMeta = {
 
 // const sankey = mockGraph.get();
 
-let output;
 let visibleNodes;
 let visibleLinks;
 let sankey;
@@ -176,26 +175,37 @@ const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
   sourceGroupType: "REGION",
   targetGroupType: "REGION",
   focusedNode: undefined,
+  visibleRowState: [
+    [0, 4],
+    [0, 4],
+    [0, 4],
+    [0, 4],
+    [0, 4],
+    [0, 4],
+  ],
 };
 updateSankey();
 function updateSankey() {
   // Clean graph (TODO: use immutable)
-  if (sankey) {
-    sankey.nodes.forEach((n) => {
-      n.isHidden = false;
-    });
-    sankey.links.forEach((l) => {
-      l.isHidden = false;
-    });
-  }
+  // if (sankey) {
+  //   sankey.nodes.forEach((n) => {
+  //     n.isHidden = false;
+  //   });
+  //   sankey.links.forEach((l) => {
+  //     l.isHidden = false;
+  //   });
+  // }
 
-  sankey = computeSankeyGrouping(data, computeSankeyGroupingOptions);
-  output = computeSankey(sankey, {
+  const unpositionedSankey = computeSankeyGrouping(
+    data,
+    computeSankeyGroupingOptions
+  );
+  sankey = computeSankey(unpositionedSankey, {
     graphMeta: containerMeta,
     linkXPadding: 3,
   });
 
-  const visibleGraph = getVisibleGraph(output);
+  const visibleGraph = getVisibleGraph(sankey);
   for (const col of visibleGraph.columns) {
     if (!col.mergeLinks) {
       continue;
@@ -352,32 +362,46 @@ function onTargetGroupingChanged(newValue) {
 }
 
 // Get top buttons
-function getTopButtons(sankey) {
-  return sankey.columns
+function getTopButtons() {
+  const r = sankey.columns
     .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
-    .map((c) => ({
-      x: c.nodes[0].x0,
-      onClick() {
-        c.visibleRows[0] -= 1;
-        c.visibleRows[1] -= 1;
-        updateSankey();
-        drawCounter.value += 1;
-      },
-    }));
+    .map((c) => {
+      console.log("TOP", c.nodes[0], c);
+      const button = {
+        x: c.nodes.find((v) => v.x0 != null).x0,
+        onClick() {
+          const range =
+            computeSankeyGroupingOptions.visibleRowState[c.columnIdx];
+          range[0] -= 1;
+          range[1] -= 1;
+          updateSankey();
+
+          drawCounter.value += 1;
+        },
+      };
+
+      return button;
+    });
+
+  return r;
 }
 
-function getBottomButtons(sankey) {
+function getBottomButtons() {
   const r = sankey.columns
     .filter((c) => c.nodes.length && c.visibleRows[1] < c.nodes.length)
-    .map((c) => ({
-      x: c.nodes[0].x0,
-      onClick() {
-        c.visibleRows[0] += 1;
-        c.visibleRows[1] += 1;
-        updateSankey();
-        drawCounter.value += 1;
-      },
-    }));
+    .map((c) => {
+      return {
+        x: c.nodes.find((v) => v.x0 != null).x0,
+        onClick() {
+          const range =
+            computeSankeyGroupingOptions.visibleRowState[c.columnIdx];
+          range[0] += 1;
+          range[1] += 1;
+          updateSankey();
+          drawCounter.value += 1;
+        },
+      };
+    });
   return r;
 }
 </script>
