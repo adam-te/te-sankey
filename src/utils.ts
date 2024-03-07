@@ -65,11 +65,6 @@ export function computeSankeyGrouping(
 ): SankeyGraph {
   const regionGroups = computeGroupedSubnets(data, GroupType.Region);
 
-  // ADAMTODO: Create nodes, links, columns
-  console.log(regionGroups);
-  // Compute SankeyNodes
-
-  // Group -> Nodes
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const sourceColumn: SankeyColumn = { nodes: [] };
   const targetColumn: SankeyColumn = { nodes: [] };
@@ -104,7 +99,7 @@ export function computeSankeyGrouping(
   }
 
   return {
-    nodes: [...Object.values(groupIdToSankeyNode)],
+    nodes: [...groupIdToSankeyNode.values()],
     links: sankeyLinks,
     // TODO: Do BFS to compute columns
     columns: [sourceColumn, targetColumn],
@@ -118,8 +113,7 @@ function computeGroupedSubnets(
 ): SubnetGroup[] {
   // const { vertices: subnetIdToSubnet, edges: subnetLinks } = data;
 
-  // const idToSubnet = new Map(data.subnets.map((v) => [v.id, v]));
-  const idToSubnetLinks = getIdToSubnetLinks(data.links);
+  const idToSubnetSourceLinks = getIdToSourceSubnetLinks(data.links);
 
   // const idToSubnetLinks = new Map(data.subnets.map((v) => [v.id, v]));
   const groupIdToGroup = new Map<string, SubnetGroup>();
@@ -128,7 +122,7 @@ function computeGroupedSubnets(
     if (!groupIdToGroup.has(groupId)) {
       groupIdToGroup.set(groupId, {
         id: groupId,
-        isTarget: isTargetSubnet(subnet, idToSubnetLinks.get(subnet.id) || []),
+        isTarget: Boolean(idToSubnetSourceLinks.get(subnet.id)?.length),
         subnets: [],
         sourceLinks: [],
         // targetLinks: [],
@@ -155,11 +149,13 @@ function computeGroupedSubnets(
   return [...groupIdToGroup.values()];
 }
 
-function isTargetSubnet(subnet: Subnet, subnetLinks: SubnetLink[]) {
-  return Boolean(subnetLinks.length && subnetLinks[0].target.id === subnet.id);
-}
+// function isTargetSubnet(subnet: Subnet, subnetLinks: SubnetLink[]) {
+//   return Boolean(subnetLinks.length && subnetLinks[0].target.id === subnet.id);
+// }
 
-function getIdToSubnetLinks(links: SubnetLink[]): Map<string, SubnetLink[]> {
+function getIdToSourceSubnetLinks(
+  links: SubnetLink[]
+): Map<string, SubnetLink[]> {
   return new Map(
     Object.entries(
       links.reduce((a: Record<string, SubnetLink[]>, v) => {
@@ -174,7 +170,7 @@ function getIdToSubnetLinks(links: SubnetLink[]): Map<string, SubnetLink[]> {
 }
 
 function computeGroupLinks(
-  idToSankeyNode: Map<string, SankeyNode>,
+  groupIdToSankeyNode: Map<string, SankeyNode>,
   group: SubnetGroup,
   targetGroupType: GroupType
 ): SankeyLink[] {
@@ -188,10 +184,10 @@ function computeGroupLinks(
     targetGroupIdToLinks.get(targetGroupId)?.push(link);
   }
 
-  return Object.values(targetGroupIdToLinks).map((links) => {
+  return [...targetGroupIdToLinks.values()].map((links) => {
     return {
-      source: idToSankeyNode.get(group.id) as SankeyNode,
-      target: idToSankeyNode.get(
+      source: groupIdToSankeyNode.get(group.id) as SankeyNode,
+      target: groupIdToSankeyNode.get(
         targetGroupType.getGroupId(links[0].target)
       ) as SankeyNode,
       value: links.reduce(
