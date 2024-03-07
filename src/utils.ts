@@ -1,3 +1,4 @@
+import { create } from "domain";
 import {
   SubnetData,
   Subnet,
@@ -48,41 +49,97 @@ export function computeSankeyGrouping(
 
   const visibility = getColumnVisibility(options);
   const groups: SubnetGroup[] = [];
+  const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const columns = [];
   if (visibility.isSourceRegionsVisible) {
-    columns.push();
-    groups.push(...regionGroups.filter((v) => !v.isTarget));
+    const column: SankeyColumn = { nodes: [] };
+    regionGroups
+      .filter((v) => !v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
   }
   if (visibility.isSourceVpcsVisible) {
-    groups.push(...vpcGroups.filter((v) => !v.isTarget));
+    const column: SankeyColumn = { nodes: [] };
+    vpcGroups
+      .filter((v) => !v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
   }
   if (visibility.isSourceSubnetsVisible) {
-    groups.push(...subnetGroups.filter((v) => !v.isTarget));
-  }
-  if (visibility.isTargetRegionsVisible) {
-    groups.push(...regionGroups.filter((v) => v.isTarget));
-  }
-  if (visibility.isTargetVpcsVisible) {
-    groups.push(...vpcGroups.filter((v) => v.isTarget));
+    const column: SankeyColumn = { nodes: [] };
+    subnetGroups
+      .filter((v) => !v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
   }
   if (visibility.isTargetSubnetsVisible) {
-    groups.push(...subnetGroups.filter((v) => v.isTarget));
+    const column: SankeyColumn = { nodes: [] };
+    subnetGroups
+      .filter((v) => v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
+  }
+  if (visibility.isTargetVpcsVisible) {
+    const column: SankeyColumn = { nodes: [] };
+    vpcGroups
+      .filter((v) => v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
+  }
+  if (visibility.isTargetRegionsVisible) {
+    const column: SankeyColumn = { nodes: [] };
+    regionGroups
+      .filter((v) => v.isTarget)
+      .forEach((group) => {
+        const sankeyNode = createSankeyNode(group);
+        groupIdToSankeyNode.set(group.id, sankeyNode);
+        groups.push(group);
+        column.nodes.push(sankeyNode);
+      });
+    columns.push(column);
   }
 
-  const groupIdToSankeyNode = new Map<string, SankeyNode>();
-  const sourceColumn: SankeyColumn = { nodes: [] };
-  const targetColumn: SankeyColumn = { nodes: [] };
-  for (const group of groups) {
-    const sankeyNode: SankeyNode = {
-      id: group.id,
-      sourceLinks: [],
-      targetLinks: [],
-    };
-    groupIdToSankeyNode.set(group.id, sankeyNode);
+  // const groupIdToSankeyNode = new Map<string, SankeyNode>();
+  // const sourceColumn: SankeyColumn = { nodes: [] };
+  // const targetColumn: SankeyColumn = { nodes: [] };
+  // // ADAMTODO: Integrate this into the visibility checks.
+  // // ADAMTODO:
+  // for (const group of groups) {
+  //   const sankeyNode: SankeyNode = {
+  //     id: group.id,
+  //     sourceLinks: [],
+  //     targetLinks: [],
+  //   };
+  //   groupIdToSankeyNode.set(group.id, sankeyNode);
 
-    const column = group.isTarget ? targetColumn : sourceColumn;
-    column.nodes.push(sankeyNode);
-  }
+  //   // const column = group.isTarget ? targetColumn : sourceColumn;
+  //   // column.nodes.push(sankeyNode);
+  // }
 
   // Group -> Links
   const sankeyLinks: SankeyLink[] = [];
@@ -105,8 +162,7 @@ export function computeSankeyGrouping(
   return {
     nodes: [...groupIdToSankeyNode.values()],
     links: sankeyLinks,
-    // TODO: Do BFS to compute columns
-    columns: [sourceColumn, targetColumn],
+    columns,
   };
 }
 
@@ -238,5 +294,13 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
     isTargetRegionsVisible: ["SUBNET", "VPC", "REGION"].includes(
       options.targetGroupType
     ),
+  };
+}
+
+function createSankeyNode(group: SubnetGroup): SankeyNode {
+  return {
+    id: group.id,
+    sourceLinks: [],
+    targetLinks: [],
   };
 }
