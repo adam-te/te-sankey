@@ -10,12 +10,12 @@ import {
 // const { vertices: subnets, edges: links } = data;
 
 export interface ComputeSankeyGroupingOptions {
-  // ??
   sourceGroupType: "REGION" | "VPC" | "SUBNET";
   targetGroupType: "REGION" | "VPC" | "SUBNET";
   focusedNode?: SankeyNode;
 }
 interface GroupType {
+  id: string;
   getGroupId: (subnet: Subnet) => string;
 }
 
@@ -24,16 +24,20 @@ interface SubnetGroup {
   isTarget: boolean;
   subnets: Subnet[];
   sourceLinks: SubnetLink[];
+  targetGroupType?: GroupType;
 }
 
 const GroupType: Record<string, GroupType> = {
   Region: {
+    id: "Region",
     getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
   },
   Vpc: {
+    id: "Vpc",
     getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
   },
   Subnet: {
+    id: "Subnet",
     getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
   },
 };
@@ -50,28 +54,17 @@ export function computeSankeyGrouping(
   const groups: SubnetGroup[] = [];
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const columns = [];
-  const sankeyLinks: SankeyLink[] = [];
+
   if (visibility.isSourceRegionsVisible) {
     const column: SankeyColumn = { nodes: [] };
-    // Node
     regionGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
-        groups.push(group);
 
-        // Links
-        const groupSourceLinks = computeGroupLinks(
-          groupIdToSankeyNode,
-          group,
-          visibility.columnTypes[columns.length + 1]
-        );
-        for (const link of groupSourceLinks) {
-          link.source.sourceLinks.push(link);
-          link.target.targetLinks.push(link);
-        }
-        sankeyLinks.push(...groupSourceLinks);
+        group.targetGroupType = visibility.columnTypes[columns.length + 1];
+        groups.push(group);
 
         column.nodes.push(sankeyNode);
       });
@@ -84,7 +77,10 @@ export function computeSankeyGrouping(
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
+
+        group.targetGroupType = visibility.columnTypes[columns.length + 1];
         groups.push(group);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
@@ -96,7 +92,10 @@ export function computeSankeyGrouping(
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
+
+        group.targetGroupType = visibility.columnTypes[columns.length + 1];
         groups.push(group);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
@@ -108,7 +107,10 @@ export function computeSankeyGrouping(
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
+
+        group.targetGroupType = visibility.columnTypes[columns.length + 1];
         groups.push(group);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
@@ -120,7 +122,10 @@ export function computeSankeyGrouping(
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
+
+        group.targetGroupType = visibility.columnTypes[columns.length + 1];
         groups.push(group);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
@@ -132,29 +137,27 @@ export function computeSankeyGrouping(
       .forEach((group) => {
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
+
+        // group.targetGroupType = visibility.columnTypes[columns.length + 1];
         groups.push(group);
+
         column.nodes.push(sankeyNode);
       });
     columns.push(column);
   }
 
-  // Group -> Links
-  // for (const group of groups) {
-  //   const groupSourceLinks = computeGroupLinks(
-  //     groupIdToSankeyNode,
-  //     group,
-  //     GroupType.Subnet
-  //   );
-  //   computeGroupLinks(groupIdToSankeyNode, group, GroupType.Vpc);
-  //   computeGroupLinks(groupIdToSankeyNode, group, GroupType.Region);
-
-  //   // Add link to relevant nodes
-  //   for (const link of groupSourceLinks) {
-  //     link.source.sourceLinks.push(link);
-  //     link.target.targetLinks.push(link);
-  //   }
-  //   sankeyLinks.push(...groupSourceLinks);
-  // }
+  const sankeyLinks: SankeyLink[] = [];
+  for (const group of groups) {
+    if (!group.targetGroupType) {
+      continue;
+    }
+    const groupSourceLinks = computeGroupLinks(groupIdToSankeyNode, group);
+    for (const link of groupSourceLinks) {
+      link.source.sourceLinks.push(link);
+      link.target.targetLinks.push(link);
+    }
+    sankeyLinks.push(...groupSourceLinks);
+  }
 
   return {
     nodes: [...groupIdToSankeyNode.values()],
@@ -179,7 +182,7 @@ function computeGroupedSubnets(
     if (!groupIdToGroup.has(groupId)) {
       groupIdToGroup.set(groupId, {
         id: groupId,
-        isTarget: Boolean(idToSubnetSourceLinks.get(subnet.id)?.length),
+        isTarget: !idToSubnetSourceLinks.get(subnet.id)?.length,
         subnets: [],
         sourceLinks: [],
         // targetLinks: [],
@@ -222,12 +225,12 @@ function getIdToSourceSubnetLinks(
 
 function computeGroupLinks(
   groupIdToSankeyNode: Map<string, SankeyNode>,
-  group: SubnetGroup,
-  targetGroupType: GroupType
+  group: SubnetGroup
 ): SankeyLink[] {
   const targetGroupIdToLinks = new Map<string, SubnetLink[]>();
   for (const link of group.sourceLinks) {
-    const targetGroupId = targetGroupType.getGroupId(link.target);
+    // @ts-ignore
+    const targetGroupId = group.targetGroupType.getGroupId(link.target);
     if (!targetGroupIdToLinks.has(targetGroupId)) {
       targetGroupIdToLinks.set(targetGroupId, []);
     }
@@ -239,7 +242,8 @@ function computeGroupLinks(
     return {
       source: groupIdToSankeyNode.get(group.id) as SankeyNode,
       target: groupIdToSankeyNode.get(
-        targetGroupType.getGroupId(links[0].target)
+        // @ts-ignore
+        group.targetGroupType.getGroupId(links[0].target)
       ) as SankeyNode,
       value: links.reduce(
         (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,

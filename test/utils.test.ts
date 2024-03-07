@@ -30,8 +30,8 @@ test("Given two raw Subnets, show 2 columns, region -> region", () => {
   });
 
   expect(result.nodes.length).toBe(2);
-  expect(result.nodes[1]).toMatchObject({ id: "REGION_us-east-1" });
-  expect(result.nodes[0]).toMatchObject({ id: "REGION_us-west-1" });
+  expect(result.nodes[0]).toMatchObject({ id: "REGION_us-east-1" });
+  expect(result.nodes[1]).toMatchObject({ id: "REGION_us-west-1" });
 
   expect(result.links.length).toBe(1);
   expect(result.links[0]).toMatchObject({
@@ -75,13 +75,13 @@ test("Given two raw Subnets, show 2 columns, VPC -> region", () => {
   });
 
   expect(result.nodes.length).toBe(2);
-  expect(result.nodes[0]).toMatchObject({ id: "us-east-1" });
-  expect(result.nodes[1]).toMatchObject({ id: "us-west-1" });
+  expect(result.nodes[0]).toMatchObject({ id: "VPC_sourceVPC" });
+  expect(result.nodes[1]).toMatchObject({ id: "REGION_us-west-1" });
 
   expect(result.links.length).toBe(1);
   expect(result.links[0]).toMatchObject({
-    source: { id: "sourceVPC" },
-    target: { id: "us-west-1" },
+    source: { id: "VPC_sourceVPC" },
+    target: { id: "REGION_us-west-1" },
     value: 110, // TODO: Fix, not just added together
   });
 
