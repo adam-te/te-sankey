@@ -63,6 +63,7 @@
           class="sankey-node"
           rx="3"
           ry="3"
+          @click="onSankeyNodeClicked(node)"
           :fill="`url(#${node.id})`"
           :class="{ focus: node.focus }"
         />
@@ -120,13 +121,14 @@
 import { ref } from "vue";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
 import rawData from "./data.json";
-import { computeSankeyGrouping, computeWiredGraph } from "../src/utils";
+import {
+  ComputeSankeyGroupingOptions,
+  computeSankeyGrouping,
+  computeWiredGraph,
+} from "../src/utils";
+import { SankeyNode } from "../src/models";
 
 const data = computeWiredGraph(rawData);
-const sankey = computeSankeyGrouping(data, {
-  sourceGroupType: "REGION",
-  targetGroupType: "REGION",
-});
 
 // function computeSankey() {}
 
@@ -269,15 +271,25 @@ const containerMeta = {
 let output;
 let visibleNodes;
 let visibleLinks;
+let sankey;
+const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
+  sourceGroupType: "REGION",
+  targetGroupType: "REGION",
+  focusedNode: undefined,
+};
 updateSankey();
 function updateSankey() {
   // Clean graph (TODO: use immutable)
-  sankey.nodes.forEach((n) => {
-    n.isHidden = false;
-  });
-  sankey.links.forEach((l) => {
-    l.isHidden = false;
-  });
+  if (sankey) {
+    sankey.nodes.forEach((n) => {
+      n.isHidden = false;
+    });
+    sankey.links.forEach((l) => {
+      l.isHidden = false;
+    });
+  }
+
+  sankey = computeSankeyGrouping(data, computeSankeyGroupingOptions);
   output = computeSankey(sankey, {
     graphMeta: containerMeta,
     linkXPadding: 3,
@@ -419,6 +431,11 @@ function getVisibleGraph(graph) {
   };
 }
 
+function onSankeyNodeClicked(node: SankeyNode) {
+  computeSankeyGroupingOptions.focusedNode = node.id;
+  updateSankey();
+  drawCounter.value += 1;
+}
 // Get top buttons
 function getTopButtons(sankey) {
   return sankey.columns

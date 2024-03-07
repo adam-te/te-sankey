@@ -38,7 +38,7 @@ export interface SankeyGraph {
 export interface SankeyColumn {
   nodes: SankeyNode[];
   visibleRows?: [number, number];
-  rightPadding?: number;
+  rightPadding: number;
 }
 
 export interface SankeyConfig {

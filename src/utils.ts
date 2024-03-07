@@ -14,7 +14,7 @@ import {
 export interface ComputeSankeyGroupingOptions {
   sourceGroupType: "REGION" | "VPC" | "SUBNET";
   targetGroupType: "REGION" | "VPC" | "SUBNET";
-  focusedNode?: SankeyNode;
+  focusedNode?: string;
 }
 interface GroupType {
   id: string;
@@ -33,33 +33,50 @@ const GroupType: Record<string, GroupType> = {
   Region: {
     id: "Region",
     getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
+    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
+    //   `${isTarget ? "TARGET" : "SOURCE"}_REGION_${subnet.region}`,
   },
   Vpc: {
     id: "Vpc",
     getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
+    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
+    //   `${isTarget ? "TARGET" : "SOURCE"}_VPC_${subnet.vpc}`,
   },
   Subnet: {
     id: "Subnet",
     getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
+    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
+    //   `${isTarget ? "TARGET" : "SOURCE"}_SUBNET_${subnet.subnet}`,
   },
 };
 
 export function computeWiredGraph(data: RawSubnetData): SubnetData {
-  const { vertices: subnetIdToSubnet, edges: links } = data;
+  const { vertices, edges: links } = data;
 
-  for (const link of links) {
-    if (link.localId === link.remoteId) {
-      console.log("CYCLE", link);
-    }
-  }
+  const subnets = [...Object.values(vertices)].flatMap((v) => [
+    v,
+    {
+      // Create separate, duplicate node to remove cycles
+      id: `TARGET_${v.id}`,
+      account: `TARGET_${v.account}`,
+      region: `TARGET_${v.region}`,
+      vpc: `TARGET_${v.vpc}`,
+      az: `TARGET_${v.az}`,
+      subnet: `TARGET_${v.subnet}`,
+    },
+  ]);
+  const subnetIdToSubnet = new Map<string, Subnet>(
+    subnets.map((v) => [v.id, v])
+  );
   return {
-    subnets: [...Object.values(subnetIdToSubnet)],
+    subnets,
     links: links
       // ADAMTODO: Circular link is expected.
-      .filter((l) => !isCircularLink(l))
+      // .filter((l) => !isCircularLink(l))
       .map((v) => ({
-        source: subnetIdToSubnet[v.localId] as Subnet,
-        target: subnetIdToSubnet[v.remoteId] as Subnet,
+        source: subnetIdToSubnet.get(v.localId) as Subnet,
+        // TODO: This is wrong
+        target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
         egressBytes: v.egressBytes,
         ingressBytes: v.ingressBytes,
       })),
@@ -86,7 +103,8 @@ export function computeSankeyGrouping(
   const columns = [];
 
   if (visibility.isSourceRegionsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
+
     regionGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
@@ -102,7 +120,7 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
   if (visibility.isSourceVpcsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     vpcGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
@@ -118,7 +136,7 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
   if (visibility.isSourceSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     subnetGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
@@ -134,7 +152,7 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
   if (visibility.isTargetSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     subnetGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -150,7 +168,7 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
   if (visibility.isTargetVpcsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     vpcGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -166,7 +184,7 @@ export function computeSankeyGrouping(
     columns.push(column);
   }
   if (visibility.isTargetRegionsVisible) {
-    const column: SankeyColumn = { nodes: [] };
+    const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     regionGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
@@ -187,7 +205,9 @@ export function computeSankeyGrouping(
     if (!group.targetGroupType) {
       continue;
     }
+
     const groupSourceLinks = computeGroupLinks(groupIdToSankeyNode, group);
+
     for (const link of groupSourceLinks) {
       link.source.sourceLinks.push(link);
       link.target.targetLinks.push(link);
@@ -264,6 +284,14 @@ function computeGroupLinks(
   group: SubnetGroup
 ): SankeyLink[] {
   const targetGroupIdToLinks = new Map<string, SubnetLink[]>();
+  console.log(
+    "This group:",
+    group.id,
+    "Has link targeting:",
+    group.sourceLinks
+    // groupIdToSankeyNode,
+    // group.targetGroupType.getGroupId(group.sourceLinks[0].target)
+  );
   for (const link of group.sourceLinks) {
     // @ts-ignore
     const targetGroupId = group.targetGroupType.getGroupId(link.target);
@@ -273,7 +301,7 @@ function computeGroupLinks(
 
     targetGroupIdToLinks.get(targetGroupId)?.push(link);
   }
-
+  // console.log(groupIdToSankeyNode);
   return [...targetGroupIdToLinks.values()].map((links) => {
     return {
       source: groupIdToSankeyNode.get(group.id) as SankeyNode,
@@ -289,15 +317,15 @@ function computeGroupLinks(
   });
 }
 
-function getSubnetLinkId(
-  link: SubnetLink,
-  sourceGroupType: GroupType,
-  targetGroupType: GroupType
-) {
-  return `${sourceGroupType.getGroupId(
-    link.source
-  )}_${targetGroupType.getGroupId(link.target)}`;
-}
+// function getSubnetLinkId(
+//   link: SubnetLink,
+//   sourceGroupType: GroupType,
+//   targetGroupType: GroupType
+// ) {
+//   return `${sourceGroupType.getGroupId(
+//     link.source
+//   )}_${targetGroupType.getGroupId(link.target)}`;
+// }
 
 function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isSourceRegionsVisible: boolean;
@@ -318,7 +346,7 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
       (options.sourceGroupType === "REGION" && !!options.focusedNode),
     isSourceSubnetsVisible:
       ["SUBNET"].includes(options.sourceGroupType) ||
-      !!options.focusedNode?.id.startsWith("VPC_"), // TODO: Fix
+      !!options.focusedNode?.startsWith("VPC_"), // TODO: Fix
 
     // Target defined by filter
     isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),
@@ -344,6 +372,9 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
 function createSankeyNode(group: SubnetGroup): SankeyNode {
   return {
     id: group.id,
+    // @ts-ignore TODO fix
+    displayName: group.id.split("_").at(-1),
+    label: group.isTarget ? "right" : "left",
     sourceLinks: [],
     targetLinks: [],
   };
