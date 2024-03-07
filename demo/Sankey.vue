@@ -1,5 +1,33 @@
 <template>
   <div>
+    <div style="display: inline-block; margin-left: 300px">
+      <div><label for="networkSourceOptions">Source Grouping</label></div>
+      <select
+        name="networkSourceOptions"
+        id="networkSourceOptions"
+        :value="computeSankeyGroupingOptions.sourceGroupType"
+        @change="onSourceGroupingChanged($event.target.value)"
+      >
+        <option value="REGION">Region</option>
+        <option value="VPC">VPC</option>
+        <option value="SUBNET">Subnet</option>
+      </select>
+    </div>
+
+    <div style="display: inline-block; margin-left: 20px; margin-bottom: 20px">
+      <div><label for="networkTargetOptions">Destination Grouping</label></div>
+      <select
+        name="networkTargetOptions"
+        id="networkTargetOptions"
+        :value="computeSankeyGroupingOptions.targetGroupType"
+        @change="onTargetGroupingChanged($event.target.value)"
+      >
+        <option value="REGION">Region</option>
+        <option value="VPC">VPC</option>
+        <option value="SUBNET">Subnet</option>
+      </select>
+    </div>
+
     <div class="sankey-row-btn-container top">
       <button
         class="sankey-row-btn ttt"
@@ -137,134 +165,6 @@ const containerMeta = {
   width: 1600,
   height: 600,
 };
-
-// const mockGraph = g();
-// const { n, l, c } = mockGraph;
-// const sourceRegion = n("sourceRegion", { displayName: "us-east-2" });
-// const sourceVpc = n("sourceVpc", { displayName: "VPC ID 1" });
-// const sourceVpc2 = n("sourceVpc2", { displayName: "VPC ID 1" });
-// const sourceSubnet1 = n("sourceSubnet1", {
-//   label: "left",
-//   focus: true,
-//   displayName: "Subnet 1",
-// });
-// const sourceSubnet2 = n("sourceSubnet2", {
-//   label: "left",
-//   focus: true,
-//   displayName: "Subnet 2",
-// });
-// const sourceSubnet3 = n("sourceSubnet3", {
-//   label: "left",
-//   focus: true,
-//   displayName: "Subnet 3",
-// });
-// const sourceSubnet4 = n("sourceSubnet4", {
-//   label: "left",
-//   focus: true,
-//   displayName: "Subnet 4",
-// });
-// const sourceSubnet5 = n("sourceSubnet5", {
-//   label: "left",
-//   focus: true,
-//   displayName: "Subnet 5",
-// });
-
-// const targetSubnet1 = n("targetSubnet1", {
-//   label: "right",
-//   focus: true,
-//   displayName: "Subnet 1",
-// });
-// const targetSubnet2 = n("targetSubnet2", {
-//   label: "right",
-//   focus: true,
-//   displayName: "Subnet 2",
-// });
-// const targetSubnet3 = n("targetSubnet3", {
-//   label: "right",
-//   focus: true,
-//   displayName: "Subnet 3",
-// });
-// const targetSubnet4 = n("targetSubnet4", {
-//   label: "right",
-//   focus: true,
-//   displayName: "Subnet 4",
-// });
-// const targetSubnet5 = n("targetSubnet5", {
-//   label: "right",
-//   focus: true,
-//   displayName: "Subnet 5",
-// });
-// const targetVpc = n("targetVpc", { displayName: "VPC ID 1" });
-// const targetRegion = n("targetRegion", { displayName: "us-east-2" });
-
-// // Region (S)
-// l(sourceRegion, sourceVpc);
-// l(sourceRegion, sourceVpc2, { value: 2 });
-
-// // VPC (S)
-// l(sourceVpc, sourceSubnet1);
-// l(sourceVpc, sourceSubnet2);
-// l(sourceVpc, sourceSubnet3);
-// l(sourceVpc, sourceSubnet4);
-// l(sourceVpc, sourceSubnet5);
-
-// // Subnets (S)
-// l(sourceSubnet1, targetSubnet1);
-// l(sourceSubnet1, targetSubnet2);
-// l(sourceSubnet1, targetSubnet3);
-// l(sourceSubnet1, targetSubnet4);
-
-// l(sourceSubnet2, targetSubnet1, { value: 2 });
-
-// l(sourceSubnet3, targetSubnet1);
-// l(sourceSubnet3, targetSubnet2);
-
-// l(sourceSubnet4, targetSubnet3);
-// l(sourceSubnet4, targetSubnet4);
-
-// // Subnets (T)
-// l(targetSubnet1, targetVpc);
-// l(targetSubnet2, targetVpc);
-// l(targetSubnet3, targetVpc);
-// l(targetSubnet4, targetVpc);
-
-// // VPC (T)
-// l(targetVpc, targetRegion);
-
-// // Hidden (TODO: Create hidden flows here)
-// l(sourceSubnet5, targetSubnet1);
-// l(sourceSubnet5, targetSubnet2);
-// l(sourceSubnet5, targetSubnet3);
-// l(sourceSubnet5, targetSubnet4);
-// l(sourceSubnet5, targetSubnet5);
-
-// l(sourceSubnet1, targetSubnet5);
-// l(sourceSubnet2, targetSubnet5);
-// l(sourceSubnet3, targetSubnet5);
-// l(sourceSubnet4, targetSubnet5);
-
-// c([sourceRegion], {
-//   //   mergeLinks: true,
-// });
-// c([sourceVpc, sourceVpc2], {
-//   visibleRows: [0, 1],
-//   mergeLinks: true,
-// });
-// c([sourceSubnet1, sourceSubnet2, sourceSubnet3, sourceSubnet4, sourceSubnet5], {
-//   visibleRows: [0, 4],
-//   rightPadding: 600,
-// });
-
-// c([targetSubnet1, targetSubnet2, targetSubnet3, targetSubnet4, targetSubnet5], {
-//   mergeLinks: true,
-//   visibleRows: [0, 4],
-// });
-// c([targetVpc], {
-//   //   mergeLinks: true,
-// });
-// c([targetRegion], {
-//   //   mergeLinks: true,
-// });
 
 // const sankey = mockGraph.get();
 
@@ -436,6 +336,21 @@ function onSankeyNodeClicked(node: SankeyNode) {
   updateSankey();
   drawCounter.value += 1;
 }
+
+function onSourceGroupingChanged(newValue) {
+  computeSankeyGroupingOptions.sourceGroupType = newValue;
+  computeSankeyGroupingOptions.focusedNode = undefined;
+  updateSankey();
+  drawCounter.value += 1;
+}
+
+function onTargetGroupingChanged(newValue) {
+  computeSankeyGroupingOptions.targetGroupType = newValue;
+  computeSankeyGroupingOptions.focusedNode = undefined;
+  updateSankey();
+  drawCounter.value += 1;
+}
+
 // Get top buttons
 function getTopButtons(sankey) {
   return sankey.columns

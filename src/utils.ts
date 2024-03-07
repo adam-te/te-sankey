@@ -26,7 +26,9 @@ interface SubnetGroup {
   isTarget: boolean;
   subnets: Subnet[];
   sourceLinks: SubnetLink[];
+  groupType: GroupType;
   targetGroupType?: GroupType;
+  columnIdx?: number;
 }
 
 const GroupType: Record<string, GroupType> = {
@@ -100,6 +102,7 @@ export function computeSankeyGrouping(
     regionGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -116,6 +119,7 @@ export function computeSankeyGrouping(
     vpcGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -132,6 +136,7 @@ export function computeSankeyGrouping(
     subnetGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -153,6 +158,7 @@ export function computeSankeyGrouping(
     subnetGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -169,6 +175,7 @@ export function computeSankeyGrouping(
     vpcGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -185,6 +192,7 @@ export function computeSankeyGrouping(
     regionGroups
       .filter((v) => v.isTarget)
       .forEach((group) => {
+        group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
 
@@ -238,6 +246,7 @@ function computeGroupedSubnets(
         isTarget: !idToSubnetSourceLinks.get(subnet.id)?.length,
         subnets: [],
         sourceLinks: [],
+        groupType,
         // targetLinks: [],
       });
     }
@@ -281,18 +290,6 @@ function computeGroupLinks(
   group: SubnetGroup
 ): SankeyLink[] {
   const targetGroupIdToLinks = new Map<string, SubnetLink[]>();
-  console.log(
-    "This group:",
-    group.id,
-    "Has link targeting:",
-    group.sourceLinks,
-    "but it doesnt work because:",
-    group.targetGroupType?.getGroupId(group.sourceLinks[0].target),
-    "^ groupId does not exist in:",
-    groupIdToSankeyNode
-    // groupIdToSankeyNode,
-    // group.targetGroupType.getGroupId(group.sourceLinks[0].target)
-  );
   for (const link of group.sourceLinks) {
     // @ts-ignore
     const targetGroupId = group.targetGroupType.getGroupId(link.target);
@@ -302,16 +299,21 @@ function computeGroupLinks(
 
     targetGroupIdToLinks.get(targetGroupId)?.push(link);
   }
-  // console.log(groupIdToSankeyNode);
+
   return [...targetGroupIdToLinks.values()]
     .filter((links) => {
       const targetNodeId = group.targetGroupType?.getGroupId(
         links[0].target
       ) as string;
+      const targetNode = groupIdToSankeyNode.get(targetNodeId);
+
+      // ADAMTODO: Examine approach here better. hacky quick fix
+      // @ts-ignore
+      const isAdjacent = group.columnIdx === targetNode?.__columnIndex - 1;
+      // If is source,
       // ADAMNOTE: This is happening because we duplicate links and create source -> target, source -> source
       // If only source VPC are shown, for example, then targetVPC will not exist.
-      // TODO: Better way to handle this
-      return groupIdToSankeyNode.has(targetNodeId);
+      return groupIdToSankeyNode.has(targetNodeId) && isAdjacent;
     })
     .map((links) => {
       const targetNodeId = group.targetGroupType?.getGroupId(
@@ -388,6 +390,8 @@ function createSankeyNode(group: SubnetGroup): SankeyNode {
     id: group.id,
     // @ts-ignore TODO fix
     displayName: group.id.split("_").at(-1),
+    // @ts-ignore TODO fix
+    __columnIndex: group.columnIdx,
     label: group.isTarget ? "right" : "left",
     sourceLinks: [],
     targetLinks: [],
