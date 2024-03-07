@@ -7,6 +7,7 @@ import {
   SubnetLink,
   SankeyColumn,
   RawSubnetData,
+  RawSubnetLink,
 } from "../src/models";
 // const { vertices: subnets, edges: links } = data;
 
@@ -45,15 +46,30 @@ const GroupType: Record<string, GroupType> = {
 
 export function computeWiredGraph(data: RawSubnetData): SubnetData {
   const { vertices: subnetIdToSubnet, edges: links } = data;
+
+  for (const link of links) {
+    if (link.localId === link.remoteId) {
+      console.log("CYCLE", link);
+    }
+  }
   return {
     subnets: [...Object.values(subnetIdToSubnet)],
-    links: links.map((v) => ({
-      source: subnetIdToSubnet[v.localId] as Subnet,
-      target: subnetIdToSubnet[v.remoteId] as Subnet,
-      egressBytes: v.egressBytes,
-      ingressBytes: v.ingressBytes,
-    })),
+    links: links
+      // ADAMTODO: Circular link is expected.
+      .filter((l) => !isCircularLink(l))
+      .map((v) => ({
+        source: subnetIdToSubnet[v.localId] as Subnet,
+        target: subnetIdToSubnet[v.remoteId] as Subnet,
+        egressBytes: v.egressBytes,
+        ingressBytes: v.ingressBytes,
+      })),
   };
+
+  //
+  // TODO: Removing for now
+  function isCircularLink(link: RawSubnetLink) {
+    return link.localId === link.remoteId;
+  }
 }
 
 export function computeSankeyGrouping(
@@ -82,6 +98,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
   if (visibility.isSourceVpcsVisible) {
@@ -97,6 +114,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
   if (visibility.isSourceSubnetsVisible) {
@@ -112,6 +130,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
   if (visibility.isTargetSubnetsVisible) {
@@ -127,6 +146,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
   if (visibility.isTargetVpcsVisible) {
@@ -142,6 +162,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
   if (visibility.isTargetRegionsVisible) {
@@ -157,6 +178,7 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
+    column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
 
