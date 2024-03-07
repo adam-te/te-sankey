@@ -33,20 +33,14 @@ const GroupType: Record<string, GroupType> = {
   Region: {
     id: "Region",
     getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
-    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
-    //   `${isTarget ? "TARGET" : "SOURCE"}_REGION_${subnet.region}`,
   },
   Vpc: {
     id: "Vpc",
     getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
-    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
-    //   `${isTarget ? "TARGET" : "SOURCE"}_VPC_${subnet.vpc}`,
   },
   Subnet: {
     id: "Subnet",
     getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
-    // getGroupId: (subnet: Subnet, isTarget: boolean) =>
-    //   `${isTarget ? "TARGET" : "SOURCE"}_SUBNET_${subnet.subnet}`,
   },
 };
 
@@ -70,23 +64,21 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
   );
   return {
     subnets,
-    links: links
-      // ADAMTODO: Circular link is expected.
-      // .filter((l) => !isCircularLink(l))
-      .map((v) => ({
+    links: links.flatMap((v) => [
+      {
         source: subnetIdToSubnet.get(v.localId) as Subnet,
-        // TODO: This is wrong
+        target: subnetIdToSubnet.get(v.remoteId) as Subnet,
+        egressBytes: v.egressBytes,
+        ingressBytes: v.ingressBytes,
+      },
+      {
+        source: subnetIdToSubnet.get(v.localId) as Subnet,
         target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
         egressBytes: v.egressBytes,
         ingressBytes: v.ingressBytes,
-      })),
+      },
+    ]),
   };
-
-  //
-  // TODO: Removing for now
-  function isCircularLink(link: RawSubnetLink) {
-    return link.localId === link.remoteId;
-  }
 }
 
 export function computeSankeyGrouping(
@@ -151,6 +143,11 @@ export function computeSankeyGrouping(
     column.visibleRows = [0, column.nodes.length];
     columns.push(column);
   }
+  // TODO: Cleanup
+  // Last sourceColumn gets padding
+  // @ts-ignore
+  columns.at(-1).rightPadding = 600;
+
   if (visibility.isTargetSubnetsVisible) {
     const column: SankeyColumn = { nodes: [], rightPadding: 0 };
     subnetGroups
@@ -288,7 +285,11 @@ function computeGroupLinks(
     "This group:",
     group.id,
     "Has link targeting:",
-    group.sourceLinks
+    group.sourceLinks,
+    "but it doesnt work because:",
+    group.targetGroupType?.getGroupId(group.sourceLinks[0].target),
+    "^ groupId does not exist in:",
+    groupIdToSankeyNode
     // groupIdToSankeyNode,
     // group.targetGroupType.getGroupId(group.sourceLinks[0].target)
   );
@@ -302,19 +303,29 @@ function computeGroupLinks(
     targetGroupIdToLinks.get(targetGroupId)?.push(link);
   }
   // console.log(groupIdToSankeyNode);
-  return [...targetGroupIdToLinks.values()].map((links) => {
-    return {
-      source: groupIdToSankeyNode.get(group.id) as SankeyNode,
-      target: groupIdToSankeyNode.get(
-        // @ts-ignore
-        group.targetGroupType.getGroupId(links[0].target)
-      ) as SankeyNode,
-      value: links.reduce(
-        (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
-        0
-      ),
-    };
-  });
+  return [...targetGroupIdToLinks.values()]
+    .filter((links) => {
+      const targetNodeId = group.targetGroupType?.getGroupId(
+        links[0].target
+      ) as string;
+      // ADAMNOTE: This is happening because we duplicate links and create source -> target, source -> source
+      // If only source VPC are shown, for example, then targetVPC will not exist.
+      // TODO: Better way to handle this
+      return groupIdToSankeyNode.has(targetNodeId);
+    })
+    .map((links) => {
+      const targetNodeId = group.targetGroupType?.getGroupId(
+        links[0].target
+      ) as string;
+      return {
+        source: groupIdToSankeyNode.get(group.id) as SankeyNode,
+        target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
+        value: links.reduce(
+          (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
+          0
+        ),
+      };
+    });
 }
 
 // function getSubnetLinkId(
@@ -346,7 +357,10 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
       (options.sourceGroupType === "REGION" && !!options.focusedNode),
     isSourceSubnetsVisible:
       ["SUBNET"].includes(options.sourceGroupType) ||
-      !!options.focusedNode?.startsWith("VPC_"), // TODO: Fix
+      !!(
+        options.focusedNode?.startsWith("VPC_") ||
+        options.focusedNode?.startsWith("SUBNET_")
+      ), // TODO: Fix hack
 
     // Target defined by filter
     isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),

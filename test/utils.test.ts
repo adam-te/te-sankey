@@ -113,7 +113,13 @@ test("Given two raw Subnets, show 2 columns, VPC -> region", () => {
     links: [
       {
         source: subnets[0],
-        target: subnets[1],
+        target: subnets[0],
+        egressBytes: 10,
+        ingressBytes: 100,
+      },
+      {
+        source: subnets[1],
+        target: subnets[2],
         egressBytes: 10,
         ingressBytes: 100,
       },
