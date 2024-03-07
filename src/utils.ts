@@ -11,12 +11,12 @@ import {
 
 export interface ComputeSankeyGroupingOptions {
   // ??
-  sourceGroupType: "REGION" | "VPC";
-  targetGroupType: "REGION" | "VPC";
+  sourceGroupType: "REGION" | "VPC" | "SUBNET";
+  targetGroupType: "REGION" | "VPC" | "SUBNET";
+  focusedNode?: SankeyNode;
 }
 interface GroupType {
   getGroupId: (subnet: Subnet) => string;
-  computeSankeyGroupNode: (subnetGroup: SubnetGroup) => SankeyNode;
 }
 
 interface SubnetGroup {
@@ -24,38 +24,17 @@ interface SubnetGroup {
   isTarget: boolean;
   subnets: Subnet[];
   sourceLinks: SubnetLink[];
-  // targetLinks: SubnetLink[];
-}
-
-interface SankeyGroup {
-  node: SankeyNode;
-  links: SankeyLink[];
 }
 
 const GroupType: Record<string, GroupType> = {
   Region: {
-    getGroupId: (subnet: Subnet) => subnet.region,
-    // @ts-ignore
-    computeSankeyGroupNode: () => {},
-    // computeSankeyGroupNode: (subnetGroup: SubnetGroup) => {
-    //   return {
-    //     id: subnetGroup.id,
-    //     sourceLinks: subnetGroup.sourceLinks.map((v) => {
-    //       return {};
-    //     }),
-    //   };
-    // },
-    // computeGroupNode: (subnets: Subnet[]) => {
-    //   const [subnet] = subnets;
-    //   return {
-    //     id: subnet.region,
-
-    //     // TODO: links
-    //     sourceLinks: [],
-    //     targetLinks: [],
-    //   };
-    // },
-    // computeGroupLinks: (subnetLinks: SubnetLink[]) => [],
+    getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
+  },
+  Vpc: {
+    getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
+  },
+  Subnet: {
+    getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
   },
 };
 
@@ -64,11 +43,36 @@ export function computeSankeyGrouping(
   options: ComputeSankeyGroupingOptions
 ): SankeyGraph {
   const regionGroups = computeGroupedSubnets(data, GroupType.Region);
+  const vpcGroups = computeGroupedSubnets(data, GroupType.Vpc);
+  const subnetGroups = computeGroupedSubnets(data, GroupType.Subnet);
+
+  const visibility = getColumnVisibility(options);
+  const groups: SubnetGroup[] = [];
+  const columns = [];
+  if (visibility.isSourceRegionsVisible) {
+    columns.push();
+    groups.push(...regionGroups.filter((v) => !v.isTarget));
+  }
+  if (visibility.isSourceVpcsVisible) {
+    groups.push(...vpcGroups.filter((v) => !v.isTarget));
+  }
+  if (visibility.isSourceSubnetsVisible) {
+    groups.push(...subnetGroups.filter((v) => !v.isTarget));
+  }
+  if (visibility.isTargetRegionsVisible) {
+    groups.push(...regionGroups.filter((v) => v.isTarget));
+  }
+  if (visibility.isTargetVpcsVisible) {
+    groups.push(...vpcGroups.filter((v) => v.isTarget));
+  }
+  if (visibility.isTargetSubnetsVisible) {
+    groups.push(...subnetGroups.filter((v) => v.isTarget));
+  }
 
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const sourceColumn: SankeyColumn = { nodes: [] };
   const targetColumn: SankeyColumn = { nodes: [] };
-  for (const group of regionGroups) {
+  for (const group of groups) {
     const sankeyNode: SankeyNode = {
       id: group.id,
       sourceLinks: [],
@@ -82,7 +86,7 @@ export function computeSankeyGrouping(
 
   // Group -> Links
   const sankeyLinks: SankeyLink[] = [];
-  for (const group of regionGroups) {
+  for (const group of groups) {
     const groupSourceLinks = computeGroupLinks(
       groupIdToSankeyNode,
       group,
@@ -206,4 +210,33 @@ function getSubnetLinkId(
   return `${sourceGroupType.getGroupId(
     link.source
   )}_${targetGroupType.getGroupId(link.target)}`;
+}
+
+function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
+  isSourceRegionsVisible: boolean;
+  isSourceVpcsVisible: boolean;
+  isSourceSubnetsVisible: boolean;
+
+  // Target defined by filter
+  isTargetSubnetsVisible: boolean;
+  isTargetVpcsVisible: boolean;
+  isTargetRegionsVisible: boolean;
+} {
+  return {
+    // Source defined by filter plus clicks
+    isSourceRegionsVisible: ["REGION"].includes(options.sourceGroupType),
+    isSourceVpcsVisible:
+      ["VPC"].includes(options.sourceGroupType) ||
+      (options.sourceGroupType === "REGION" && !!options.focusedNode),
+    isSourceSubnetsVisible:
+      ["SUBNET"].includes(options.sourceGroupType) ||
+      !!options.focusedNode?.id.startsWith("VPC_"), // TODO: Fix
+
+    // Target defined by filter
+    isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),
+    isTargetVpcsVisible: ["SUBNET", "VPC"].includes(options.targetGroupType),
+    isTargetRegionsVisible: ["SUBNET", "VPC", "REGION"].includes(
+      options.targetGroupType
+    ),
+  };
 }
