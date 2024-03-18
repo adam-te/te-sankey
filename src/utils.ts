@@ -106,12 +106,36 @@ export function computeSankeyGrouping(
   const columns = [];
 
   const columnSpecs = [
-    { isVisible: visibility.isSourceRegionsVisible, isTarget: false },
-    { isVisible: visibility.isSourceVpcsVisible, isTarget: false },
-    { isVisible: visibility.isSourceSubnetsVisible, isTarget: false },
-    { isVisible: visibility.isTargetSubnetsVisible, isTarget: true },
-    { isVisible: visibility.isTargetVpcsVisible, isTarget: true },
-    { isVisible: visibility.isTargetRegionsVisible, isTarget: true },
+    {
+      isVisible: visibility.isSourceRegionsVisible,
+      groupType: regionGroups,
+      isTarget: false,
+    },
+    {
+      isVisible: visibility.isSourceVpcsVisible,
+      groupType: vpcGroups,
+      isTarget: false,
+    },
+    {
+      isVisible: visibility.isSourceSubnetsVisible,
+      groupType: subnetGroups,
+      isTarget: false,
+    },
+    {
+      isVisible: visibility.isTargetSubnetsVisible,
+      groupType: subnetGroups,
+      isTarget: true,
+    },
+    {
+      isVisible: visibility.isTargetVpcsVisible,
+      groupType: vpcGroups,
+      isTarget: true,
+    },
+    {
+      isVisible: visibility.isTargetRegionsVisible,
+      groupType: regionGroups,
+      isTarget: true,
+    },
   ];
 
   for (const [columnIdx, columnSpec] of columnSpecs.entries()) {
@@ -134,7 +158,7 @@ export function computeSankeyGrouping(
       isTarget: columnSpec.isTarget,
     };
 
-    regionGroups
+    columnSpec.groupType
       .filter((v) => !v.isTarget)
       .forEach((group) => {
         // ADAMTODO: tes
@@ -155,6 +179,7 @@ export function computeSankeyGrouping(
     ];
     columns.push(column);
   }
+  console.log(columns);
 
   const sankeyLinks: SankeyLink[] = [];
   for (const group of groups) {
