@@ -1,3 +1,4 @@
+import { TracingChannel } from "diagnostics_channel";
 import {
   SubnetData,
   Subnet,
@@ -55,13 +56,18 @@ const GroupType: Record<string, GroupType> = {
   },
 };
 
+/**
+ * Create a distinct SOURCE and TARGET set of nodes to handle cycles
+ * e.g. some traffic in 'us-west-1' may stay within 'us-west-1', which
+ * presents as a cycle. Instead, we visualize this as a traffic flow
+ * from the source 'us-west-1' to the target 'us-west-1'
+ */
 export function computeWiredGraph(data: RawSubnetData): SubnetData {
   const { vertices, edges: links } = data;
 
   const subnets = [...Object.values(vertices)].flatMap((v) => [
     v,
     {
-      // Create separate, duplicate node to remove cycles
       id: `TARGET_${v.id}`,
       account: `TARGET_${v.account}`,
       region: `TARGET_${v.region}`,
@@ -92,6 +98,10 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
   };
 }
 
+/**
+ * Produce the Sankey graph/nodes/links from raw subnet data.
+ * e.g. Mapping from raw data context to UI context
+ */
 export function computeSankeyGrouping(
   data: SubnetData,
   options: ComputeSankeyGroupingOptions
@@ -108,32 +118,38 @@ export function computeSankeyGrouping(
   const columnSpecs = [
     {
       isVisible: visibility.isSourceRegionsVisible,
-      groupType: regionGroups,
+      groupType: GroupType.Region,
+      groups: regionGroups.filter((v) => !v.isTarget),
       isTarget: false,
     },
     {
       isVisible: visibility.isSourceVpcsVisible,
-      groupType: vpcGroups,
+      groupType: GroupType.Vpc,
+      groups: vpcGroups.filter((v) => !v.isTarget),
       isTarget: false,
     },
     {
       isVisible: visibility.isSourceSubnetsVisible,
-      groupType: subnetGroups,
+      groupType: GroupType.Subnet,
+      groups: subnetGroups.filter((v) => !v.isTarget),
       isTarget: false,
     },
     {
       isVisible: visibility.isTargetSubnetsVisible,
-      groupType: subnetGroups,
+      groupType: GroupType.Subnet,
+      groups: subnetGroups.filter((v) => v.isTarget),
       isTarget: true,
     },
     {
       isVisible: visibility.isTargetVpcsVisible,
-      groupType: vpcGroups,
+      groupType: GroupType.Vpc,
+      groups: vpcGroups.filter((v) => v.isTarget),
       isTarget: true,
     },
     {
       isVisible: visibility.isTargetRegionsVisible,
-      groupType: regionGroups,
+      groupType: GroupType.Region,
+      groups: regionGroups.filter((v) => v.isTarget),
       isTarget: true,
     },
   ];
@@ -145,7 +161,6 @@ export function computeSankeyGrouping(
     const isPreviousColumnLastSource = Boolean(
       !columns?.at(-1)?.isTarget && columnSpec?.isTarget
     );
-    console.log(isPreviousColumnLastSource);
     if (isPreviousColumnLastSource) {
       // @ts-ignore - Clean up, just adding high padding value here... should be param
       columns.at(-1).rightPadding = 600;
@@ -158,19 +173,23 @@ export function computeSankeyGrouping(
       isTarget: columnSpec.isTarget,
     };
 
-    columnSpec.groupType
-      .filter((v) => !v.isTarget)
-      .forEach((group) => {
-        // ADAMTODO: tes
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
-
-        group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
+    // TODO: IS this right?
+    const nextVisibleGroupType = columnSpecs.filter((v) => v.isVisible)[
+      columns.length + 1
+    ]?.groupType;
+    for (const group of columnSpec.groups) {
+      // ADAMTODO: clean up (do we need mutation?)
+      Object.assign(group, {
+        columnIdx: columns.length,
+        targetGroupType: nextVisibleGroupType,
       });
+
+      const sankeyNode = createSankeyNode(group);
+      groupIdToSankeyNode.set(group.id, sankeyNode);
+      groups.push(group);
+
+      column.nodes.push(sankeyNode);
+    }
 
     const [prevMin, prevMax] = options.visibleRowState[columnIdx];
     column.visibleRows = [
@@ -179,10 +198,10 @@ export function computeSankeyGrouping(
     ];
     columns.push(column);
   }
-  console.log(columns);
 
   const sankeyLinks: SankeyLink[] = [];
   for (const group of groups) {
+    // TODO: Why is this check needed? Because final column has no outlinks?
     if (!group.targetGroupType) {
       continue;
     }
@@ -203,16 +222,15 @@ export function computeSankeyGrouping(
   };
 }
 
-// Produce one collapsed node, link per "group"
+/**
+ * Produce one collapsed subnet "group" with all relevant links embedded
+ */
 function computeGroupedSubnets(
   data: SubnetData,
   groupType: GroupType
 ): SubnetGroup[] {
-  // const { vertices: subnetIdToSubnet, edges: subnetLinks } = data;
-
   const idToSubnetSourceLinks = getIdToSourceSubnetLinks(data.links);
 
-  // const idToSubnetLinks = new Map(data.subnets.map((v) => [v.id, v]));
   const groupIdToGroup = new Map<string, SubnetGroup>();
   for (const subnet of Object.values(data.subnets)) {
     const groupId = groupType.getGroupId(subnet);
@@ -223,14 +241,12 @@ function computeGroupedSubnets(
         subnets: [],
         sourceLinks: [],
         groupType,
-        // targetLinks: [],
       });
     }
 
     groupIdToGroup.get(groupId)?.subnets.push(subnet);
   }
 
-  // will not add links to non-visible nodes... desired? (I think we may want to keep)
   for (const subnetLink of data.links) {
     const sourceGroupId = groupType.getGroupId(subnetLink.source);
     if (groupIdToGroup.has(sourceGroupId)) {
@@ -240,10 +256,6 @@ function computeGroupedSubnets(
 
   return [...groupIdToGroup.values()];
 }
-
-// function isTargetSubnet(subnet: Subnet, subnetLinks: SubnetLink[]) {
-//   return Boolean(subnetLinks.length && subnetLinks[0].target.id === subnet.id);
-// }
 
 function getIdToSourceSubnetLinks(
   links: SubnetLink[]
@@ -265,57 +277,51 @@ function computeGroupLinks(
   groupIdToSankeyNode: Map<string, SankeyNode>,
   group: SubnetGroup
 ): SankeyLink[] {
-  const targetGroupIdToLinks = new Map<string, SubnetLink[]>();
-  for (const link of group.sourceLinks) {
-    // @ts-ignore
-    const targetGroupId = group.targetGroupType.getGroupId(link.target);
-    if (!targetGroupIdToLinks.has(targetGroupId)) {
-      targetGroupIdToLinks.set(targetGroupId, []);
-    }
+  const targetGroupIdToLinks = groupBy<SubnetLink>(
+    group.sourceLinks,
+    getTargetGroupId
+  );
+  console.log(targetGroupIdToLinks);
+  return Object.values(targetGroupIdToLinks)
+    .filter(isIncludedLinks)
+    .map(toSankeyLinks);
 
-    targetGroupIdToLinks.get(targetGroupId)?.push(link);
+  function getTargetGroupId(link: SubnetLink): string {
+    // @ts-ignore
+    return group.targetGroupType.getGroupId(link.target);
   }
 
-  return [...targetGroupIdToLinks.values()]
-    .filter((links) => {
-      const targetNodeId = group.targetGroupType?.getGroupId(
-        links[0].target
-      ) as string;
-      const targetNode = groupIdToSankeyNode.get(targetNodeId);
+  function isIncludedLinks(links: SubnetLink[]) {
+    const targetNodeId = group.targetGroupType?.getGroupId(
+      links[0].target
+    ) as string;
+    const targetNode = groupIdToSankeyNode.get(targetNodeId);
 
-      // ADAMTODO: Examine approach here better. hacky quick fix
-      // @ts-ignore
-      const isAdjacent = group.columnIdx === targetNode?.__columnIndex - 1;
-      // If is source,
-      // ADAMNOTE: This is happening because we duplicate links and create source -> target, source -> source
-      // If only source VPC are shown, for example, then targetVPC will not exist.
-      return groupIdToSankeyNode.has(targetNodeId) && isAdjacent;
-    })
-    .map((links) => {
-      const targetNodeId = group.targetGroupType?.getGroupId(
-        links[0].target
-      ) as string;
-      return {
-        source: groupIdToSankeyNode.get(group.id) as SankeyNode,
-        target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
-        value: links.reduce(
-          (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
-          0
-        ),
-      };
-    });
+    // ADAMTODO: Examine approach here better. hacky quick fix
+    // @ts-ignore
+    const isAdjacent = group.columnIdx === targetNode?.__columnIndex - 1;
+    // If is source,
+    // ADAMNOTE: This is happening because we duplicate links and create source -> target, source -> source
+    // If only source VPC are shown, for example, then targetVPC will not exist.
+    return groupIdToSankeyNode.has(targetNodeId) && isAdjacent;
+  }
+
+  function toSankeyLinks(links: SubnetLink[]) {
+    const targetNodeId = group.targetGroupType?.getGroupId(
+      links[0].target
+    ) as string;
+    return {
+      source: groupIdToSankeyNode.get(group.id) as SankeyNode,
+      target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
+      value: links.reduce(
+        (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
+        0
+      ),
+    };
+  }
 }
 
-// function getSubnetLinkId(
-//   link: SubnetLink,
-//   sourceGroupType: GroupType,
-//   targetGroupType: GroupType
-// ) {
-//   return `${sourceGroupType.getGroupId(
-//     link.source
-//   )}_${targetGroupType.getGroupId(link.target)}`;
-// }
-
+// TODO: clean up hacks
 function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isSourceRegionsVisible: boolean;
   isSourceVpcsVisible: boolean;
@@ -325,7 +331,6 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isTargetSubnetsVisible: boolean;
   isTargetVpcsVisible: boolean;
   isTargetRegionsVisible: boolean;
-  columnTypes: GroupType[];
 } {
   const visibility = {
     // Source defined by filter plus clicks
@@ -350,14 +355,6 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
 
   return {
     ...visibility,
-    columnTypes: [
-      visibility.isSourceRegionsVisible ? GroupType.Region : null,
-      visibility.isSourceVpcsVisible ? GroupType.Vpc : null,
-      visibility.isSourceSubnetsVisible ? GroupType.Subnet : null,
-      visibility.isTargetSubnetsVisible ? GroupType.Subnet : null,
-      visibility.isTargetVpcsVisible ? GroupType.Vpc : null,
-      visibility.isTargetRegionsVisible ? GroupType.Region : null,
-    ].filter((v) => v) as GroupType[],
   };
 }
 
@@ -372,4 +369,15 @@ function createSankeyNode(group: SubnetGroup): SankeyNode {
     sourceLinks: [],
     targetLinks: [],
   };
+}
+
+function groupBy<T>(values: T[], callback: any): Record<string, T[]> {
+  return values.reduce((acc: Record<string, T[]>, currentValue) => {
+    const key = callback(currentValue);
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(currentValue);
+    return acc;
+  }, {});
 }
