@@ -39,6 +39,7 @@ export interface SankeyColumn {
   nodes: SankeyNode[];
   visibleRows?: [number, number];
   rightPadding: number;
+  isTarget: boolean; // TODO: May be removed
   //ADAMTODO: Temporary
   columnIdx: number;
 }

@@ -2,19 +2,6 @@ import { expect, test, describe } from "vitest";
 import { setStartAndEnd } from "../src/sankeyUtils";
 import { LinkMeta, NodeMeta } from "../src/models";
 
-// Middle nodes are where depth === inverse depth
-// Is it implicitly true that there will always be middle nodes like this?
-// More simply... max-depth / 2 signifies middle
-
-// Showing 4 columns per side...
-// SOURCE if middleNode - 4 < node.depth
-// DEST   if middleNode - 4 < node.inverseDepth
-
-// TODO: Test invalid inputs. e.g. link without value... should throw
-// TODO: sourceValue, targetValue
-// TODO: Force columns, e.g. nodes A, B grouped
-
-// ADAMTODO: y values need to be computed as part of algo
 // Instead of x0, stack them
 // ALGO
 // for each sorted link in node, compute start: { y0, y1 } end { y0, y1 }

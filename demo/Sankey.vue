@@ -186,24 +186,13 @@ const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
 };
 updateSankey();
 function updateSankey() {
-  // Clean graph (TODO: use immutable)
-  // if (sankey) {
-  //   sankey.nodes.forEach((n) => {
-  //     n.isHidden = false;
-  //   });
-  //   sankey.links.forEach((l) => {
-  //     l.isHidden = false;
-  //   });
-  // }
-
-  const unpositionedSankey = computeSankeyGrouping(
-    data,
-    computeSankeyGroupingOptions
+  sankey = computeSankey(
+    computeSankeyGrouping(data, computeSankeyGroupingOptions),
+    {
+      graphMeta: containerMeta,
+      linkXPadding: 3,
+    }
   );
-  sankey = computeSankey(unpositionedSankey, {
-    graphMeta: containerMeta,
-    linkXPadding: 3,
-  });
 
   const visibleGraph = getVisibleGraph(sankey);
   for (const col of visibleGraph.columns) {

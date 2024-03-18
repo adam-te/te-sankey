@@ -105,12 +105,39 @@ export function computeSankeyGrouping(
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const columns = [];
 
-  if (visibility.isSourceRegionsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 0 };
+  const columnSpecs = [
+    { isVisible: visibility.isSourceRegionsVisible, isTarget: false },
+    { isVisible: visibility.isSourceVpcsVisible, isTarget: false },
+    { isVisible: visibility.isSourceSubnetsVisible, isTarget: false },
+    { isVisible: visibility.isTargetSubnetsVisible, isTarget: true },
+    { isVisible: visibility.isTargetVpcsVisible, isTarget: true },
+    { isVisible: visibility.isTargetRegionsVisible, isTarget: true },
+  ];
+
+  for (const [columnIdx, columnSpec] of columnSpecs.entries()) {
+    if (!columnSpec.isVisible) {
+      continue;
+    }
+    const isPreviousColumnLastSource = Boolean(
+      !columns?.at(-1)?.isTarget && columnSpec?.isTarget
+    );
+    console.log(isPreviousColumnLastSource);
+    if (isPreviousColumnLastSource) {
+      // @ts-ignore - Clean up, just adding high padding value here... should be param
+      columns.at(-1).rightPadding = 600;
+    }
+
+    const column: SankeyColumn = {
+      nodes: [],
+      rightPadding: 0,
+      columnIdx,
+      isTarget: columnSpec.isTarget,
+    };
 
     regionGroups
       .filter((v) => !v.isTarget)
       .forEach((group) => {
+        // ADAMTODO: tes
         group.columnIdx = columns.length;
         const sankeyNode = createSankeyNode(group);
         groupIdToSankeyNode.set(group.id, sankeyNode);
@@ -120,117 +147,8 @@ export function computeSankeyGrouping(
 
         column.nodes.push(sankeyNode);
       });
-    const [prevMin, prevMax] = options.visibleRowState[0];
-    column.visibleRows = [
-      Math.max(prevMin, 0),
-      Math.min(prevMax, column.nodes.length),
-    ];
-    columns.push(column);
-  }
-  if (visibility.isSourceVpcsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 1 };
-    vpcGroups
-      .filter((v) => !v.isTarget)
-      .forEach((group) => {
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
 
-        group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
-      });
-    const [prevMin, prevMax] = options.visibleRowState[1];
-    column.visibleRows = [
-      Math.max(prevMin, 0),
-      Math.min(prevMax, column.nodes.length),
-    ];
-    columns.push(column);
-  }
-  if (visibility.isSourceSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 2 };
-    subnetGroups
-      .filter((v) => !v.isTarget)
-      .forEach((group) => {
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
-
-        group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
-      });
-    const [prevMin, prevMax] = options.visibleRowState[2];
-    column.visibleRows = [
-      Math.max(prevMin, 0),
-      Math.min(prevMax, column.nodes.length),
-    ];
-    columns.push(column);
-  }
-  // TODO: Cleanup
-  // Last sourceColumn gets padding
-  // @ts-ignore
-  columns.at(-1).rightPadding = 600;
-
-  if (visibility.isTargetSubnetsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 3 };
-    subnetGroups
-      .filter((v) => v.isTarget)
-      .forEach((group) => {
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
-
-        group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
-      });
-    const [prevMin, prevMax] = options.visibleRowState[3];
-    column.visibleRows = [
-      Math.max(prevMin, 0),
-      Math.min(prevMax, column.nodes.length),
-    ];
-    columns.push(column);
-  }
-  if (visibility.isTargetVpcsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 4 };
-    vpcGroups
-      .filter((v) => v.isTarget)
-      .forEach((group) => {
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
-
-        group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
-      });
-    const [prevMin, prevMax] = options.visibleRowState[4];
-    column.visibleRows = [
-      Math.max(prevMin, 0),
-      Math.min(prevMax, column.nodes.length),
-    ];
-    columns.push(column);
-  }
-  if (visibility.isTargetRegionsVisible) {
-    const column: SankeyColumn = { nodes: [], rightPadding: 0, columnIdx: 5 };
-    regionGroups
-      .filter((v) => v.isTarget)
-      .forEach((group) => {
-        group.columnIdx = columns.length;
-        const sankeyNode = createSankeyNode(group);
-        groupIdToSankeyNode.set(group.id, sankeyNode);
-
-        // group.targetGroupType = visibility.columnTypes[columns.length + 1];
-        groups.push(group);
-
-        column.nodes.push(sankeyNode);
-      });
-    const [prevMin, prevMax] = options.visibleRowState[5];
+    const [prevMin, prevMax] = options.visibleRowState[columnIdx];
     column.visibleRows = [
       Math.max(prevMin, 0),
       Math.min(prevMax, column.nodes.length),
