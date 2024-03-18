@@ -83,6 +83,9 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
     subnets,
     links: links.flatMap((v) => [
       {
+        // TODO: Should use this
+        // source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
+        // target: subnetIdToSubnet.get(`SOURCE_${v.remoteId}`) as Subnet,
         source: subnetIdToSubnet.get(v.localId) as Subnet,
         target: subnetIdToSubnet.get(v.remoteId) as Subnet,
         egressBytes: v.egressBytes,
