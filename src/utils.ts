@@ -69,7 +69,14 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
   const { vertices, edges: links } = data;
 
   const subnets = [...Object.values(vertices)].flatMap((v) => [
-    v,
+    {
+      id: `SOURCE_${v.id}`,
+      account: `SOURCE_${v.account}`,
+      region: `SOURCE_${v.region}`,
+      vpc: `SOURCE_${v.vpc}`,
+      az: `SOURCE_${v.az}`,
+      subnet: `SOURCE_${v.subnet}`,
+    },
     {
       id: `TARGET_${v.id}`,
       account: `TARGET_${v.account}`,
@@ -86,16 +93,13 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
     subnets,
     links: links.flatMap((v) => [
       {
-        // TODO: Should use this
-        // source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
-        // target: subnetIdToSubnet.get(`SOURCE_${v.remoteId}`) as Subnet,
-        source: subnetIdToSubnet.get(v.localId) as Subnet,
-        target: subnetIdToSubnet.get(v.remoteId) as Subnet,
+        source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
+        target: subnetIdToSubnet.get(`SOURCE_${v.remoteId}`) as Subnet,
         egressBytes: v.egressBytes,
         ingressBytes: v.ingressBytes,
       },
       {
-        source: subnetIdToSubnet.get(v.localId) as Subnet,
+        source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
         target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
         egressBytes: v.egressBytes,
         ingressBytes: v.ingressBytes,
