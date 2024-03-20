@@ -182,15 +182,18 @@ const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
     { id: "TARGET_REGION", visibleRows: [0, 4] },
   ],
 };
+
 updateSankey();
 function updateSankey() {
-  sankey = computeSankey(
-    computeSankeyGrouping(data, computeSankeyGroupingOptions),
-    {
-      graphMeta: containerMeta,
-      linkXPadding: 3,
-    }
+  const sankeyGrouping = computeSankeyGrouping(
+    data,
+    computeSankeyGroupingOptions
   );
+  console.log("SANKEY_GROUPING", sankeyGrouping);
+  sankey = computeSankey(sankeyGrouping, {
+    graphMeta: containerMeta,
+    linkXPadding: 3,
+  });
 
   const visibleGraph = getVisibleGraph(sankey);
   for (const col of visibleGraph.columns) {

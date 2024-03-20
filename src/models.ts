@@ -55,6 +55,15 @@ export interface SankeyConfig {
   linkXPadding: number;
 }
 
+export interface RawSubnet {
+  id: string; // "036476006320-us-west-1-subnet-0c007c2b937018184",
+  account: string; // "036476006320",
+  region: string; // "us-west-1",
+  vpc: string; // "vpc-01467758515c907ef",
+  az: string; // "usw1-az1",
+  subnet: string; // "subnet-0c007c2b937018184"
+}
+
 export interface Subnet {
   id: string; // "036476006320-us-west-1-subnet-0c007c2b937018184",
   account: string; // "036476006320",
@@ -62,6 +71,7 @@ export interface Subnet {
   vpc: string; // "vpc-01467758515c907ef",
   az: string; // "usw1-az1",
   subnet: string; // "subnet-0c007c2b937018184"
+  isTarget: boolean; // "subnet-0c007c2b937018184"
 }
 
 export interface RawSubnetLink {

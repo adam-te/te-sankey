@@ -1,4 +1,3 @@
-import { TracingChannel } from "diagnostics_channel";
 import {
   SubnetData,
   Subnet,
@@ -76,6 +75,7 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
       vpc: `SOURCE_${v.vpc}`,
       az: `SOURCE_${v.az}`,
       subnet: `SOURCE_${v.subnet}`,
+      isTarget: false,
     },
     {
       id: `TARGET_${v.id}`,
@@ -84,6 +84,7 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
       vpc: `TARGET_${v.vpc}`,
       az: `TARGET_${v.az}`,
       subnet: `TARGET_${v.subnet}`,
+      isTarget: true,
     },
   ]);
   const subnetIdToSubnet = new Map<string, Subnet>(
@@ -91,20 +92,35 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
   );
   return {
     subnets,
-    links: links.flatMap((v) => [
-      {
-        source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
-        target: subnetIdToSubnet.get(`SOURCE_${v.remoteId}`) as Subnet,
-        egressBytes: v.egressBytes,
-        ingressBytes: v.ingressBytes,
-      },
-      {
-        source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
-        target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
-        egressBytes: v.egressBytes,
-        ingressBytes: v.ingressBytes,
-      },
-    ]),
+    // NOTE: This inserts links that will later need to be culled e.g. SOURCE_REGION -> SOURCE_REGION
+    // It simply creates inserts all conceptually valid link configurations
+    // TODO: Cull it here to avoid unnecessary processing
+    links: links.flatMap((v) => {
+      return [
+        // e.g. SOURCE_REGION -> SOURCE_VPC
+        {
+          source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
+          target: subnetIdToSubnet.get(`SOURCE_${v.remoteId}`) as Subnet,
+          egressBytes: v.egressBytes,
+          ingressBytes: v.ingressBytes,
+        },
+        // e.g. SOURCE_SUBNET -> TARGET_SUBNET
+        {
+          source: subnetIdToSubnet.get(`SOURCE_${v.localId}`) as Subnet,
+          target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
+          egressBytes: v.egressBytes,
+          ingressBytes: v.ingressBytes,
+        },
+        // ADAMTODO: here
+        // e.g. TARGET_SUBNET -> TARGET_VPC
+        {
+          source: subnetIdToSubnet.get(`TARGET_${v.localId}`) as Subnet,
+          target: subnetIdToSubnet.get(`TARGET_${v.remoteId}`) as Subnet,
+          egressBytes: v.egressBytes,
+          ingressBytes: v.ingressBytes,
+        },
+      ];
+    }),
   };
 }
 
@@ -191,15 +207,17 @@ export function computeSankeyGrouping(
     const nextVisibleGroupType =
       visibleColumnSpecs[columns.length + 1]?.groupType;
 
+    console.log(visibleColumnSpecs);
     for (const group of columnSpec.groups) {
       // ADAMTODO: clean up (do we need mutation?)
       group.targetGroupType = nextVisibleGroupType;
-
       const sankeyNode = createSankeyNode(group);
       groupIdToSankeyNode.set(group.id, sankeyNode);
       groups.push(group);
 
       column.nodes.push(sankeyNode);
+
+      console.log("setting groupid", group.id, columns.length);
       groupIdToColIdx.set(group.id, columns.length);
     }
 
@@ -214,6 +232,7 @@ export function computeSankeyGrouping(
       Math.max(prevMin, 0),
       Math.min(prevMax, column.nodes.length),
     ];
+    console.log("adding col");
     columns.push(column);
   }
 
@@ -257,9 +276,10 @@ function computeGroupedSubnets(
   for (const subnet of Object.values(data.subnets)) {
     const groupId = groupType.getGroupId(subnet);
     if (!groupIdToGroup.has(groupId)) {
+      console.log(subnet.id);
       groupIdToGroup.set(groupId, {
         id: groupId,
-        isTarget: !idToSubnetSourceLinks.get(subnet.id)?.length,
+        isTarget: subnet.isTarget,
         subnets: [],
         sourceLinks: [],
         groupType,
@@ -304,6 +324,8 @@ function computeGroupLinks({
   groupIdToSankeyNode: Map<string, SankeyNode>;
   group: SubnetGroup;
 }): SankeyLink[] {
+  // ADAMTODO: HERE
+  // debugger;
   const targetGroupIdToLinks = groupBy<SubnetLink>(
     group.sourceLinks,
     getTargetGroupId
