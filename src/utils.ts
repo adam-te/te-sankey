@@ -38,6 +38,10 @@ interface SubnetGroup {
   sourceLinks: SubnetLink[];
   groupType: GroupType;
   targetGroupType?: GroupType;
+  /** The index at which this column would exist if all columns were to be insertd into the graph.
+   * e.g. right now the design is for 6 columns:
+   * Source Region, Source VPC, Source Subnet, Target Subnet, Target VPC, Target Region
+   */
   columnIdx?: number;
 }
 
@@ -301,11 +305,9 @@ function computeGroupLinks(
     const targetNode = groupIdToSankeyNode.get(targetNodeId);
 
     // ADAMTODO: Examine approach here better. hacky quick fix
+    // Filtering out non-adjacent links, as link
     // @ts-ignore
     const isAdjacent = group.columnIdx === targetNode?.__columnIndex - 1;
-    // If is source,
-    // ADAMNOTE: This is happening because we duplicate links and create source -> target, source -> source
-    // If only source VPC are shown, for example, then targetVPC will not exist.
     return groupIdToSankeyNode.has(targetNodeId) && isAdjacent;
   }
 
