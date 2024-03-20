@@ -1,1 +1,5 @@
-Solve missing target links
+- Add column based on d3 algo // Fixed?
+- Fix y axis issues // TODO:
+- Fix scaling to use single scale based on left-most source (one global scale, not one per column)
+- Prevent focus of target node
+

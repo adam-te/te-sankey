@@ -61,7 +61,7 @@ const GroupType: Record<string, GroupType> = {
 /**
  * Create a distinct SOURCE and TARGET set of nodes to handle cycles
  * e.g. some traffic in 'us-west-1' may stay within 'us-west-1', which
- * presents as a cycle. Instead, we visualize this as a traffic flow
+ * presents as a cycle/self-link. Instead, we visualize this as a traffic flow
  * from the source 'us-west-1' to the target 'us-west-1'
  */
 export function computeWiredGraph(data: RawSubnetData): SubnetData {
@@ -93,7 +93,7 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
   return {
     subnets,
     // NOTE: This inserts links that will later need to be culled e.g. SOURCE_REGION -> SOURCE_REGION
-    // It simply creates inserts all conceptually valid link configurations
+    // It simply inserts all conceptually valid link configurations
     // TODO: Cull it here to avoid unnecessary processing
     links: links.flatMap((v) => {
       return [
@@ -111,7 +111,6 @@ export function computeWiredGraph(data: RawSubnetData): SubnetData {
           egressBytes: v.egressBytes,
           ingressBytes: v.ingressBytes,
         },
-        // ADAMTODO: here
         // e.g. TARGET_SUBNET -> TARGET_VPC
         {
           source: subnetIdToSubnet.get(`TARGET_${v.localId}`) as Subnet,
@@ -217,7 +216,6 @@ export function computeSankeyGrouping(
 
       column.nodes.push(sankeyNode);
 
-      console.log("setting groupid", group.id, columns.length);
       groupIdToColIdx.set(group.id, columns.length);
     }
 
@@ -232,7 +230,6 @@ export function computeSankeyGrouping(
       Math.max(prevMin, 0),
       Math.min(prevMax, column.nodes.length),
     ];
-    console.log("adding col");
     columns.push(column);
   }
 
@@ -256,6 +253,12 @@ export function computeSankeyGrouping(
     sankeyLinks.push(...groupSourceLinks);
   }
 
+  // TODO: Profile
+  sortToMinimizeLinkCrossings({
+    columns,
+    numberOfIterations: 6,
+  });
+
   return {
     nodes: [...groupIdToSankeyNode.values()],
     links: sankeyLinks,
@@ -270,7 +273,7 @@ function computeGroupedSubnets(
   data: SubnetData,
   groupType: GroupType
 ): SubnetGroup[] {
-  const idToSubnetSourceLinks = getIdToSourceSubnetLinks(data.links);
+  // const idToSubnetSourceLinks = getIdToSourceSubnetLinks(data.links);
 
   const groupIdToGroup = new Map<string, SubnetGroup>();
   for (const subnet of Object.values(data.subnets)) {
@@ -441,4 +444,55 @@ function groupBy<T>(values: T[], callback: any): Record<string, T[]> {
     acc[key].push(currentValue);
     return acc;
   }, {});
+}
+
+/**
+ * Sorts all columns iteratively based on the neighboring column indices to minimize
+ * "link crossings" between columns. This uses a standard "sort by barycentric center"
+ * approach.
+ */
+function sortToMinimizeLinkCrossings({
+  columns,
+  numberOfIterations,
+}: {
+  columns: SankeyColumn[];
+  numberOfIterations: number;
+}): void {
+  for (let i = 0; i < numberOfIterations; i++) {
+    for (let j = 0; j < columns.length - 1; j++) {
+      const column = columns[j];
+      const nextColumn = columns[j + 1];
+      sortNodesByBarycenter(column, nextColumn);
+    }
+  }
+
+  function sortNodesByBarycenter(
+    column: SankeyColumn,
+    nextColumn: SankeyColumn
+  ) {
+    const nodeIdToNextColumnIdx = new Map(
+      nextColumn.nodes.map((node, index) => [node.id, index])
+    );
+    return column.nodes.sort((a, b) => {
+      const aBarycenter = calculateBarycenter(a) || Infinity;
+      const bBarycenter = calculateBarycenter(b) || Infinity;
+      return aBarycenter - bBarycenter;
+    });
+
+    function calculateBarycenter(node: SankeyNode) {
+      const linkMidpoints = node.sourceLinks.map((v) => {
+        const isLinkTargetInNextColumn = nodeIdToNextColumnIdx.has(v.target.id);
+        if (!isLinkTargetInNextColumn) {
+          throw new Error(
+            "Link is pointing to a node that is not in the neighboring column!"
+          );
+        }
+        return nodeIdToNextColumnIdx.get(v.target.id) as number;
+      });
+
+      return linkMidpoints.length
+        ? linkMidpoints.reduce((a, b) => a + b, 0) / linkMidpoints.length
+        : null;
+    }
+  }
 }

@@ -71,7 +71,8 @@ export interface Subnet {
   vpc: string; // "vpc-01467758515c907ef",
   az: string; // "usw1-az1",
   subnet: string; // "subnet-0c007c2b937018184"
-  isTarget: boolean; // "subnet-0c007c2b937018184"
+  /** Whether this is a "target" version of the subnet. If not a target, it is a source */
+  isTarget: boolean;
 }
 
 export interface RawSubnetLink {
@@ -89,7 +90,7 @@ export interface SubnetLink {
 }
 
 export interface RawSubnetData {
-  vertices: Record<string, Subnet>;
+  vertices: Record<string, RawSubnet>;
   edges: RawSubnetLink[];
 }
 
