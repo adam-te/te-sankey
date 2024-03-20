@@ -38,11 +38,6 @@ interface SubnetGroup {
   sourceLinks: SubnetLink[];
   groupType: GroupType;
   targetGroupType?: GroupType;
-  /** The index at which this column would exist if all columns were to be insertd into the graph.
-   * e.g. right now the design is for 6 columns:
-   * Source Region, Source VPC, Source Subnet, Target Subnet, Target VPC, Target Region
-   */
-  columnIdx?: number;
 }
 
 const GroupType: Record<string, GroupType> = {
@@ -120,6 +115,7 @@ export function computeSankeyGrouping(
   const visibility = getColumnVisibility(options);
   const groups: SubnetGroup[] = [];
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
+  const groupIdToColIdx = new Map<string, number>();
   const columns = [];
 
   const columnSpecs = [
@@ -174,9 +170,11 @@ export function computeSankeyGrouping(
     }
 
     const column: SankeyColumn = {
+      id: `${columnSpec.isTarget ? "TARGET" : "SOURCE"}_${
+        columnSpec.groupType
+      }`,
       nodes: [],
       rightPadding: 0,
-      columnIdx,
       isTarget: columnSpec.isTarget,
     };
 
@@ -186,16 +184,14 @@ export function computeSankeyGrouping(
     ]?.groupType;
     for (const group of columnSpec.groups) {
       // ADAMTODO: clean up (do we need mutation?)
-      Object.assign(group, {
-        columnIdx: columns.length,
-        targetGroupType: nextVisibleGroupType,
-      });
+      group.targetGroupType = nextVisibleGroupType;
 
       const sankeyNode = createSankeyNode(group);
       groupIdToSankeyNode.set(group.id, sankeyNode);
       groups.push(group);
 
       column.nodes.push(sankeyNode);
+      groupIdToColIdx.set(group.id, columns.length);
     }
 
     const [prevMin, prevMax] = options.visibleRowState[columnIdx];
@@ -213,7 +209,11 @@ export function computeSankeyGrouping(
       continue;
     }
 
-    const groupSourceLinks = computeGroupLinks(groupIdToSankeyNode, group);
+    const groupSourceLinks = computeGroupLinks({
+      groupIdToColIdx,
+      groupIdToSankeyNode,
+      group,
+    });
 
     for (const link of groupSourceLinks) {
       link.source.sourceLinks.push(link);
@@ -280,15 +280,20 @@ function getIdToSourceSubnetLinks(
   );
 }
 
-function computeGroupLinks(
-  groupIdToSankeyNode: Map<string, SankeyNode>,
-  group: SubnetGroup
-): SankeyLink[] {
+function computeGroupLinks({
+  groupIdToColIdx,
+  groupIdToSankeyNode,
+  group,
+}: {
+  groupIdToColIdx: Map<string, number>;
+  groupIdToSankeyNode: Map<string, SankeyNode>;
+  group: SubnetGroup;
+}): SankeyLink[] {
   const targetGroupIdToLinks = groupBy<SubnetLink>(
     group.sourceLinks,
     getTargetGroupId
   );
-  console.log(targetGroupIdToLinks);
+
   return Object.values(targetGroupIdToLinks)
     .filter(isIncludedLinks)
     .map(toSankeyLinks);
@@ -298,27 +303,43 @@ function computeGroupLinks(
     return group.targetGroupType.getGroupId(link.target);
   }
 
-  function isIncludedLinks(links: SubnetLink[]) {
-    const targetNodeId = group.targetGroupType?.getGroupId(
-      links[0].target
-    ) as string;
-    const targetNode = groupIdToSankeyNode.get(targetNodeId);
-
-    // ADAMTODO: Examine approach here better. hacky quick fix
-    // Filtering out non-adjacent links, as link
+  function getSourceGroupId(link: SubnetLink): string {
     // @ts-ignore
-    const isAdjacent = group.columnIdx === targetNode?.__columnIndex - 1;
-    return groupIdToSankeyNode.has(targetNodeId) && isAdjacent;
+    return group.groupType.getGroupId(link.source);
+  }
+
+  // ADAMTODO: Examine approach here better. hacky quick fix
+  // Filtering out non-adjacent links, as link
+  function isLinkPointingToAdjacentColumn(link: SubnetLink): boolean {
+    const sourceGroupId = getSourceGroupId(link);
+    const targetGroupId = getTargetGroupId(link);
+
+    return (
+      groupIdToColIdx.get(sourceGroupId) ===
+      (groupIdToColIdx?.get(targetGroupId) || 0) - 1
+    );
+  }
+
+  function isTargetNodeVisible(link: SubnetLink): boolean {
+    const targetNodeId = getTargetGroupId(link);
+    return groupIdToSankeyNode.has(targetNodeId);
+  }
+
+  function isIncludedLinks(links: SubnetLink[]): boolean {
+    const linkCandidate = links[0];
+    return (
+      isTargetNodeVisible(linkCandidate) &&
+      isLinkPointingToAdjacentColumn(linkCandidate)
+    );
   }
 
   function toSankeyLinks(links: SubnetLink[]) {
-    const targetNodeId = group.targetGroupType?.getGroupId(
-      links[0].target
-    ) as string;
+    const targetNodeId = getTargetGroupId(links[0]);
     return {
       source: groupIdToSankeyNode.get(group.id) as SankeyNode,
       target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
       value: links.reduce(
+        // TODO:
         (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
         0
       ),
@@ -368,8 +389,6 @@ function createSankeyNode(group: SubnetGroup): SankeyNode {
     id: group.id,
     // @ts-ignore TODO fix
     displayName: group.id.split("_").at(-1),
-    // @ts-ignore TODO fix
-    __columnIndex: group.columnIdx,
     label: group.isTarget ? "right" : "left",
     sourceLinks: [],
     targetLinks: [],

@@ -36,12 +36,11 @@ export interface SankeyGraph {
   columns: SankeyColumn[];
 }
 export interface SankeyColumn {
+  id: string;
   nodes: SankeyNode[];
   visibleRows?: [number, number];
   rightPadding: number;
   isTarget: boolean; // TODO: May be removed
-  //ADAMTODO: Temporary
-  columnIdx: number;
 }
 
 export interface SankeyConfig {
