@@ -1,9 +1,14 @@
-import { SankeyColumn, SankeyConfig, SankeyGraph, SankeyNode } from "./models";
-import { scaleLinear } from "d3-scale";
+import {
+  SankeyColumn,
+  SankeyConfig,
+  SankeyGraph,
+  SankeyLink,
+  SankeyNode,
+} from "./models";
+import { ScaleLinear, scaleLinear } from "d3-scale";
 
 export function setStartAndEnd(graph: SankeyGraph, sankeyConfig: SankeyConfig) {
   const globalWidth = sankeyConfig.graphMeta.width;
-  const globalHeight = sankeyConfig.graphMeta.height;
 
   //   const columns = computeNodeColumns(nodes);
   const spacingBetweenColumns = computeSpacingBetweenColumns(
@@ -12,82 +17,172 @@ export function setStartAndEnd(graph: SankeyGraph, sankeyConfig: SankeyConfig) {
     sankeyConfig
   );
 
+  // TODO: property of column instead of bool on node
   // TODO: Move back to loop
   markHiddenNodes(graph.columns);
 
   let x = spacingBetweenColumns;
-  let columnIdx = 0;
   for (const column of graph.columns) {
-    const visibleColumnNodes = column.nodes.slice(
-      // @ts-ignore
-      column.visibleRows[0],
-      // @ts-ignore
-      column.visibleRows[1]
-    );
-
-    const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
-    const yScale = scaleLinear()
-      .domain([0, totalColumnFlowValue])
-      .range([0, globalHeight]);
-
-    let y0 = 0;
-    let rowCount = 1;
-    for (const node of visibleColumnNodes) {
-      const nodeHeight =
-        yScale(getNodeTotalFlowValue(node)) - sankeyConfig.nodePadding;
-
-      Object.assign(node, {
-        x0: x,
-        x1: x + sankeyConfig.nodeWidth,
-        y0: y0,
-        y1: y0 + nodeHeight,
-        linksEndY: y0 + yScale(getNodeVisibleFlowValue(node)),
-      });
-
-      let linkStartY0 = 0;
-      const visibleSourceLinks = node.sourceLinks.filter((v) => !v.isHidden);
-      for (const link of visibleSourceLinks) {
-        const isLastLink = link === visibleSourceLinks.at(-1);
-        const linkHeight = yScale(link.value);
-        link.start = {
-          x: x + sankeyConfig.nodeWidth + sankeyConfig.linkXPadding,
-          y0: y0 + linkStartY0,
-          y1:
-            y0 +
-            linkStartY0 +
-            linkHeight -
-            (isLastLink ? sankeyConfig.nodePadding : 0),
-        };
-        linkStartY0 += linkHeight;
-
-        if (isLastLink) {
-          node.linksEndY = link.start.y1;
-        }
-      }
-
-      let linkEndY0 = 0;
-      const visibleTargetLinks = node.targetLinks.filter((v) => !v.isHidden);
-      for (const link of visibleTargetLinks) {
-        const isLastLink = link === visibleTargetLinks.at(-1);
-        const linkHeight = yScale(link.value);
-        link.end = {
-          x: x - sankeyConfig.linkXPadding,
-          y0: y0 + linkEndY0,
-          y1:
-            y0 +
-            linkEndY0 +
-            linkHeight -
-            (isLastLink ? sankeyConfig.nodePadding : 0),
-        };
-        linkEndY0 += linkHeight;
-      }
-      y0 += nodeHeight + sankeyConfig.nodePadding;
-      rowCount += 1;
-    }
-
+    positionColumn({
+      x,
+      column,
+      sankeyConfig,
+    });
     // @ts-ignore
     x += spacingBetweenColumns + column.rightPadding;
-    columnIdx += 1;
+  }
+}
+
+function positionColumn({
+  x,
+  column,
+  sankeyConfig,
+}: {
+  x: number;
+  column: SankeyColumn;
+  sankeyConfig: SankeyConfig;
+}) {
+  const globalHeight = sankeyConfig.graphMeta.height;
+  const visibleColumnNodes = column.nodes.slice(
+    // @ts-ignore
+    column.visibleRows[0],
+    // @ts-ignore
+    column.visibleRows[1]
+  );
+
+  const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
+  const yScale = scaleLinear()
+    .domain([0, totalColumnFlowValue])
+    .range([0, globalHeight]);
+
+  let y0 = 0;
+  let rowCount = 1;
+  for (const node of visibleColumnNodes) {
+    const { nodeHeight } = positionNode({
+      x,
+      y0,
+      yScale,
+      node,
+      sankeyConfig,
+    });
+    y0 += nodeHeight + sankeyConfig.nodePadding;
+    rowCount += 1;
+  }
+}
+
+function positionNode({
+  x,
+  y0,
+  yScale,
+  node,
+  sankeyConfig,
+}: {
+  x: number;
+  y0: number;
+  yScale: ScaleLinear<number, number>;
+  node: SankeyNode;
+  sankeyConfig: SankeyConfig;
+}) {
+  const nodeHeight =
+    yScale(getNodeTotalFlowValue(node)) - sankeyConfig.nodePadding;
+
+  Object.assign(node, {
+    x0: x,
+    x1: x + sankeyConfig.nodeWidth,
+    y0: y0,
+    y1: y0 + nodeHeight,
+    linksEndY: y0 + yScale(getNodeVisibleFlowValue(node)),
+  });
+
+  const { linksEndY } = positionSourceLinks({
+    x,
+    y0,
+    yScale,
+    links: node.sourceLinks.filter((v) => !v.isHidden),
+    sankeyConfig,
+  });
+  node.linksEndY = linksEndY;
+
+  positionTargetLinks({
+    x,
+    y0,
+    yScale,
+    links: node.targetLinks.filter((v) => !v.isHidden),
+    sankeyConfig,
+  });
+
+  return {
+    nodeHeight,
+  };
+}
+
+function positionSourceLinks({
+  x,
+  y0,
+  yScale,
+  links,
+  sankeyConfig,
+}: {
+  x: number;
+  y0: number;
+  yScale: ScaleLinear<number, number>;
+  links: SankeyLink[];
+  sankeyConfig: SankeyConfig;
+}): {
+  linksEndY: number;
+} {
+  let linkStartY0 = 0;
+  let linksEndY = null;
+  for (const link of links) {
+    const isLastLink = link === links.at(-1);
+    const linkHeight = yScale(link.value);
+    link.start = {
+      x: x + sankeyConfig.nodeWidth + sankeyConfig.linkXPadding,
+      y0: y0 + linkStartY0,
+      y1:
+        y0 +
+        linkStartY0 +
+        linkHeight -
+        (isLastLink ? sankeyConfig.nodePadding : 0),
+    };
+    linkStartY0 += linkHeight;
+
+    if (isLastLink) {
+      linksEndY = link.start.y1;
+    }
+  }
+
+  // @ts-ignore
+  return { linksEndY };
+}
+
+function positionTargetLinks({
+  x,
+  y0,
+  yScale,
+  links,
+  sankeyConfig,
+}: {
+  x: number;
+  y0: number;
+  yScale: ScaleLinear<number, number>;
+  links: SankeyLink[];
+  sankeyConfig: SankeyConfig;
+}): void {
+  let linkEndY0 = 0;
+  for (const link of links) {
+    const isLastLink = link === links.at(-1);
+    const linkHeight = yScale(link.value);
+    link.end = {
+      x: x - sankeyConfig.linkXPadding,
+      y0: y0 + linkEndY0,
+      y1:
+        y0 +
+        linkEndY0 +
+        linkHeight -
+        (isLastLink ? sankeyConfig.nodePadding : 0),
+    };
+    linkEndY0 += linkHeight;
   }
 }
 
