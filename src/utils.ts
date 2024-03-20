@@ -11,19 +11,23 @@ import {
 } from "../src/models";
 // const { vertices: subnets, edges: links } = data;
 
+type ColumnId =
+  | "SOURCE_REGION"
+  | "SOURCE_VPC"
+  | "SOURCE_SUBNET"
+  | "TARGET_SUBNET"
+  | "TARGET_VPC"
+  | "TARGET_REGION";
+
+interface ColumnSpec {
+  id: ColumnId;
+  visibleRows: [number, number];
+}
 export interface ComputeSankeyGroupingOptions {
   sourceGroupType: "REGION" | "VPC" | "SUBNET";
   targetGroupType: "REGION" | "VPC" | "SUBNET";
   focusedNode?: string;
-  // ADAMTODO: make cleaner
-  visibleRowState: [
-    [number, number], // Source Region
-    [number, number], // Source VPC
-    [number, number], // Source Subnet
-    [number, number], // Target Subnet
-    [number, number], // Target VPC
-    [number, number] // Target Region
-  ];
+  columnSpecs: ColumnSpec[];
 }
 
 interface GroupType {
@@ -116,6 +120,9 @@ export function computeSankeyGrouping(
   const groups: SubnetGroup[] = [];
   const groupIdToSankeyNode = new Map<string, SankeyNode>();
   const groupIdToColIdx = new Map<string, number>();
+  const columnIdToColSpec = new Map<string, ColumnSpec>(
+    options.columnSpecs.map((v) => [v.id, v])
+  );
   const columns = [];
 
   const columnSpecs = [
@@ -157,10 +164,8 @@ export function computeSankeyGrouping(
     },
   ];
 
-  for (const [columnIdx, columnSpec] of columnSpecs.entries()) {
-    if (!columnSpec.isVisible) {
-      continue;
-    }
+  const visibleColumnSpecs = columnSpecs.filter((c) => c.isVisible);
+  for (const columnSpec of visibleColumnSpecs) {
     const isPreviousColumnLastSource = Boolean(
       !columns?.at(-1)?.isTarget && columnSpec?.isTarget
     );
@@ -170,18 +175,18 @@ export function computeSankeyGrouping(
     }
 
     const column: SankeyColumn = {
-      id: `${columnSpec.isTarget ? "TARGET" : "SOURCE"}_${
-        columnSpec.groupType
-      }`,
+      id: `${
+        columnSpec.isTarget ? "TARGET" : "SOURCE"
+      }_${columnSpec.groupType.id.toUpperCase()}`,
       nodes: [],
       rightPadding: 0,
       isTarget: columnSpec.isTarget,
     };
 
     // TODO: IS this right?
-    const nextVisibleGroupType = columnSpecs.filter((v) => v.isVisible)[
-      columns.length + 1
-    ]?.groupType;
+    const nextVisibleGroupType =
+      visibleColumnSpecs[columns.length + 1]?.groupType;
+
     for (const group of columnSpec.groups) {
       // ADAMTODO: clean up (do we need mutation?)
       group.targetGroupType = nextVisibleGroupType;
@@ -194,7 +199,13 @@ export function computeSankeyGrouping(
       groupIdToColIdx.set(group.id, columns.length);
     }
 
-    const [prevMin, prevMax] = options.visibleRowState[columnIdx];
+    const columnVisibleRows = columnIdToColSpec.get(column.id);
+    if (!columnVisibleRows) {
+      throw new Error(
+        "Invalid column.id specified! It must be one of: (SOURCE/TARGET)_(REGION/VPC/SUBNET)"
+      );
+    }
+    const [prevMin, prevMax] = columnVisibleRows.visibleRows;
     column.visibleRows = [
       Math.max(prevMin, 0),
       Math.min(prevMax, column.nodes.length),

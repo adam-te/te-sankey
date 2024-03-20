@@ -158,8 +158,6 @@ import { SankeyNode } from "../src/models";
 
 const data = computeWiredGraph(rawData);
 
-// function computeSankey() {}
-
 const drawCounter = ref(0);
 const containerMeta = {
   width: 1600,
@@ -175,13 +173,13 @@ const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
   sourceGroupType: "REGION",
   targetGroupType: "REGION",
   focusedNode: undefined,
-  visibleRowState: [
-    [0, 4],
-    [0, 4],
-    [0, 4],
-    [0, 4],
-    [0, 4],
-    [0, 4],
+  columnSpecs: [
+    { id: "SOURCE_REGION", visibleRows: [0, 4] },
+    { id: "SOURCE_VPC", visibleRows: [0, 4] },
+    { id: "SOURCE_SUBNET", visibleRows: [0, 4] },
+    { id: "TARGET_SUBNET", visibleRows: [0, 4] },
+    { id: "TARGET_VPC", visibleRows: [0, 4] },
+    { id: "TARGET_REGION", visibleRows: [0, 4] },
   ],
 };
 updateSankey();
