@@ -249,6 +249,17 @@ export function computeSankeyGrouping(
     sankeyLinks.push(...groupSourceLinks);
   }
 
+  const sankeyNodes = [...groupIdToSankeyNode.values()];
+
+  // Sort smallest links first:
+  // 1) For to make flows more obvious
+  // 2) To allow for padding reduction to work with single pass
+  // Note: May want to revisit this design decision
+  for (const node of sankeyNodes) {
+    node.sourceLinks.sort((a, b) => a.value - b.value);
+    node.targetLinks.sort((a, b) => a.value - b.value);
+  }
+
   // TODO: Profile
   sortToMinimizeLinkCrossings({
     columns,
@@ -256,7 +267,7 @@ export function computeSankeyGrouping(
   });
 
   return {
-    nodes: [...groupIdToSankeyNode.values()],
+    nodes: sankeyNodes,
     links: sankeyLinks,
     columns,
   };

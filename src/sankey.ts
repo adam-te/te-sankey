@@ -1,10 +1,10 @@
 import { SankeyConfig, SankeyGraph } from "./models";
 
 import {
+  computeSankeyYScale,
   computeSpacingBetweenColumns,
   markHiddenNodes,
   positionColumn,
-  setStartAndEnd,
 } from "./sankeyUtils";
 
 export interface SankeyOptions {
@@ -15,8 +15,7 @@ export interface SankeyOptions {
   extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
   nodeWidth?: number; // 24
 
-  // TODO: Does this do anything?
-  nodePadding?: number; // 8
+  nodeYPadding?: number; // 8
   linkXPadding?: number;
 }
 
@@ -26,7 +25,7 @@ export function computeSankey(
 ): SankeyGraph {
   const sankeyConfig: SankeyConfig = {
     nodeWidth: 24,
-    nodePadding: 8,
+    nodeYPadding: 8,
     linkXPadding: 0,
     ...options,
   };
@@ -42,6 +41,10 @@ export function computeSankey(
 
   // TODO: property of column instead of bool on node
   markHiddenNodes(graph.columns);
+  // Scale based on totalVisibleFlow using last source column
+  const yScale = computeSankeyYScale(graph, sankeyConfig);
+  console.log("OUTER", yScale.range(), yScale.domain());
+  // scaleLinear().domain([0, totalColumnFlowValue]).range([0, globalHeight]);
 
   let x = spacingBetweenColumns;
   for (const column of graph.columns) {
@@ -49,6 +52,7 @@ export function computeSankey(
       x,
       column,
       sankeyConfig,
+      yScale,
     });
     x += spacingBetweenColumns + column.rightPadding;
   }

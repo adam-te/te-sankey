@@ -48,8 +48,8 @@ export interface SankeyConfig {
     width: number;
     height: number;
   };
-  nodeWidth: number; // 24 // DEPRECATED
-  nodePadding: number; // 0 DEPRECATED - rename nodeYPadding
+  nodeWidth: number; // 24
+  nodeYPadding: number; // 0
   linkXPadding: number;
 }
 
