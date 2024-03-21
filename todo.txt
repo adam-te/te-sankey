@@ -1,0 +1,5 @@
+- Assess convergence of minimizing link crossing algo
+- Add more tests
+- Update yScaling to use single column flow
+- Prevent focus of target nodes
+

@@ -205,7 +205,6 @@ export function computeSankeyGrouping(
       visibleColumnSpecs[columns.length + 1]?.groupType;
 
     for (const group of columnSpec.groups) {
-      // ADAMTODO: clean up (do we need mutation?)
       group.targetGroupType = nextVisibleGroupType;
       groupIdToColIdx.set(group.id, columns.length);
       groups.push(group);
@@ -250,15 +249,6 @@ export function computeSankeyGrouping(
   }
 
   const sankeyNodes = [...groupIdToSankeyNode.values()];
-
-  // Sort smallest links first:
-  // 1) For to make flows more obvious
-  // 2) To allow for padding reduction to work with single pass
-  // Note: May want to revisit this design decision
-  for (const node of sankeyNodes) {
-    node.sourceLinks.sort((a, b) => a.value - b.value);
-    node.targetLinks.sort((a, b) => a.value - b.value);
-  }
 
   // TODO: Profile
   sortToMinimizeLinkCrossings({
@@ -334,8 +324,8 @@ function computeGroupLinks({
     return group.groupType.getGroupId(link.source);
   }
 
-  // ADAMTODO: Examine approach here better. hacky quick fix
-  // Filtering out non-adjacent links, as link
+  // TODO: Can we filter these out earlier for better perf?
+  // Filtering out non-adjacent links
   function isLinkPointingToAdjacentColumn(link: SubnetLink): boolean {
     const sourceGroupId = getSourceGroupId(link);
     const targetGroupId = getTargetGroupId(link);
@@ -365,7 +355,6 @@ function computeGroupLinks({
       source: groupIdToSankeyNode.get(group.id) as SankeyNode,
       target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
       value: links.reduce(
-        // TODO:
         (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
         0
       ),
@@ -373,7 +362,6 @@ function computeGroupLinks({
   }
 }
 
-// TODO: clean up hacks
 function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isSourceRegionsVisible: boolean;
   isSourceVpcsVisible: boolean;
@@ -395,7 +383,7 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
       !!(
         options.focusedNode?.startsWith("VPC_") ||
         options.focusedNode?.startsWith("SUBNET_")
-      ), // TODO: Fix hack
+      ), // TODO: Fix hacky string inference
 
     // Target defined by filter
     isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),

@@ -164,8 +164,6 @@ const containerMeta = {
   height: 600,
 };
 
-// const sankey = mockGraph.get();
-
 let visibleNodes;
 let visibleLinks;
 let sankey;

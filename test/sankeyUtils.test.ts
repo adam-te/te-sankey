@@ -297,10 +297,6 @@ import { expect, test, describe } from "vitest";
 //   expect(nodeC.isHidden).toBe(true);
 // });
 
-// // URGENT
-// // minimize crossing (sort links by minimizing crossings, prior to assigning x, y)
-// // Per column paging. { 0: [0, 4], 1: [4, 6] }
-// // Test minimize crossing
 // test("AonB -> C", () => {});
 
 // function getNodeDetails(node: Required<NodeMeta>) {

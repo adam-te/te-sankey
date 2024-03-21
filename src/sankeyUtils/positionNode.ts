@@ -1,8 +1,7 @@
 import { ScaleLinear } from "d3-scale";
 import { SankeyConfig, SankeyNode } from "../models";
-import { getNodeTotalFlowValue, getNodeVisibleFlowValue } from "./utils";
-import { positionSourceLinks } from "./positionSourceLinks";
-import { positionTargetLinks } from "./positionTargetLinks";
+import { getNodeTotalFlowValue } from "./utils";
+import { positionLinks } from "./positionLinks";
 
 export function positionNode({
   x,
@@ -27,21 +26,29 @@ export function positionNode({
     y1: y0 + nodeHeight,
   });
 
-  const { linksEndY } = positionSourceLinks({
+  const { linksEndY } = positionLinks({
     x,
     y0,
     yScale,
     links: node.sourceLinks.filter((v) => !v.isHidden),
-    sankeyConfig,
+    sankeyConfig: {
+      ...sankeyConfig,
+      linkXPadding: sankeyConfig.linkXPadding + sankeyConfig.nodeWidth,
+    },
+    type: "start",
   });
   node.linksEndY = linksEndY;
 
-  positionTargetLinks({
+  positionLinks({
     x,
     y0,
     yScale,
     links: node.targetLinks.filter((v) => !v.isHidden),
-    sankeyConfig,
+    sankeyConfig: {
+      ...sankeyConfig,
+      linkXPadding: -sankeyConfig.linkXPadding,
+    },
+    type: "end",
   });
 
   return {

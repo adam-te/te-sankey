@@ -38,11 +38,9 @@ export function computeSpacingBetweenColumns(
   const columnWidth = sankeyConfig.nodeWidth;
 
   const totalPadding = Object.values(columns.map((c) => c.rightPadding)).reduce(
-    // @ts-ignore
     (a, b) => a + b,
     0
   );
-  // @ts-ignore
   const totalColumnsWidth = columnWidth * columns.length + totalPadding; // Calculate total width needed for all columns
   const totalSpaces = columns.length + 1; // Calculate total spaces between columns and on the edges
 
@@ -71,20 +69,16 @@ export function computeSankeyYScale(
   sankeyConfig: SankeyConfig
 ) {
   return scaleLinear()
-    .domain([0, getGraphVisibleFlowValue(graph)])
+    .domain([0, getGraphVisibleNodeFlowValue(graph)])
     .range([0, sankeyConfig.graphMeta.height]);
 }
 
-function getGraphVisibleFlowValue(graph: SankeyGraph) {
-  const nodes = graph.columns[0].nodes; // TODO: Actual
+function getGraphVisibleNodeFlowValue(graph: SankeyGraph) {
+  const nodes = graph.columns[0].nodes;
 
   let totalFlowValue = 0;
   for (const node of nodes.filter((n) => !n.isHidden)) {
-    for (const link of node.sourceLinks.filter((v) => !v.isHidden)) {
-      totalFlowValue += link.value;
-    }
-
-    for (const link of node.targetLinks.filter((v) => !v.isHidden)) {
+    for (const link of node.sourceLinks) {
       totalFlowValue += link.value;
     }
   }

@@ -12,7 +12,7 @@ export function positionColumn({
   x: number;
   column: SankeyColumn;
   sankeyConfig: SankeyConfig;
-  yScale?: ScaleLinear<number, number>;
+  yScale: ScaleLinear<number, number>;
 }) {
   if (!column.visibleRows) {
     throw new Error("column.visibleRows needs to be defined!");
@@ -23,33 +23,28 @@ export function positionColumn({
     column.visibleRows[1]
   );
 
-  const globalHeight = sankeyConfig.graphMeta.height;
   const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes);
   const innerYScale = scaleLinear()
     .domain([0, totalColumnFlowValue])
-    .range([0, globalHeight]);
-  //   console.log("INNER", innerYScale.range(), innerYScale.domain());
-  // yScale = innerYScale;
+    .range([
+      0,
+      sankeyConfig.graphMeta.height -
+        sankeyConfig.nodeYPadding * visibleColumnNodes.length,
+    ]);
+  // TODO: Settle on single applicable yScale definition
+  yScale = innerYScale;
 
   let y0 = 0;
   for (const node of visibleColumnNodes) {
     const { nodeHeight } = positionNode({
       x,
       y0,
-      // @ts-ignore
       yScale,
       node,
       sankeyConfig,
     });
 
     y0 += nodeHeight + sankeyConfig.nodeYPadding;
-
-    // console.log(
-    //   "y0 nodeheight config",
-    //   y0,
-    //   nodeHeight,
-    //   sankeyConfig.nodeYPadding
-    // );
   }
 }
 
