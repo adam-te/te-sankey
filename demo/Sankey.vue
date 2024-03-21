@@ -189,7 +189,6 @@ function updateSankey() {
     data,
     computeSankeyGroupingOptions
   );
-  console.log("SANKEY_GROUPING", sankeyGrouping);
   sankey = computeSankey(sankeyGrouping, {
     graphMeta: containerMeta,
     linkXPadding: 3,
@@ -356,7 +355,6 @@ function getTopButtons() {
   const r = sankey.columns
     .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
     .map((c) => {
-      console.log("TOP", c.nodes[0], c);
       const button = {
         x: c.nodes.find((v) => v.x0 != null).x0,
         onClick() {

@@ -49,8 +49,6 @@ export interface SankeyConfig {
     height: number;
   };
   nodeWidth: number; // 24 // DEPRECATED
-  // TODO: Not sure this was translated correctly
-  nodeHeight: number; // 8 DEPRECATED - height based on flows. Support minHeight though
   nodePadding: number; // 0 DEPRECATED - rename nodeYPadding
   linkXPadding: number;
 }

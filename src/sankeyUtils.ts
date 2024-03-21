@@ -1,37 +1,14 @@
-import {
-  SankeyColumn,
-  SankeyConfig,
-  SankeyGraph,
-  SankeyLink,
-  SankeyNode,
-} from "./models";
+import { SankeyColumn, SankeyConfig, SankeyLink, SankeyNode } from "./models";
 import { ScaleLinear, scaleLinear } from "d3-scale";
 
-export function setStartAndEnd(graph: SankeyGraph, sankeyConfig: SankeyConfig) {
-  const globalWidth = sankeyConfig.graphMeta.width;
-
-  //   const columns = computeNodeColumns(nodes);
-  const spacingBetweenColumns = computeSpacingBetweenColumns(
-    globalWidth,
-    graph.columns,
-    sankeyConfig
-  );
-
-  // TODO: property of column instead of bool on node
-  // TODO: Move back to loop
-  markHiddenNodes(graph.columns);
-
-  let x = spacingBetweenColumns;
-  for (const column of graph.columns) {
-    positionColumn({
-      x,
-      column,
-      sankeyConfig,
-    });
-    // @ts-ignore
-    x += spacingBetweenColumns + column.rightPadding;
-  }
-}
+export {
+  positionColumn,
+  positionNode,
+  positionSourceLinks,
+  positionTargetLinks,
+  markHiddenNodes,
+  computeSpacingBetweenColumns,
+};
 
 function positionColumn({
   x,
@@ -101,6 +78,7 @@ function positionNode({
     links: node.sourceLinks.filter((v) => !v.isHidden),
     sankeyConfig,
   });
+  // TODO: IS this necessary? Just use derived getter instead
   node.linksEndY = linksEndY;
 
   positionTargetLinks({
@@ -250,15 +228,17 @@ function computeSpacingBetweenColumns(
 
 function markHiddenNodes(columns: SankeyColumn[]) {
   for (const column of columns) {
-    let rowIdx = 0;
-    for (const node of column.nodes) {
-      // @ts-ignore
-      if (rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1]) {
+    for (const [rowIdx, node] of column.nodes.entries()) {
+      if (!column.visibleRows) {
+        throw new Error("column.visibleRows must be defined at this point!");
+      }
+      const isRowHidden =
+        rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1];
+      if (isRowHidden) {
         node.isHidden = true;
         node.sourceLinks.forEach((l) => (l.isHidden = true));
         node.targetLinks.forEach((l) => (l.isHidden = true));
       }
-      rowIdx += 1;
     }
   }
 }

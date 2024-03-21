@@ -8,7 +8,6 @@ import {
   SankeyColumn,
   RawSubnetData,
 } from "../src/models";
-// const { vertices: subnets, edges: links } = data;
 
 type ColumnId =
   | "SOURCE_REGION"
@@ -202,21 +201,18 @@ export function computeSankeyGrouping(
       isTarget: columnSpec.isTarget,
     };
 
-    // TODO: IS this right?
     const nextVisibleGroupType =
       visibleColumnSpecs[columns.length + 1]?.groupType;
 
-    console.log(visibleColumnSpecs);
     for (const group of columnSpec.groups) {
       // ADAMTODO: clean up (do we need mutation?)
       group.targetGroupType = nextVisibleGroupType;
-      const sankeyNode = createSankeyNode(group);
-      groupIdToSankeyNode.set(group.id, sankeyNode);
+      groupIdToColIdx.set(group.id, columns.length);
       groups.push(group);
 
+      const sankeyNode = createSankeyNode(group);
+      groupIdToSankeyNode.set(group.id, sankeyNode);
       column.nodes.push(sankeyNode);
-
-      groupIdToColIdx.set(group.id, columns.length);
     }
 
     const columnVisibleRows = columnIdToColSpec.get(column.id);
@@ -273,13 +269,10 @@ function computeGroupedSubnets(
   data: SubnetData,
   groupType: GroupType
 ): SubnetGroup[] {
-  // const idToSubnetSourceLinks = getIdToSourceSubnetLinks(data.links);
-
   const groupIdToGroup = new Map<string, SubnetGroup>();
   for (const subnet of Object.values(data.subnets)) {
     const groupId = groupType.getGroupId(subnet);
     if (!groupIdToGroup.has(groupId)) {
-      console.log(subnet.id);
       groupIdToGroup.set(groupId, {
         id: groupId,
         isTarget: subnet.isTarget,
@@ -300,22 +293,6 @@ function computeGroupedSubnets(
   }
 
   return [...groupIdToGroup.values()];
-}
-
-function getIdToSourceSubnetLinks(
-  links: SubnetLink[]
-): Map<string, SubnetLink[]> {
-  return new Map(
-    Object.entries(
-      links.reduce((a: Record<string, SubnetLink[]>, v) => {
-        if (!a[v.source.id]) {
-          a[v.source.id] = [];
-        }
-        a[v.source.id].push(v);
-        return a;
-      }, {})
-    )
-  );
 }
 
 function computeGroupLinks({

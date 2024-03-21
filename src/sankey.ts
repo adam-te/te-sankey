@@ -1,6 +1,11 @@
 import { SankeyConfig, SankeyGraph } from "./models";
 
-import { setStartAndEnd } from "./sankeyUtils";
+import {
+  computeSpacingBetweenColumns,
+  markHiddenNodes,
+  positionColumn,
+  setStartAndEnd,
+} from "./sankeyUtils";
 
 export interface SankeyOptions {
   graphMeta: {
@@ -11,7 +16,6 @@ export interface SankeyOptions {
   nodeWidth?: number; // 24
 
   // TODO: Does this do anything?
-  nodeHeight?: number; // 8
   nodePadding?: number; // 8
   linkXPadding?: number;
 }
@@ -22,24 +26,37 @@ export function computeSankey(
 ): SankeyGraph {
   const sankeyConfig: SankeyConfig = {
     nodeWidth: 24,
-    nodeHeight: 8,
     nodePadding: 8,
     linkXPadding: 0,
     ...options,
   };
 
-  setStartAndEnd(graph, sankeyConfig);
+  const globalWidth = sankeyConfig.graphMeta.width;
+
+  //   const columns = computeNodeColumns(nodes);
+  const spacingBetweenColumns = computeSpacingBetweenColumns(
+    globalWidth,
+    graph.columns,
+    sankeyConfig
+  );
+
+  // TODO: property of column instead of bool on node
+  markHiddenNodes(graph.columns);
+
+  let x = spacingBetweenColumns;
+  for (const column of graph.columns) {
+    positionColumn({
+      x,
+      column,
+      sankeyConfig,
+    });
+    x += spacingBetweenColumns + column.rightPadding;
+  }
 
   return graph;
 }
 
 interface DisplayLink {
-  // source: DisplayNode;
-  // target: DisplayNode;
-  // y0: number; // 40,
-  // y1: number; // 140,
-  // sourceHeight: number; // 10
-  // targetHeight: number; // 10
   start: {
     x: number; //x + sankeyConfig.nodeWidth,
     y0: number; // y0 + linkStartY0,
@@ -53,19 +70,11 @@ interface DisplayLink {
 }
 
 export function computeSankeyLinkPath(link: DisplayLink): string {
-  // TODO: Don't put into production build
-
   const { start, end } = link;
 
   // Calculate control points for smooth curves
   const controlPointX1 = start.x + (end.x - start.x) / 3;
   const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3;
-
-  // Calculate the top and bottom points for the start and end
-  // const startTop = start.y - startHeight / 2;
-  // const startBottom = start.y + startHeight / 2;
-  // const endTop = end.y - endHeight / 2;
-  // const endBottom = end.y + endHeight / 2;
 
   const startTop = start.y0;
   const startBottom = start.y1;
