@@ -27,11 +27,6 @@ export function positionNode({
     y1: y0 + nodeHeight,
   });
 
-  //   console.log(
-  //     "SOURCE",
-  //     node.sourceLinks.filter((v) => !v.isHidden)
-  //   );
-  console.log("global y0", y0);
   const { linksEndY } = positionSourceLinks({
     x,
     y0,
@@ -39,13 +34,8 @@ export function positionNode({
     links: node.sourceLinks.filter((v) => !v.isHidden),
     sankeyConfig,
   });
-  // TODO: IS this necessary? Just use derived getter instead
   node.linksEndY = linksEndY;
 
-  //   console.log(
-  //     "TARGET",
-  //     node.targetLinks.filter((v) => !v.isHidden)
-  //   );
   positionTargetLinks({
     x,
     y0,

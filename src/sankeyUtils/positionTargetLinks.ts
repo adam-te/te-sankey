@@ -14,21 +14,12 @@ export function positionTargetLinks({
   links: Pick<SankeyLink, "value" | "end">[];
   sankeyConfig: Pick<SankeyConfig, "linkXPadding" | "nodeYPadding">;
 }): void {
-  let linkEndY0 = y0;
-
-  // Sort smallest links first:
-  // 1) For to make flows more obvious
-  // 2) To allow for padding reduction to work with single pass
-  // Note: May want to revisit this design decision
-  // ADAMTODO: this should affect crossings. Revisit algorithm for this
-  //   links.sort((a, b) => a.value - b.value);
-
-  // offset node padding equally amongst links, to the extent possible (don't go negative)
   let nodePaddingRemaining = sankeyConfig.nodeYPadding;
-  const nodePaddingPerLink = sankeyConfig.nodeYPadding / links.length;
+  for (const [idx, link] of links.entries()) {
+    const linksRemaining = links.length - idx;
+    const nodePaddingPerLink = nodePaddingRemaining / linksRemaining; // offset node padding equally amongst links, to the extent possible (don't go negative)
 
-  for (const link of links) {
-    let y1 = linkEndY0 + yScale(link.value);
+    let y1 = y0 + yScale(link.value);
     if (y1 > nodePaddingPerLink) {
       y1 -= nodePaddingPerLink;
       nodePaddingRemaining -= nodePaddingPerLink;
@@ -39,9 +30,9 @@ export function positionTargetLinks({
 
     link.end = {
       x: x - sankeyConfig.linkXPadding,
-      y0: linkEndY0,
+      y0,
       y1,
     };
-    linkEndY0 = y1;
+    y0 = y1;
   }
 }

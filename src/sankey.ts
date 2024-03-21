@@ -41,10 +41,7 @@ export function computeSankey(
 
   // TODO: property of column instead of bool on node
   markHiddenNodes(graph.columns);
-  // Scale based on totalVisibleFlow using last source column
   const yScale = computeSankeyYScale(graph, sankeyConfig);
-  // console.log("OUTER", yScale.range(), yScale.domain());
-  // scaleLinear().domain([0, totalColumnFlowValue]).range([0, globalHeight]);
 
   let x = spacingBetweenColumns;
   for (const column of graph.columns) {

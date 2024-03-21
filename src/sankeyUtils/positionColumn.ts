@@ -33,7 +33,6 @@ export function positionColumn({
 
   let y0 = 0;
   for (const node of visibleColumnNodes) {
-    console.log("gloval y0", y0);
     const { nodeHeight } = positionNode({
       x,
       y0,
