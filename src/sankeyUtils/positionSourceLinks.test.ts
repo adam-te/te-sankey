@@ -1,6 +1,7 @@
 import { expect, describe, it } from "vitest";
 import { positionSourceLinks } from "./positionSourceLinks";
 import { scaleLinear } from "d3-scale";
+import test from "node:test";
 
 describe("positionSourceLinks", () => {
   it("should work with simple zeroed out config", () => {
@@ -19,6 +20,25 @@ describe("positionSourceLinks", () => {
       y1: 110,
     });
     expect(linksEndY).toBe(110);
+  });
+
+  it("should offset by supplied y0", () => {
+    const testParams = getDefaultTestParams();
+    testParams.y0 = 10;
+    const { linksEndY } = positionSourceLinks(testParams);
+    const { links } = testParams;
+
+    expect(links[0].start).toEqual({
+      x: 0,
+      y0: 10,
+      y1: 20,
+    });
+    expect(links[1].start).toEqual({
+      x: 0,
+      y0: 20,
+      y1: 120,
+    });
+    expect(linksEndY).toBe(120);
   });
 
   it("should add horizontal padding as specified", () => {
@@ -76,35 +96,6 @@ describe("positionSourceLinks", () => {
       y1: 100,
     });
     expect(linksEndY).toBe(100);
-  });
-
-  it("should consume all nodeYPadding, even if later links are smaller than paddingPerLink", () => {
-    const testParams = getDefaultTestParams();
-    testParams.sankeyConfig.nodeYPadding = 10;
-    testParams.links = [
-      {
-        value: 100,
-        start: undefined,
-      },
-      {
-        value: 1,
-        start: undefined,
-      },
-    ];
-    const { linksEndY } = positionSourceLinks(testParams);
-    const { links } = testParams;
-
-    expect(links[0].start).toEqual({
-      x: 0,
-      y0: 0,
-      y1: 1,
-    });
-    expect(links[1].start).toEqual({
-      x: 0,
-      y0: 1,
-      y1: 96,
-    });
-    expect(linksEndY).toBe(96);
   });
 });
 

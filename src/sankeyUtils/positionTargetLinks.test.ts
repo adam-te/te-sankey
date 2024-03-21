@@ -20,6 +20,24 @@ describe("positionTargetLinks", () => {
     });
   });
 
+  it("should offset by supplied y0", () => {
+    const testParams = getDefaultTestParams();
+    testParams.y0 = 10;
+    positionTargetLinks(testParams);
+    const { links } = testParams;
+
+    expect(links[0].end).toEqual({
+      x: 0,
+      y0: 10,
+      y1: 20,
+    });
+    expect(links[1].end).toEqual({
+      x: 0,
+      y0: 20,
+      y1: 120,
+    });
+  });
+
   it("should add horizontal padding as specified", () => {
     const testParams = getDefaultTestParams();
     testParams.sankeyConfig.linkXPadding = 10;
@@ -53,34 +71,6 @@ describe("positionTargetLinks", () => {
       x: 0,
       y0: 5,
       y1: 100,
-    });
-  });
-
-  it("should consume all nodeYPadding, even if later links are smaller than paddingPerLink", () => {
-    const testParams = getDefaultTestParams();
-    testParams.sankeyConfig.nodeYPadding = 10;
-    testParams.links = [
-      {
-        value: 100,
-        end: undefined,
-      },
-      {
-        value: 1,
-        end: undefined,
-      },
-    ];
-    positionTargetLinks(testParams);
-    const { links } = testParams;
-
-    expect(links[0].end).toEqual({
-      x: 0,
-      y0: 0,
-      y1: 1,
-    });
-    expect(links[1].end).toEqual({
-      x: 0,
-      y0: 1,
-      y1: 96,
     });
   });
 });

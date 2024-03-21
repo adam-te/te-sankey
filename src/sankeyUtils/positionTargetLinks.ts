@@ -14,7 +14,7 @@ export function positionTargetLinks({
   links: Pick<SankeyLink, "value" | "end">[];
   sankeyConfig: Pick<SankeyConfig, "linkXPadding" | "nodeYPadding">;
 }): void {
-  let linkEndY0 = 0;
+  let linkEndY0 = y0;
 
   // Sort smallest links first:
   // 1) For to make flows more obvious
@@ -28,9 +28,7 @@ export function positionTargetLinks({
   const nodePaddingPerLink = sankeyConfig.nodeYPadding / links.length;
 
   for (const link of links) {
-    const linkHeight = yScale(link.value);
-
-    let y1 = y0 + linkEndY0 + linkHeight;
+    let y1 = linkEndY0 + yScale(link.value);
     if (y1 > nodePaddingPerLink) {
       y1 -= nodePaddingPerLink;
       nodePaddingRemaining -= nodePaddingPerLink;
@@ -41,9 +39,9 @@ export function positionTargetLinks({
 
     link.end = {
       x: x - sankeyConfig.linkXPadding,
-      y0: y0 + linkEndY0,
+      y0: linkEndY0,
       y1,
     };
-    linkEndY0 += y1;
+    linkEndY0 = y1;
   }
 }

@@ -28,12 +28,12 @@ export function positionColumn({
   const innerYScale = scaleLinear()
     .domain([0, totalColumnFlowValue])
     .range([0, globalHeight]);
-  console.log("INNER", innerYScale.range(), innerYScale.domain());
+  //   console.log("INNER", innerYScale.range(), innerYScale.domain());
   // yScale = innerYScale;
 
   let y0 = 0;
-  let rowCount = 1;
   for (const node of visibleColumnNodes) {
+    console.log("gloval y0", y0);
     const { nodeHeight } = positionNode({
       x,
       y0,
@@ -42,8 +42,15 @@ export function positionColumn({
       node,
       sankeyConfig,
     });
+
     y0 += nodeHeight + sankeyConfig.nodeYPadding;
-    rowCount += 1;
+
+    // console.log(
+    //   "y0 nodeheight config",
+    //   y0,
+    //   nodeHeight,
+    //   sankeyConfig.nodeYPadding
+    // );
   }
 }
 

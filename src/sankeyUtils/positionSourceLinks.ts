@@ -19,8 +19,7 @@ export function positionSourceLinks({
 }): {
   linksEndY: number;
 } {
-  let linkStartY0 = 0;
-  let linksEndY = null;
+  let linkStartY0 = y0;
 
   // Sort smallest links first:
   // 1) For to make flows more obvious
@@ -34,10 +33,8 @@ export function positionSourceLinks({
 
   //   console.log(nodePaddingRemaining, nodePaddingPerLink);
   for (const link of links) {
-    const isLastLink = link === links.at(-1);
-    const linkHeight = yScale(link.value);
-
-    let y1 = y0 + linkStartY0 + linkHeight;
+    console.log("LINK Y0", linkStartY0);
+    let y1 = linkStartY0 + yScale(link.value);
     if (y1 > nodePaddingPerLink) {
       y1 -= nodePaddingPerLink;
       nodePaddingRemaining -= nodePaddingPerLink;
@@ -48,16 +45,12 @@ export function positionSourceLinks({
 
     link.start = {
       x: x + sankeyConfig.nodeWidth + sankeyConfig.linkXPadding,
-      y0: y0 + linkStartY0,
+      y0: linkStartY0,
       y1,
     };
-    linkStartY0 += y1;
-
-    if (isLastLink) {
-      linksEndY = link.start.y1;
-    }
+    linkStartY0 = y1;
   }
 
   // @ts-ignore
-  return { linksEndY };
+  return { linksEndY: links.at(-1)?.start?.y1 };
 }

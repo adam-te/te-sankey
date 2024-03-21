@@ -315,8 +315,6 @@ function computeGroupLinks({
   groupIdToSankeyNode: Map<string, SankeyNode>;
   group: SubnetGroup;
 }): SankeyLink[] {
-  // ADAMTODO: HERE
-  // debugger;
   const targetGroupIdToLinks = groupBy<SubnetLink>(
     group.sourceLinks,
     getTargetGroupId
