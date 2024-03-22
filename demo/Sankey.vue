@@ -147,7 +147,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
+import { computeSankey, computeSankeyLinkPath } from "../src/sankeyUtils";
 import rawData from "./data.json";
 import {
   computeWiredGraph,
