@@ -4,16 +4,16 @@ import { SankeyConfig, SankeyLink } from "./models";
 export function positionLinks({
   x,
   y0,
-  yScale,
+  linkHeightScale,
   links,
   sankeyConfig,
   type,
 }: {
   x: number;
   y0: number;
-  yScale: ScaleLinear<number, number>;
+  linkHeightScale: ScaleLinear<number, number>;
   links: Pick<SankeyLink, "value" | "start" | "end">[];
-  sankeyConfig: Pick<SankeyConfig, "linkXPadding" | "nodeYPadding">;
+  sankeyConfig: Pick<SankeyConfig, "linkXPadding">;
   type: "start" | "end";
 }): {
   linksEndY: number | undefined;
@@ -21,23 +21,8 @@ export function positionLinks({
   if (!links.length) {
     return { linksEndY: undefined };
   }
-
-  let nodePaddingRemaining = sankeyConfig.nodeYPadding;
-  for (const [idx, link] of links.entries()) {
-    const linksRemaining = links.length - idx;
-    const nodePaddingPerLink = nodePaddingRemaining / linksRemaining; // offset node padding equally amongst links, to the extent possible (don't go negative)
-
-    let y1 = y0 + yScale(link.value);
-
-    const rawLinkHeight = y1 - y0;
-    if (rawLinkHeight > nodePaddingPerLink) {
-      y1 -= nodePaddingPerLink;
-      nodePaddingRemaining -= nodePaddingPerLink;
-    } else {
-      const amountToRemove = rawLinkHeight - 1;
-      nodePaddingRemaining -= amountToRemove;
-      y1 = y0 + 1;
-    }
+  for (const link of links) {
+    let y1 = y0 + linkHeightScale(link.value);
 
     link[type] = {
       x: x + sankeyConfig.linkXPadding,
@@ -108,24 +93,25 @@ if (import.meta.vitest) {
     expect(linksEndY).toBe(110);
   });
 
-  it("should distribute offset from node y padding equally among links", () => {
-    const testParams = getDefaultTestParams();
-    testParams.sankeyConfig.nodeYPadding = 10;
-    const { linksEndY } = positionLinks(testParams);
-    const { links } = testParams;
+  // TODO: Position node
+  // it("should distribute offset from node y padding equally among links", () => {
+  //   const testParams = getDefaultTestParams();
+  //   testParams.sankeyConfig.nodeYPadding = 10;
+  //   const { linksEndY } = positionLinks(testParams);
+  //   const { links } = testParams;
 
-    expect(links[0].start).toEqual({
-      x: 0,
-      y0: 0,
-      y1: 5,
-    });
-    expect(links[1].start).toEqual({
-      x: 0,
-      y0: 5,
-      y1: 100,
-    });
-    expect(linksEndY).toBe(100);
-  });
+  //   expect(links[0].start).toEqual({
+  //     x: 0,
+  //     y0: 0,
+  //     y1: 5,
+  //   });
+  //   expect(links[1].start).toEqual({
+  //     x: 0,
+  //     y0: 5,
+  //     y1: 100,
+  //   });
+  //   expect(linksEndY).toBe(100);
+  // });
 
   function getDefaultTestParams() {
     const links = [
@@ -146,10 +132,9 @@ if (import.meta.vitest) {
       links,
       sankeyConfig: {
         linkXPadding: 0,
-        nodeYPadding: 0,
       },
       type: "start" as "start" | "end",
-      yScale: scaleLinear(),
+      linkHeightScale: scaleLinear(),
     };
   }
 }

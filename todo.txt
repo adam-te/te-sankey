@@ -1,5 +1,5 @@
-- Sort links by order of connection on opposing side
-- Fix fact that link padding will not be reduced correctly. 
+- Sort links by order of connection on opposing side (done)
+- Fix fact that link padding will not be reduced correctly. (todo)
 - Can we use scale instead?
 
 - Assess convergence of minimizing link crossing algo

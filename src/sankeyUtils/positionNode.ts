@@ -1,4 +1,4 @@
-import { ScaleLinear } from "d3-scale";
+import { ScaleLinear, scaleLinear } from "d3-scale";
 import { getNodeTotalFlowValue } from "./utils";
 import { positionLinks } from "./positionLinks";
 import { SankeyConfig, SankeyNode } from "./models";
@@ -25,6 +25,9 @@ export function positionNode({
     y0: y0,
     y1: y0 + nodeHeight,
   });
+
+  // ADAMTODO:
+  yScale = computeLinksYScale(node);
 
   const { linksEndY } = positionLinks({
     x,
@@ -55,3 +58,18 @@ export function positionNode({
     nodeHeight,
   };
 }
+
+function computeLinksYScale(node: SankeyNode): ScaleLinear<number, number> {
+  if (node.y0 == null || node.y1 == null) {
+    throw new Error("node.(y0, y1) must be defined!");
+  }
+  // TODO: I think should be equal, check ui
+  // TODO(perf), pre-compute this
+  const maxSourceValue = node.sourceLinks.reduce((a, v) => a + v.value, 0);
+  const maxTargetValue = node.targetLinks.reduce((a, v) => a + v.value, 0);
+  return scaleLinear()
+    .range([0, node.y1 - node.y0])
+    .domain([0, Math.max(maxSourceValue, maxTargetValue)]);
+}
+
+// function sum() {}
