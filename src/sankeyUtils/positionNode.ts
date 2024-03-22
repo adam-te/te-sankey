@@ -26,13 +26,13 @@ export function positionNode({
     y1: y0 + nodeHeight,
   });
 
-  // ADAMTODO:
-  yScale = computeLinksYScale(node);
+  // ADAMTODO:(perf)
+  const linkHeightScale = computeLinkHeightScale(node);
 
   const { linksEndY } = positionLinks({
     x,
     y0,
-    yScale,
+    linkHeightScale,
     links: node.sourceLinks.filter((v) => !v.isHidden),
     sankeyConfig: {
       ...sankeyConfig,
@@ -45,7 +45,7 @@ export function positionNode({
   positionLinks({
     x,
     y0,
-    yScale,
+    linkHeightScale,
     links: node.targetLinks.filter((v) => !v.isHidden),
     sankeyConfig: {
       ...sankeyConfig,
@@ -59,7 +59,7 @@ export function positionNode({
   };
 }
 
-function computeLinksYScale(node: SankeyNode): ScaleLinear<number, number> {
+function computeLinkHeightScale(node: SankeyNode): ScaleLinear<number, number> {
   if (node.y0 == null || node.y1 == null) {
     throw new Error("node.(y0, y1) must be defined!");
   }
