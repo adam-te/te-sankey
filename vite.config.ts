@@ -19,6 +19,13 @@ export default defineConfig(({ command, mode }) => {
         },
         minify: false,
       },
+      test: {
+        includeSource: ["src/**/*.ts"],
+      },
+      define: {
+        // Remove test code for production builds
+        "import.meta.vitest": "undefined",
+      },
     };
   }
 });
