@@ -150,11 +150,10 @@ import { ref } from "vue";
 import { computeSankey, computeSankeyLinkPath } from "../src/sankey";
 import rawData from "./data.json";
 import {
+  computeWiredGraph,
   ComputeSankeyGroupingOptions,
   computeSankeyGrouping,
-  computeWiredGraph,
-} from "../src/utils";
-import { SankeyNode } from "../src/models";
+} from "../src/cloudFlowUtils";
 
 const data = computeWiredGraph(rawData);
 

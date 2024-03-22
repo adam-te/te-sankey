@@ -1,5 +1,5 @@
 import { ScaleLinear } from "d3-scale";
-import { SankeyConfig, SankeyLink } from "../models";
+import { SankeyConfig, SankeyLink } from "./models";
 
 export function positionLinks({
   x,

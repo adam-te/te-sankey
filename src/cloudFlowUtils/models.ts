@@ -1,57 +1,31 @@
-export interface SankeyNode {
+export interface GroupType {
   id: string;
-
-  sourceLinks: SankeyLink[]; // If source of link, in sourcelinks
-  targetLinks: SankeyLink[]; // if target of link, in targetlinks
-  isHidden?: boolean;
-
-  height?: number;
-  x0?: number;
-  x1?: number;
-  y0?: number;
-  y1?: number;
-  linksEndY?: number; // Point at which
+  getGroupId: (subnet: Subnet) => string;
 }
 
-export interface SankeyLink {
-  source: SankeyNode;
-  target: SankeyNode;
-  value: number; //
-  isHidden?: boolean;
-  start?: {
-    x: number;
-    y0: number;
-    y1: number;
-  };
-  end?: {
-    x: number;
-    y0: number;
-    y1: number;
-  };
-}
-
-export interface SankeyGraph {
-  nodes: SankeyNode[];
-  links: SankeyLink[];
-  columns: SankeyColumn[];
-}
-export interface SankeyColumn {
+export interface SubnetGroup {
   id: string;
-  nodes: SankeyNode[];
-  visibleRows?: [number, number];
-  rightPadding: number;
-  isTarget: boolean; // TODO: May be removed
+  isTarget: boolean;
+  subnets: Subnet[];
+  sourceLinks: SubnetLink[];
+  groupType: GroupType;
+  targetGroupType?: GroupType;
 }
 
-export interface SankeyConfig {
-  graphMeta: {
-    width: number;
-    height: number;
-  };
-  nodeWidth: number; // 24
-  nodeYPadding: number; // 0
-  linkXPadding: number;
-}
+export const GroupType: Record<string, GroupType> = {
+  Region: {
+    id: "Region",
+    getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
+  },
+  Vpc: {
+    id: "Vpc",
+    getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
+  },
+  Subnet: {
+    id: "Subnet",
+    getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
+  },
+};
 
 export interface RawSubnet {
   id: string; // "036476006320-us-west-1-subnet-0c007c2b937018184",

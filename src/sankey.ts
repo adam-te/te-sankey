@@ -1,11 +1,10 @@
-import { SankeyConfig, SankeyGraph } from "./models";
-
 import {
   computeSankeyYScale,
   computeSpacingBetweenColumns,
   markHiddenNodes,
   positionColumn,
 } from "./sankeyUtils";
+import { SankeyConfig, SankeyGraph } from "./sankeyUtils/models";
 
 export interface SankeyOptions {
   graphMeta: {

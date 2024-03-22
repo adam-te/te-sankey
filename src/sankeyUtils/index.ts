@@ -1,6 +1,4 @@
+export * from "./models";
 export * from "./positionColumn";
-export {
-  computeSankeyYScale,
-  computeSpacingBetweenColumns,
-  markHiddenNodes,
-} from "./utils";
+export { computeSankeyYScale, computeSpacingBetweenColumns } from "./utils";
+export { markHiddenNodes } from "./markHiddenNodes";

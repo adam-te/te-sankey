@@ -1,3 +1,7 @@
+- Sort links by order of connection on opposing side
+- Fix fact that link padding will not be reduced correctly. 
+- Can we use scale instead?
+
 - Assess convergence of minimizing link crossing algo
 - Add more tests
 - Update yScaling to use single column flow
