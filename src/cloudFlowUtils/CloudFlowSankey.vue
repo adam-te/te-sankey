@@ -3,12 +3,12 @@
     <div class="sankey-row-btn-container top">
       <button
         class="sankey-row-btn ttt"
-        :style="{ left: `${sankey.columns[0].nodes[0].x0}px` }"
+        :style="{ left: `${sankeyState.graph.columns[0].nodes[0].x0}px` }"
       >
         ◀
       </button>
       <button
-        v-for="button of getTopButtons(sankey)"
+        v-for="button of getTopButtons(sankeyState.graph)"
         class="sankey-row-btn"
         :style="{ left: `${button.x}px` }"
         @click="button.onClick"
@@ -17,7 +17,7 @@
       </button>
       <button
         class="sankey-row-btn ttt"
-        :style="{ left: `${sankey.columns.at(-1).nodes[0].x0}px` }"
+        :style="{ left: `${sankeyState.graph.columns.at(-1).nodes[0].x0}px` }"
       >
         ▶
       </button>
@@ -30,7 +30,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <template v-for="node of visibleNodes" :key="node.id">
+        <template v-for="node of sankeyState.visibleGraph.nodes" :key="node.id">
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop
               class="flows-stop"
@@ -48,7 +48,7 @@
 
       <g class="links">
         <path
-          v-for="link of visibleLinks"
+          v-for="link of sankeyState.visibleGraph.links"
           :key="link.source.name + '_' + link.target.name"
           :d="computeSankeyLinkPath(link)"
           class="sankey-link"
@@ -56,7 +56,10 @@
       </g>
 
       <g class="nodes">
-        <template v-for="node of visibleNodes" :key="node.name">
+        <template
+          v-for="node of sankeyState.visibleGraph.nodes"
+          :key="node.name"
+        >
           <rect
             :transform="`translate(${node.x0}, ${node.y0})`"
             :width="getNodeWidth(node)"
@@ -72,7 +75,10 @@
       </g>
 
       <g class="labels">
-        <template v-for="node of visibleNodes" :key="node.name">
+        <template
+          v-for="node of sankeyState.visibleGraph.nodes"
+          :key="node.name"
+        >
           <text
             v-if="!node.label"
             :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
@@ -107,7 +113,7 @@
     </svg>
     <div class="sankey-row-btn-container bottom">
       <button
-        v-for="button of getBottomButtons(sankey)"
+        v-for="button of getBottomButtons(sankeyState.graph)"
         class="sankey-row-btn"
         :style="{ left: `${button.x}px` }"
         @click="button.onClick"
@@ -115,8 +121,6 @@
         ▼
       </button>
     </div>
-    <!-- TODO: Make drawing work better -->
-    {{ drawCounter }}
   </div>
 </template>
 
@@ -124,7 +128,6 @@
 import { ref, watch } from "vue";
 import {
   SankeyGraph,
-  SankeyLink,
   SankeyNode,
   computeSankey,
   computeSankeyLinkPath,
@@ -143,6 +146,10 @@ const props = defineProps<{
   height: number;
 }>();
 
+const data = computeWiredGraph(props.data);
+const sankeyState = ref(computeSankeyState());
+
+// TODO: Can we make the whole thing a derived function instead?
 watch(
   [
     () => props.data,
@@ -151,23 +158,16 @@ watch(
     () => props.height,
   ],
   () => {
-    updateSankey();
-    drawCounter.value += 1;
+    sankeyState.value = computeSankeyState();
   }
 );
 
-const data = computeWiredGraph(props.data);
-
-const drawCounter = ref(0);
-
-let visibleNodes: SankeyNode[];
-let visibleLinks: SankeyLink[];
-let sankey: SankeyGraph;
-
-updateSankey();
-function updateSankey() {
+function computeSankeyState(): {
+  graph: SankeyGraph;
+  visibleGraph: SankeyGraph;
+} {
   const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions);
-  sankey = computeSankey(sankeyGrouping, {
+  const graph = computeSankey(sankeyGrouping, {
     graphMeta: {
       width: props.width,
       height: props.height,
@@ -175,7 +175,7 @@ function updateSankey() {
     linkXPadding: 3,
   });
 
-  const visibleGraph = getVisibleGraph(sankey);
+  const visibleGraph = getVisibleGraph(graph);
   //   TODO: reimplement merged links
   //   for (const col of visibleGraph.columns) {
   // if (!col.mergeLinks) {
@@ -208,8 +208,13 @@ function updateSankey() {
   //   },
   // });
   //   }
-  visibleNodes = visibleGraph.nodes;
-  visibleLinks = visibleGraph.links;
+  //   visibleNodes = visibleGraph.nodes;
+  //   visibleLinks = visibleGraph.links;
+  //   return visibleGraph;
+  return {
+    graph,
+    visibleGraph,
+  };
 }
 
 function getNodeWidth(node: SankeyNode) {
@@ -261,13 +266,12 @@ function getVisibleGraph(graph: SankeyGraph) {
 
 function onSankeyNodeClicked(node: SankeyNode) {
   props.groupingOptions.focusedNode = node.id;
-  updateSankey();
-  drawCounter.value += 1;
+  sankeyState.value = computeSankeyState();
 }
 
 // Get top buttons
 function getTopButtons() {
-  const r = sankey.columns
+  const r = sankeyState.value.graph.columns
     .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
     .map((c) => {
       const button = {
@@ -277,8 +281,6 @@ function getTopButtons() {
           range[0] -= 1;
           range[1] -= 1;
           updateSankey();
-
-          drawCounter.value += 1;
         },
       };
 
@@ -289,7 +291,7 @@ function getTopButtons() {
 }
 
 function getBottomButtons() {
-  const r = sankey.columns
+  const r = sankeyState.value.graph.columns
     .filter((c) => c.nodes.length && c.visibleRows[1] < c.nodes.length)
     .map((c) => {
       return {
@@ -299,7 +301,6 @@ function getBottomButtons() {
           range[0] += 1;
           range[1] += 1;
           updateSankey();
-          drawCounter.value += 1;
         },
       };
     });
