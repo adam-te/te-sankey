@@ -1,33 +1,5 @@
 <template>
   <div>
-    <div style="display: inline-block; margin-left: 300px">
-      <div><label for="networkSourceOptions">Source Grouping</label></div>
-      <select
-        name="networkSourceOptions"
-        id="networkSourceOptions"
-        :value="computeSankeyGroupingOptions.sourceGroupType"
-        @change="onSourceGroupingChanged($event.target.value)"
-      >
-        <option value="REGION">Region</option>
-        <option value="VPC">VPC</option>
-        <option value="SUBNET">Subnet</option>
-      </select>
-    </div>
-
-    <div style="display: inline-block; margin-left: 20px; margin-bottom: 20px">
-      <div><label for="networkTargetOptions">Destination Grouping</label></div>
-      <select
-        name="networkTargetOptions"
-        id="networkTargetOptions"
-        :value="computeSankeyGroupingOptions.targetGroupType"
-        @change="onTargetGroupingChanged($event.target.value)"
-      >
-        <option value="REGION">Region</option>
-        <option value="VPC">VPC</option>
-        <option value="SUBNET">Subnet</option>
-      </select>
-    </div>
-
     <div class="sankey-row-btn-container top">
       <button
         class="sankey-row-btn ttt"
@@ -53,8 +25,8 @@
 
     <svg
       ref="chartContainer"
-      :width="containerMeta.width"
-      :height="containerMeta.height"
+      :width="props.width"
+      :height="props.height"
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
@@ -74,61 +46,64 @@
         </template>
       </defs>
 
-      <!-- Links -->
-      <path
-        v-for="link of visibleLinks"
-        :key="link.source.name + '_' + link.target.name"
-        :d="computeSankeyLinkPath(link)"
-        class="sankey-link"
-      />
-
-      <!-- Nodes -->
-      <template v-for="node of visibleNodes" :key="node.name">
-        <rect
-          :transform="`translate(${node.x0}, ${node.y0})`"
-          :width="getNodeWidth(node)"
-          :height="getNodeHeight(node)"
-          class="sankey-node"
-          rx="3"
-          ry="3"
-          @click="onSankeyNodeClicked(node)"
-          :fill="`url(#${node.id})`"
-          :class="{ focus: node.focus }"
+      <g class="links">
+        <path
+          v-for="link of visibleLinks"
+          :key="link.source.name + '_' + link.target.name"
+          :d="computeSankeyLinkPath(link)"
+          class="sankey-link"
         />
-      </template>
+      </g>
 
-      <!-- Labels -->
-      <template v-for="node of visibleNodes" :key="node.name">
-        <text
-          v-if="!node.label"
-          :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
-            node.y0 + getNodeHeight(node) / 2
-          }) rotate(-90)`"
-          class="sankey-label"
-        >
-          {{ node.displayName || node.id }}
-        </text>
+      <g class="nodes">
+        <template v-for="node of visibleNodes" :key="node.name">
+          <rect
+            :transform="`translate(${node.x0}, ${node.y0})`"
+            :width="getNodeWidth(node)"
+            :height="getNodeHeight(node)"
+            class="sankey-node"
+            rx="3"
+            ry="3"
+            @click="onSankeyNodeClicked(node)"
+            :fill="`url(#${node.id})`"
+            :class="{ focus: node.focus }"
+          />
+        </template>
+      </g>
 
-        <text
-          v-else-if="node.label === 'left'"
-          :transform="`translate(${node.x0 - 5}, ${
-            node.y0 + getNodeHeight(node) / 2
-          })`"
-          class="sankey-label left"
-        >
-          {{ node.displayName || node.id }}
-        </text>
+      <g class="labels">
+        <template v-for="node of visibleNodes" :key="node.name">
+          <text
+            v-if="!node.label"
+            :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
+              node.y0 + getNodeHeight(node) / 2
+            }) rotate(-90)`"
+            class="sankey-label"
+          >
+            {{ node.displayName || node.id }}
+          </text>
 
-        <text
-          v-else-if="node.label === 'right'"
-          :transform="`translate(${node.x0 + getNodeWidth(node) + 5}, ${
-            node.y0 + getNodeHeight(node) / 2
-          })`"
-          class="sankey-label right"
-        >
-          {{ node.displayName || node.id }}
-        </text>
-      </template>
+          <text
+            v-else-if="node.label === 'left'"
+            :transform="`translate(${node.x0 - 5}, ${
+              node.y0 + getNodeHeight(node) / 2
+            })`"
+            class="sankey-label left"
+          >
+            {{ node.displayName || node.id }}
+          </text>
+
+          <text
+            v-else-if="node.label === 'right'"
+            :transform="`translate(${node.x0 + getNodeWidth(node) + 5}, ${
+              node.y0 + getNodeHeight(node) / 2
+            })`"
+            class="sankey-label right"
+          >
+            {{ node.displayName || node.id }}
+          </text>
+        </template>
+      </g>
     </svg>
     <div class="sankey-row-btn-container bottom">
       <button
@@ -146,7 +121,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import {
   SankeyGraph,
   SankeyLink,
@@ -163,156 +138,103 @@ import {
 
 const props = defineProps<{
   data: RawSubnetData;
+  groupingOptions: ComputeSankeyGroupingOptions;
+  width: number;
+  height: number;
 }>();
+
+watch(
+  [
+    () => props.data,
+    () => props.groupingOptions,
+    () => props.width,
+    () => props.height,
+  ],
+  () => {
+    updateSankey();
+    drawCounter.value += 1;
+  }
+);
 
 const data = computeWiredGraph(props.data);
 
 const drawCounter = ref(0);
-const containerMeta = {
-  width: 1600,
-  height: 600,
-};
 
 let visibleNodes: SankeyNode[];
 let visibleLinks: SankeyLink[];
 let sankey: SankeyGraph;
-const computeSankeyGroupingOptions: ComputeSankeyGroupingOptions = {
-  sourceGroupType: "REGION",
-  targetGroupType: "REGION",
-  focusedNode: undefined,
-  columnSpecs: [
-    { id: "SOURCE_REGION", visibleRows: [0, 4] },
-    { id: "SOURCE_VPC", visibleRows: [0, 4] },
-    { id: "SOURCE_SUBNET", visibleRows: [0, 4] },
-    { id: "TARGET_SUBNET", visibleRows: [0, 4] },
-    { id: "TARGET_VPC", visibleRows: [0, 4] },
-    { id: "TARGET_REGION", visibleRows: [0, 4] },
-  ],
-};
 
 updateSankey();
 function updateSankey() {
-  const sankeyGrouping = computeSankeyGrouping(
-    data,
-    computeSankeyGroupingOptions
-  );
+  const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions);
   sankey = computeSankey(sankeyGrouping, {
-    graphMeta: containerMeta,
+    graphMeta: {
+      width: props.width,
+      height: props.height,
+    },
     linkXPadding: 3,
   });
 
   const visibleGraph = getVisibleGraph(sankey);
-  for (const col of visibleGraph.columns) {
-    if (!col.mergeLinks) {
-      continue;
-    }
-    const colLinks = col.nodes.flatMap((v) => v.sourceLinks);
-    if (!colLinks.length) {
-      continue;
-    }
+  //   TODO: reimplement merged links
+  //   for (const col of visibleGraph.columns) {
+  // if (!col.mergeLinks) {
+  //   continue;
+  // }
+  // const colLinks = col.nodes.flatMap((v) => v.sourceLinks);
+  // if (!colLinks.length) {
+  //   continue;
+  // }
 
-    // Remove existing links
-    visibleGraph.links = visibleGraph.links.filter(
-      (l) => !colLinks.includes(l)
-    );
-    const topLink = colLinks[0];
-    const bottomLink = colLinks.at(-1);
-    visibleGraph.links.push({
-      // TODO:
-      source: { name: "placeholder" },
-      target: { name: "placeholder" },
-      start: {
-        x: topLink.start.x,
-        y0: topLink.start.y0,
-        y1: bottomLink.start.y1,
-      },
-      end: {
-        x: bottomLink.end.x,
-        y0: topLink.end.y0,
-        y1: bottomLink.end.y1,
-      },
-    });
-  }
+  // // Remove existing links
+  // visibleGraph.links = visibleGraph.links.filter(
+  //   (l) => !colLinks.includes(l)
+  // );
+  // const topLink = colLinks[0];
+  // const bottomLink = colLinks.at(-1);
+  // visibleGraph.links.push({
+  //   // TODO:
+  //   source: { name: "placeholder" },
+  //   target: { name: "placeholder" },
+  //   start: {
+  //     x: topLink.start.x,
+  //     y0: topLink.start.y0,
+  //     y1: bottomLink.start.y1,
+  //   },
+  //   end: {
+  //     x: bottomLink.end.x,
+  //     y0: topLink.end.y0,
+  //     y1: bottomLink.end.y1,
+  //   },
+  // });
+  //   }
   visibleNodes = visibleGraph.nodes;
   visibleLinks = visibleGraph.links;
 }
 
-function g() {
-  const nodes = [];
-  const links = [];
-  const columns = [];
-  return {
-    n,
-    l,
-    c,
-    nodes,
-    links,
-    columns,
-    get,
-  };
-
-  function get() {
-    return {
-      links,
-      nodes,
-      columns,
-    };
+function getNodeWidth(node: SankeyNode) {
+  if (node.x1 == null || node.x0 == null) {
+    throw new Error("node.x0 and node.x1 must be defined!");
   }
-
-  function c(nodes, props = {}) {
-    const columnNodes = nodes.filter((n) => nodes.includes(n));
-    if (columnNodes.length !== nodes.length) {
-      throw new Error("Invalid input!");
-    }
-    const col = {
-      visibleRows: [0, columnNodes.length],
-      rightPadding: 0,
-      nodes: columnNodes,
-      ...props,
-    };
-    columns.push(col);
-    return col;
-  }
-
-  function n(id, props = {}) {
-    const node = {
-      ...props,
-      id,
-      sourceLinks: [],
-      targetLinks: [],
-    };
-    nodes.push(node);
-    return node;
-  }
-
-  function l(from, to, props = {}) {
-    const link = {
-      source: from,
-      target: to,
-      value: 1,
-      ...props,
-    };
-
-    from.sourceLinks.push(link);
-    to.targetLinks.push(link);
-    links.push(link);
-    return link;
-  }
-}
-
-function getNodeWidth(node) {
   return node.x1 - node.x0;
 }
 
-function getNodeHeight(node) {
+function getNodeHeight(node: SankeyNode) {
+  if (node.y1 == null || node.y0 == null) {
+    throw new Error("node.y0 and node.y1 must be defined!");
+  }
   return node.y1 - node.y0;
 }
 
-function getFlowsEndPercentage(node) {
+function getFlowsEndPercentage(node: SankeyNode) {
+  // TODO: broken... linksEndY is undefined for target node. Is it right?
+  //   if (node.y1 == null || node.y0 == null || node.linksEndY == null) {
+  //     throw new Error("node.y0, node.y1 and node.linksEndY must be defined!");
+  //   }
   return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100;
 }
 
-function getVisibleGraph(graph) {
+function getVisibleGraph(graph: SankeyGraph) {
   const visibleLinks = graph.links.filter((v) => !v.isHidden);
   return {
     nodes: graph.nodes
@@ -338,21 +260,7 @@ function getVisibleGraph(graph) {
 }
 
 function onSankeyNodeClicked(node: SankeyNode) {
-  computeSankeyGroupingOptions.focusedNode = node.id;
-  updateSankey();
-  drawCounter.value += 1;
-}
-
-function onSourceGroupingChanged(newValue) {
-  computeSankeyGroupingOptions.sourceGroupType = newValue;
-  computeSankeyGroupingOptions.focusedNode = undefined;
-  updateSankey();
-  drawCounter.value += 1;
-}
-
-function onTargetGroupingChanged(newValue) {
-  computeSankeyGroupingOptions.targetGroupType = newValue;
-  computeSankeyGroupingOptions.focusedNode = undefined;
+  props.groupingOptions.focusedNode = node.id;
   updateSankey();
   drawCounter.value += 1;
 }
@@ -365,8 +273,7 @@ function getTopButtons() {
       const button = {
         x: c.nodes.find((v) => v.x0 != null).x0,
         onClick() {
-          const range =
-            computeSankeyGroupingOptions.visibleRowState[c.columnIdx];
+          const range = props.groupingOptions.visibleRowState[c.columnIdx];
           range[0] -= 1;
           range[1] -= 1;
           updateSankey();
@@ -388,8 +295,7 @@ function getBottomButtons() {
       return {
         x: c.nodes.find((v) => v.x0 != null).x0,
         onClick() {
-          const range =
-            computeSankeyGroupingOptions.visibleRowState[c.columnIdx];
+          const range = props.groupingOptions.visibleRowState[c.columnIdx];
           range[0] += 1;
           range[1] += 1;
           updateSankey();
