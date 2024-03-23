@@ -7,10 +7,8 @@ import {
   positionColumn,
 } from ".";
 export interface SankeyOptions {
-  graphMeta: {
-    width: number;
-    height: number;
-  };
+  width: number;
+  height: number;
   extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
   nodeWidth?: number; // 24
 
@@ -29,11 +27,9 @@ export function computeSankey(
     ...options,
   };
 
-  const globalWidth = sankeyConfig.graphMeta.width;
-
   //   const columns = computeNodeColumns(nodes);
   const spacingBetweenColumns = computeSpacingBetweenColumns(
-    globalWidth,
+    sankeyConfig.width,
     graph.columns,
     sankeyConfig
   );

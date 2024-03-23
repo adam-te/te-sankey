@@ -7,7 +7,7 @@ export function computeSankeyYScale(
 ) {
   return scaleLinear()
     .domain([0, getGraphVisibleNodeFlowValue(graph)])
-    .range([0, sankeyConfig.graphMeta.height]);
+    .range([0, sankeyConfig.height]);
 }
 
 function getGraphVisibleNodeFlowValue(graph: SankeyGraph) {

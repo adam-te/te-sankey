@@ -146,6 +146,10 @@ const props = defineProps<{
   height: number;
 }>();
 
+const emits = defineEmits<{
+  (event: "nodeClicked", payload: { nodeId: string }): void;
+}>();
+
 const data = computeWiredGraph(props.data);
 const sankeyState = ref(computeSankeyState());
 
@@ -168,10 +172,8 @@ function computeSankeyState(): {
 } {
   const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions);
   const graph = computeSankey(sankeyGrouping, {
-    graphMeta: {
-      width: props.width,
-      height: props.height,
-    },
+    width: props.width,
+    height: props.height,
     linkXPadding: 3,
   });
 
@@ -250,7 +252,6 @@ function getVisibleGraph(graph: SankeyGraph) {
         targetLinks: v.targetLinks.filter((v) => !v.isHidden),
       })),
     links: visibleLinks,
-    // TODO:
     columns: graph.columns.map((c) => ({
       ...c,
       nodes: c.nodes
@@ -265,8 +266,7 @@ function getVisibleGraph(graph: SankeyGraph) {
 }
 
 function onSankeyNodeClicked(node: SankeyNode) {
-  props.groupingOptions.focusedNode = node.id;
-  sankeyState.value = computeSankeyState();
+  emits("nodeClicked", { nodeId: node.id });
 }
 
 // Get top buttons

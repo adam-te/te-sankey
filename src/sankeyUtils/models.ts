@@ -44,10 +44,8 @@ export interface SankeyColumn {
 }
 
 export interface SankeyConfig {
-  graphMeta: {
-    width: number;
-    height: number;
-  };
+  width: number;
+  height: number;
   nodeWidth: number; // 24
   nodeYPadding: number; // 0
   linkXPadding: number;

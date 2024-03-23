@@ -33,6 +33,7 @@
       :height="600"
       :data="rawData"
       :groupingOptions="computeSankeyGroupingOptions"
+      @nodeClicked="onNodeClicked"
     />
   </div>
 </template>
@@ -64,10 +65,6 @@ function onSourceGroupingChanged(
     sourceGroupType: newValue,
     focusedNode: undefined,
   };
-
-  // TODO: Watch internally
-  // updateSankey();
-  // drawCounter.value += 1;
 }
 
 function onTargetGroupingChanged(
@@ -78,10 +75,13 @@ function onTargetGroupingChanged(
     targetGroupType: newValue,
     focusedNode: undefined,
   };
+}
 
-  // TODO watch internally
-  // updateSankey();
-  // drawCounter.value += 1;
+function onNodeClicked({ nodeId }) {
+  computeSankeyGroupingOptions.value = {
+    ...computeSankeyGroupingOptions.value,
+    focusedNode: nodeId,
+  };
 }
 </script>
 

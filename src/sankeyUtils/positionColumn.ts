@@ -28,7 +28,7 @@ export function positionColumn({
     .domain([0, totalColumnFlowValue])
     .range([
       0,
-      sankeyConfig.graphMeta.height -
+      sankeyConfig.height -
         sankeyConfig.nodeYPadding * visibleColumnNodes.length,
     ]);
   // TODO: Settle on single applicable yScale definition
