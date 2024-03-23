@@ -1,5 +1,7 @@
 export interface SankeyNode {
   id: string
+  displayName: string
+  label: string
 
   sourceLinks: SankeyLink[] // If source of link, in sourcelinks
   targetLinks: SankeyLink[] // if target of link, in targetlinks

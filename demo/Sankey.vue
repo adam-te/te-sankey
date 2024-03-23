@@ -31,6 +31,7 @@
     <CloudFlowSankey
       :width="1600"
       :height="600"
+      :sourceTargetPadding="600"
       :data="rawData"
       :groupingOptions="computeSankeyGroupingOptions"
       @nodeClicked="onNodeClicked"

@@ -162,10 +162,11 @@ import {
 } from "."
 
 const props = defineProps<{
-  data: RawSubnetData
-  groupingOptions: ComputeSankeyGroupingOptions
   width: number
   height: number
+  sourceTargetPadding: number
+  data: RawSubnetData
+  groupingOptions: ComputeSankeyGroupingOptions
 }>()
 
 const emits = defineEmits<{
@@ -188,6 +189,9 @@ const sankeyState = computed<{
     data.value,
     props.groupingOptions
   )
+
+  addSourceTargetPadding(sankeyGrouping.columns)
+
   const graph = computeSankey(sankeyGrouping, {
     width: props.width,
     height: props.height,
@@ -236,15 +240,20 @@ const sankeyState = computed<{
   }
 })
 
+/** Focused column is the column "after" the focusedNode, or the first column if none */
 const focusedColumn = computed<SankeyColumn>(() => {
   const { graph } = sankeyState.value
   const focusedNodeColumnIdx = graph.columns.findIndex(c =>
     c.nodes.some(n => n.id === props.groupingOptions?.focusedNodeId)
   )
 
-  // Focused column is the column "after" the focusedNode, or the first column if none
   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
 })
+
+/**
+ * derive flows from focusedColumn
+ */
+
 function getNodeWidth(node: SankeyNode) {
   if (node.x1 == null || node.x0 == null) {
     throw new Error("node.x0 and node.x1 must be defined!")
@@ -311,6 +320,15 @@ function getColumnX(column: SankeyColumn): number | null {
   }
   // @ts-ignore
   return column.nodes.find(v => v.x0 != null).x0
+}
+
+/** Add wider gap between sources and targets */
+function addSourceTargetPadding(columns: SankeyColumn[]): void {
+  const lastSourceColumn = columns.filter(c => !c.isTarget).at(-1)
+  if (!lastSourceColumn) {
+    throw new Error("Source columns must be defined!")
+  }
+  lastSourceColumn.rightPadding = props.sourceTargetPadding
 }
 </script>
 

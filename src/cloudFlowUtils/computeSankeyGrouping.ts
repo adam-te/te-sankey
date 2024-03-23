@@ -91,14 +91,6 @@ export function computeSankeyGrouping(
 
   const visibleColumnSpecs = columnSpecs.filter(c => c.isVisible)
   for (const columnSpec of visibleColumnSpecs) {
-    const isPreviousColumnLastSource = Boolean(
-      !columns?.at(-1)?.isTarget && columnSpec?.isTarget
-    )
-    if (isPreviousColumnLastSource) {
-      // @ts-ignore - Clean up, just adding high padding value here... should be param
-      columns.at(-1).rightPadding = 600
-    }
-
     const column: SankeyColumn = {
       id: `${
         columnSpec.isTarget ? "TARGET" : "SOURCE"
@@ -106,6 +98,7 @@ export function computeSankeyGrouping(
       nodes: [],
       rightPadding: 0,
       isTarget: columnSpec.isTarget,
+      visibleRows: [0, 0],
     }
 
     const nextVisibleGroupType =
@@ -121,13 +114,13 @@ export function computeSankeyGrouping(
       column.nodes.push(sankeyNode)
     }
 
-    const columnVisibleRows = columnIdToColSpec.get(column.id)
-    if (!columnVisibleRows) {
+    const visibleRowsColumn = columnIdToColSpec.get(column.id)
+    if (!visibleRowsColumn) {
       throw new Error(
         "Invalid column.id specified! It must be one of: (SOURCE/TARGET)_(REGION/VPC/SUBNET)"
       )
     }
-    const [prevMin, prevMax] = columnVisibleRows.visibleRows
+    const [prevMin, prevMax] = visibleRowsColumn.visibleRows
     column.visibleRows = [
       Math.max(prevMin, 0),
       Math.min(prevMax, column.nodes.length),
@@ -137,7 +130,6 @@ export function computeSankeyGrouping(
 
   const sankeyLinks: SankeyLink[] = []
   for (const group of groups) {
-    // TODO: Why is this check needed? Because final column has no outlinks?
     if (!group.targetGroupType) {
       continue
     }
@@ -155,16 +147,13 @@ export function computeSankeyGrouping(
     sankeyLinks.push(...groupSourceLinks)
   }
 
-  const sankeyNodes = [...groupIdToSankeyNode.values()]
-
-  // TODO: Profile
   sortToMinimizeLinkCrossings({
     columns,
     numberOfIterations: 6,
   })
 
   return {
-    nodes: sankeyNodes,
+    nodes: [...groupIdToSankeyNode.values()],
     links: sankeyLinks,
     columns,
   }
@@ -174,14 +163,11 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
   isSourceRegionsVisible: boolean
   isSourceVpcsVisible: boolean
   isSourceSubnetsVisible: boolean
-
-  // Target defined by filter
   isTargetSubnetsVisible: boolean
   isTargetVpcsVisible: boolean
   isTargetRegionsVisible: boolean
 } {
-  const visibility = {
-    // Source defined by filter plus clicks
+  return {
     isSourceRegionsVisible: ["REGION"].includes(options.sourceGroupType),
     isSourceVpcsVisible:
       ["VPC"].includes(options.sourceGroupType) ||
@@ -192,25 +178,18 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
         options.focusedNodeId?.startsWith("VPC_") ||
         options.focusedNodeId?.startsWith("SUBNET_")
       ), // TODO: Fix hacky string inference
-
-    // Target defined by filter
     isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),
     isTargetVpcsVisible: ["SUBNET", "VPC"].includes(options.targetGroupType),
     isTargetRegionsVisible: ["SUBNET", "VPC", "REGION"].includes(
       options.targetGroupType
     ),
   }
-
-  return {
-    ...visibility,
-  }
 }
 
 function createSankeyNode(group: SubnetGroup): SankeyNode {
   return {
     id: group.id,
-    // @ts-ignore TODO fix
-    displayName: group.id.split("_").at(-1),
+    displayName: group.id.split("_").at(-1) as string,
     label: group.isTarget ? "right" : "left",
     sourceLinks: [],
     targetLinks: [],
