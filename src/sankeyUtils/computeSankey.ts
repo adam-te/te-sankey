@@ -5,15 +5,15 @@ import {
   computeSpacingBetweenColumns,
   markHiddenNodes,
   positionColumn,
-} from ".";
+} from "."
 export interface SankeyOptions {
-  width: number;
-  height: number;
-  extent?: [[number, number], [number, number]]; // [[0, 1], [0, 1]]
-  nodeWidth?: number; // 24
+  width: number
+  height: number
+  extent?: [[number, number], [number, number]] // [[0, 1], [0, 1]]
+  nodeWidth?: number // 24
 
-  nodeYPadding?: number; // 8
-  linkXPadding?: number;
+  nodeYPadding?: number // 8
+  linkXPadding?: number
 }
 
 export function computeSankey(
@@ -25,29 +25,29 @@ export function computeSankey(
     nodeYPadding: 8,
     linkXPadding: 0,
     ...options,
-  };
+  }
 
   //   const columns = computeNodeColumns(nodes);
   const spacingBetweenColumns = computeSpacingBetweenColumns(
     sankeyConfig.width,
     graph.columns,
     sankeyConfig
-  );
+  )
 
   // TODO: property of column instead of bool on node
-  markHiddenNodes(graph.columns);
-  const yScale = computeSankeyYScale(graph, sankeyConfig);
+  markHiddenNodes(graph.columns)
+  const yScale = computeSankeyYScale(graph, sankeyConfig)
 
-  let x = spacingBetweenColumns;
+  let x = spacingBetweenColumns
   for (const column of graph.columns) {
     positionColumn({
       x,
       column,
       sankeyConfig,
       yScale,
-    });
-    x += spacingBetweenColumns + column.rightPadding;
+    })
+    x += spacingBetweenColumns + column.rightPadding
   }
 
-  return graph;
+  return graph
 }

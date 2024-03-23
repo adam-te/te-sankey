@@ -1,21 +1,21 @@
-import { SankeyLink } from ".";
+import { SankeyLink } from "."
 
 export function computeSankeyLinkPath(
   link: Pick<SankeyLink, "start" | "end">
 ): string {
   if (!link.start || !link.end) {
-    throw new Error("link.start and link.end must be defined!");
+    throw new Error("link.start and link.end must be defined!")
   }
-  const { start, end } = link;
+  const { start, end } = link
 
   // Calculate control points for smooth curves
-  const controlPointX1 = start.x + (end.x - start.x) / 3;
-  const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3;
+  const controlPointX1 = start.x + (end.x - start.x) / 3
+  const controlPointX2 = start.x + (2 * (end.x - start.x)) / 3
 
-  const startTop = start.y0;
-  const startBottom = start.y1;
-  const endTop = end.y0;
-  const endBottom = end.y1;
+  const startTop = start.y0
+  const startBottom = start.y1
+  const endTop = end.y0
+  const endBottom = end.y1
 
   // Construct the Bezier curve
   return [
@@ -25,5 +25,5 @@ export function computeSankeyLinkPath(
     `L${end.x},${endBottom}`, // Line to end bottom
     `C${controlPointX2},${endBottom} ${controlPointX1},${startBottom} ${start.x},${startBottom}`, // Curve to start bottom
     "Z", // Close path
-  ].join(" ");
+  ].join(" ")
 }

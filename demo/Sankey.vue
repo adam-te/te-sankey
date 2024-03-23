@@ -48,7 +48,7 @@ import { ComputeSankeyGroupingOptions } from "../src/cloudFlowUtils"
 const computeSankeyGroupingOptions = ref<ComputeSankeyGroupingOptions>({
   sourceGroupType: "REGION",
   targetGroupType: "REGION",
-  focusedNode: undefined,
+  focusedNodeId: undefined,
   columnSpecs: [
     { id: "SOURCE_REGION", visibleRows: [0, 4] },
     { id: "SOURCE_VPC", visibleRows: [0, 4] },
@@ -65,7 +65,7 @@ function onSourceGroupingChanged(
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     sourceGroupType: newValue,
-    focusedNode: undefined,
+    focusedNodeId: undefined,
   }
 }
 
@@ -75,14 +75,14 @@ function onTargetGroupingChanged(
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     targetGroupType: newValue,
-    focusedNode: undefined,
+    focusedNodeId: undefined,
   }
 }
 
 function onNodeClicked({ nodeId }) {
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
-    focusedNode: nodeId,
+    focusedNodeId: nodeId,
   }
 }
 
