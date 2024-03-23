@@ -3,21 +3,26 @@
     <div class="sankey-row-btn-container top">
       <button
         class="sankey-row-btn ttt"
-        :style="{ left: `${sankeyState.graph.columns[0].nodes[0].x0}px` }"
+        :style="{
+          left: `${sankeyState.graph.columns[0].nodes[0].x0}px`,
+        }"
       >
         ◀
       </button>
       <button
-        v-for="button of getTopButtons(sankeyState.graph)"
+        v-for="column of sankeyState.graph.columns.filter(hasHiddenTopNodes)"
+        :key="column.id"
         class="sankey-row-btn"
-        :style="{ left: `${button.x}px` }"
-        @click="button.onClick"
+        :style="{ left: `${getColumnX(column)}px` }"
+        @click="emits.columnScrollClicked({ column, direction: 'UP' })"
       >
         ▲
       </button>
       <button
         class="sankey-row-btn ttt"
-        :style="{ left: `${sankeyState.graph.columns.at(-1).nodes[0].x0}px` }"
+        :style="{
+          left: `${sankeyState.graph.columns.at(-1).nodes[0].x0}px`,
+        }"
       >
         ▶
       </button>
@@ -113,10 +118,11 @@
     </svg>
     <div class="sankey-row-btn-container bottom">
       <button
-        v-for="button of getBottomButtons(sankeyState.graph)"
+        v-for="column of sankeyState.graph.columns.filter(hasHiddenBottomNodes)"
+        :key="column.id"
         class="sankey-row-btn"
-        :style="{ left: `${button.x}px` }"
-        @click="button.onClick"
+        :style="{ left: `${getColumnX(column)}px` }"
+        @click="emits.columnScrollClicked({ column, direction: 'DOWN' })"
       >
         ▼
       </button>
@@ -125,33 +131,38 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch } from "vue"
 import {
+  SankeyColumn,
   SankeyGraph,
   SankeyNode,
   computeSankey,
   computeSankeyLinkPath,
-} from "../sankeyUtils";
+} from "../sankeyUtils"
 import {
   computeWiredGraph,
   ComputeSankeyGroupingOptions,
   computeSankeyGrouping,
   RawSubnetData,
-} from ".";
+} from "."
 
 const props = defineProps<{
-  data: RawSubnetData;
-  groupingOptions: ComputeSankeyGroupingOptions;
-  width: number;
-  height: number;
-}>();
+  data: RawSubnetData
+  groupingOptions: ComputeSankeyGroupingOptions
+  width: number
+  height: number
+}>()
 
 const emits = defineEmits<{
-  (event: "nodeClicked", payload: { nodeId: string }): void;
-}>();
+  (event: "nodeClicked", payload: { nodeId: string }): void
+  (
+    event: "columnScrollClicked",
+    payload: { column: SankeyColumn; direction: "UP" | "DOWN" }
+  ): void
+}>()
 
-const data = computeWiredGraph(props.data);
-const sankeyState = ref(computeSankeyState());
+const data = computeWiredGraph(props.data)
+const sankeyState = ref(computeSankeyState())
 
 // TODO: Can we make the whole thing a derived function instead?
 watch(
@@ -162,22 +173,22 @@ watch(
     () => props.height,
   ],
   () => {
-    sankeyState.value = computeSankeyState();
+    sankeyState.value = computeSankeyState()
   }
-);
+)
 
 function computeSankeyState(): {
-  graph: SankeyGraph;
-  visibleGraph: SankeyGraph;
+  graph: SankeyGraph
+  visibleGraph: SankeyGraph
 } {
-  const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions);
+  const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions)
   const graph = computeSankey(sankeyGrouping, {
     width: props.width,
     height: props.height,
     linkXPadding: 3,
-  });
+  })
 
-  const visibleGraph = getVisibleGraph(graph);
+  const visibleGraph = getVisibleGraph(graph)
   //   TODO: reimplement merged links
   //   for (const col of visibleGraph.columns) {
   // if (!col.mergeLinks) {
@@ -216,21 +227,21 @@ function computeSankeyState(): {
   return {
     graph,
     visibleGraph,
-  };
+  }
 }
 
 function getNodeWidth(node: SankeyNode) {
   if (node.x1 == null || node.x0 == null) {
-    throw new Error("node.x0 and node.x1 must be defined!");
+    throw new Error("node.x0 and node.x1 must be defined!")
   }
-  return node.x1 - node.x0;
+  return node.x1 - node.x0
 }
 
 function getNodeHeight(node: SankeyNode) {
   if (node.y1 == null || node.y0 == null) {
-    throw new Error("node.y0 and node.y1 must be defined!");
+    throw new Error("node.y0 and node.y1 must be defined!")
   }
-  return node.y1 - node.y0;
+  return node.y1 - node.y0
 }
 
 function getFlowsEndPercentage(node: SankeyNode) {
@@ -238,73 +249,53 @@ function getFlowsEndPercentage(node: SankeyNode) {
   //   if (node.y1 == null || node.y0 == null || node.linksEndY == null) {
   //     throw new Error("node.y0, node.y1 and node.linksEndY must be defined!");
   //   }
-  return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100;
+  return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100
 }
 
-function getVisibleGraph(graph: SankeyGraph) {
-  const visibleLinks = graph.links.filter((v) => !v.isHidden);
+function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
+  const visibleLinks = graph.links.filter(v => !v.isHidden)
   return {
     nodes: graph.nodes
-      .filter((v) => !v.isHidden)
-      .map((v) => ({
+      .filter(v => !v.isHidden)
+      .map(v => ({
         ...v,
-        sourceLinks: v.sourceLinks.filter((v) => !v.isHidden),
-        targetLinks: v.targetLinks.filter((v) => !v.isHidden),
+        sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+        targetLinks: v.targetLinks.filter(v => !v.isHidden),
       })),
     links: visibleLinks,
-    columns: graph.columns.map((c) => ({
+    columns: graph.columns.map(c => ({
       ...c,
       nodes: c.nodes
-        .filter((v) => !v.isHidden)
-        .map((v) => ({
+        .filter(v => !v.isHidden)
+        .map(v => ({
           ...v,
-          sourceLinks: v.sourceLinks.filter((v) => !v.isHidden),
-          targetLinks: v.targetLinks.filter((v) => !v.isHidden),
+          sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+          targetLinks: v.targetLinks.filter(v => !v.isHidden),
         })),
     })),
-  };
+  }
 }
 
 function onSankeyNodeClicked(node: SankeyNode) {
-  emits("nodeClicked", { nodeId: node.id });
+  emits("nodeClicked", { nodeId: node.id })
 }
 
-// Get top buttons
-function getTopButtons() {
-  const r = sankeyState.value.graph.columns
-    .filter((c) => c.nodes.length && c.visibleRows[0] > 0)
-    .map((c) => {
-      const button = {
-        x: c.nodes.find((v) => v.x0 != null).x0,
-        onClick() {
-          const range = props.groupingOptions.visibleRowState[c.columnIdx];
-          range[0] -= 1;
-          range[1] -= 1;
-          updateSankey();
-        },
-      };
-
-      return button;
-    });
-
-  return r;
+function hasHiddenTopNodes(column: SankeyColumn): boolean {
+  return Boolean(column.nodes.length && column.visibleRows[0] > 0)
 }
 
-function getBottomButtons() {
-  const r = sankeyState.value.graph.columns
-    .filter((c) => c.nodes.length && c.visibleRows[1] < c.nodes.length)
-    .map((c) => {
-      return {
-        x: c.nodes.find((v) => v.x0 != null).x0,
-        onClick() {
-          const range = props.groupingOptions.visibleRowState[c.columnIdx];
-          range[0] += 1;
-          range[1] += 1;
-          updateSankey();
-        },
-      };
-    });
-  return r;
+function hasHiddenBottomNodes(column: SankeyColumn): boolean {
+  return Boolean(
+    column.nodes.length && column.visibleRows[1] < column.nodes.length
+  )
+}
+
+function getColumnX(column: SankeyColumn): number | null {
+  if (!column.nodes.length) {
+    return null
+  }
+  // @ts-ignore
+  return column.nodes.find(v => v.x0 != null).x0
 }
 </script>
 
@@ -373,7 +364,6 @@ function getBottomButtons() {
 }
 
 .sankey-row-btn-container.bottom {
-  /* TODO */
   margin-top: -9px;
 }
 

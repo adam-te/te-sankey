@@ -1,5 +1,5 @@
-export * from "./computeWiredGraph";
-export * from "./computeSankeyGrouping";
+export * from "./computeWiredGraph"
+export * from "./computeSankeyGrouping"
 export type {
   RawSubnetData,
   RawSubnet,
@@ -7,4 +7,4 @@ export type {
   SubnetData,
   Subnet,
   SubnetLink,
-} from "./models";
+} from "./models"

@@ -38,7 +38,7 @@ export interface SankeyGraph {
 export interface SankeyColumn {
   id: string;
   nodes: SankeyNode[];
-  visibleRows?: [number, number];
+  visibleRows: [number, number];
   rightPadding: number;
   isTarget: boolean; // TODO: May be removed
 }
