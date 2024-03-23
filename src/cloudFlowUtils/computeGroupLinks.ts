@@ -60,6 +60,7 @@ export function computeGroupLinks({
       source: groupIdToSankeyNode.get(group.id) as SankeyNode,
       target: groupIdToSankeyNode.get(targetNodeId) as SankeyNode,
       value: links.reduce(
+        // TODO: What does it mean for a link to have ingress and egress bytes? not logical
         (sum: number, v: SubnetLink) => sum + v.egressBytes + v.ingressBytes,
         0
       ),

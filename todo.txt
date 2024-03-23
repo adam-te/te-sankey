@@ -1,9 +1,28 @@
 - Sort links by order of connection on opposing side (done)
-- Fix fact that link padding will not be reduced correctly. (todo)
-- Can we use scale instead?
+- Fix fact that link padding will not be reduced correctly. (done)
+- Can we use scale instead? (done)
 
-- Assess convergence of minimizing link crossing algo
+- improve linkScale perf (todo)
+- Assess convergence of minimizing link crossing algo (todo)
 - Add more tests
-- Update yScaling to use single column flow
+- Figure out yScaling and link acceptance
 - Prevent focus of target nodes
+
+
+
+- Right now we show the full flow from nodeA to nodeB
+- when click node, filter to only related subnet
+- handle rejections. We don't have?
+
+
+IMPORTANT
+- TODO: Prevent selecting target nodes
+- TODO: Rename focusNode to selectedNode
+- TODO: Filter column nodes based on selected item
+- TODO: Highlighting/coloring features
+
+- TODO: Handle merged links. 
+Create false links that reflect focused item traffic
+
+
 

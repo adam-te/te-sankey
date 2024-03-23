@@ -36,6 +36,10 @@ export function positionColumn({
 
   let y0 = 0;
   for (const node of visibleColumnNodes) {
+    if (node.id.includes("vpc-01f")) {
+      console.log(node);
+    }
+
     const { nodeHeight } = positionNode({
       x,
       y0,
