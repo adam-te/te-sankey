@@ -1,6 +1,6 @@
-- Sort links by order of connection on opposing side (done)
-- Fix fact that link padding will not be reduced correctly. (done)
-- Can we use scale instead? (done)
+- Only consider last column scrollable.
+e.g. One tier is "active", based on focusNode
+
 
 - improve linkScale perf (todo)
 - Assess convergence of minimizing link crossing algo (todo)

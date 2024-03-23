@@ -1,27 +1,36 @@
 <template>
   <div>
-    <div class="sankey-row-btn-container top">
+    <div class="sankey-scroll-btn-container top">
       <button
-        class="sankey-row-btn ttt"
+        v-if="focusedColumn !== sankeyState.graph.columns[0]"
+        class="sankey-scroll-btn"
+        :disabled="true"
         :style="{
-          left: `${sankeyState.graph.columns[0].nodes[0].x0}px`,
+          left: `${getColumnX(sankeyState.graph.columns[0])}px`,
         }"
       >
         ◀
       </button>
       <button
-        v-for="column of sankeyState.graph.columns.filter(hasHiddenTopNodes)"
-        :key="column.id"
-        class="sankey-row-btn"
-        :style="{ left: `${getColumnX(column)}px` }"
-        @click="emits.columnScrollClicked({ column, direction: 'UP' })"
+        v-if="focusedColumn"
+        class="sankey-scroll-btn"
+        :disabled="!hasHiddenTopNodes(focusedColumn)"
+        :style="{ left: `${getColumnX(focusedColumn)}px` }"
+        @click="
+          emits('columnScrollClicked', {
+            column: focusedColumn,
+            direction: 'UP',
+          })
+        "
       >
         ▲
       </button>
       <button
-        class="sankey-row-btn ttt"
+        v-if="focusedColumn !== sankeyState.graph.columns.at(-1)"
+        class="sankey-scroll-btn"
+        :disabled="true"
         :style="{
-          left: `${sankeyState.graph.columns.at(-1).nodes[0].x0}px`,
+          left: `${getColumnX(sankeyState.graph.columns.at(-1))}px`,
         }"
       >
         ▶
@@ -116,13 +125,18 @@
         </template>
       </g>
     </svg>
-    <div class="sankey-row-btn-container bottom">
+    <div class="sankey-scroll-btn-container bottom">
       <button
-        v-for="column of sankeyState.graph.columns.filter(hasHiddenBottomNodes)"
-        :key="column.id"
-        class="sankey-row-btn"
-        :style="{ left: `${getColumnX(column)}px` }"
-        @click="emits.columnScrollClicked({ column, direction: 'DOWN' })"
+        v-if="focusedColumn"
+        class="sankey-scroll-btn"
+        :disabled="!hasHiddenBottomNodes(focusedColumn)"
+        :style="{ left: `${getColumnX(focusedColumn)}px` }"
+        @click="
+          emits('columnScrollClicked', {
+            column: focusedColumn,
+            direction: 'DOWN',
+          })
+        "
       >
         ▼
       </button>
@@ -131,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue"
+import { ref, computed } from "vue"
 import {
   SankeyColumn,
   SankeyGraph,
@@ -144,6 +158,7 @@ import {
   ComputeSankeyGroupingOptions,
   computeSankeyGrouping,
   RawSubnetData,
+  SubnetData,
 } from "."
 
 const props = defineProps<{
@@ -161,27 +176,18 @@ const emits = defineEmits<{
   ): void
 }>()
 
-const data = computeWiredGraph(props.data)
-const sankeyState = ref(computeSankeyState())
+const data = computed<SubnetData>(() => {
+  return computeWiredGraph(props.data)
+})
 
-// TODO: Can we make the whole thing a derived function instead?
-watch(
-  [
-    () => props.data,
-    () => props.groupingOptions,
-    () => props.width,
-    () => props.height,
-  ],
-  () => {
-    sankeyState.value = computeSankeyState()
-  }
-)
-
-function computeSankeyState(): {
+const sankeyState = computed<{
   graph: SankeyGraph
   visibleGraph: SankeyGraph
-} {
-  const sankeyGrouping = computeSankeyGrouping(data, props.groupingOptions)
+}>(() => {
+  const sankeyGrouping = computeSankeyGrouping(
+    data.value,
+    props.groupingOptions
+  )
   const graph = computeSankey(sankeyGrouping, {
     width: props.width,
     height: props.height,
@@ -228,8 +234,17 @@ function computeSankeyState(): {
     graph,
     visibleGraph,
   }
-}
+})
 
+const focusedColumn = computed<SankeyColumn>(() => {
+  const { graph } = sankeyState.value
+  const focusedNodeColumnIdx = graph.columns.findIndex(c =>
+    c.nodes.some(n => n.id === props.groupingOptions?.focusedNodeId)
+  )
+
+  // Focused column is the column "after" the focusedNode, or the first column if none
+  return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
+})
 function getNodeWidth(node: SankeyNode) {
   if (node.x1 == null || node.x0 == null) {
     throw new Error("node.x0 and node.x1 must be defined!")
@@ -358,16 +373,16 @@ function getColumnX(column: SankeyColumn): number | null {
   text-anchor: end;
 }
 
-.sankey-row-btn-container {
+.sankey-scroll-btn-container {
   position: relative;
   height: 22px;
 }
 
-.sankey-row-btn-container.bottom {
+.sankey-scroll-btn-container.bottom {
   margin-top: -9px;
 }
 
-.sankey-row-btn {
+.sankey-scroll-btn {
   position: absolute;
   background-color: white;
   border: 1px solid black;
@@ -377,14 +392,4 @@ function getColumnX(column: SankeyColumn): number | null {
   width: 25px;
   height: 20px;
 }
-
-/* .flows-stop {
-        stop-color: blue;
-        stop-opacity: 1;
-      }
-      
-      .no-flows-stop {
-        stop-color: red;
-        stop-opacity: 1;
-      } */
 </style>
