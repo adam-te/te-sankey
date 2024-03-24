@@ -102,6 +102,19 @@ function onNodeClicked({
 }
 
 function onColumnScrollClicked({ column, direction }) {
+  // Remove one level of selectedNodeIds
+  if (direction === "LEFT") {
+    computeSankeyGroupingOptions.value = {
+      ...computeSankeyGroupingOptions.value,
+      selectedNodeIds: computeSankeyGroupingOptions.value.selectedNodeIds.slice(
+        0,
+        -1
+      ),
+    }
+    return
+  }
+
+  // Scroll the column
   const scrollOffset = direction === "UP" ? -1 : 1
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,

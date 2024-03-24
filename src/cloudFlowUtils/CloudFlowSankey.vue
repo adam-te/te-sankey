@@ -4,10 +4,15 @@
       <button
         v-if="focusedColumn !== sankeyGraph.columns[0]"
         class="sankey-scroll-btn"
-        :disabled="true"
         :style="{
           left: `${getColumnX(sankeyGraph.columns[0])}px`,
         }"
+        @click="
+          emits('columnScrollClicked', {
+            column: focusedColumn,
+            direction: 'LEFT',
+          })
+        "
       >
         ◀
       </button>
@@ -156,7 +161,7 @@ import {
   sortToMinimizeLinkCrossings,
 } from "."
 // import { SankeyOptions } from "../sankeyUtils"
-import { SankeyLink, MergedSankeyLink } from "../sankeyUtils"
+// import { SankeyLink, MergedSankeyLink } from "../sankeyUtils"
 
 const props = defineProps<{
   width: number
@@ -173,7 +178,7 @@ const emits = defineEmits<{
   ): void
   (
     event: "columnScrollClicked",
-    payload: { column: SankeyColumn; direction: "UP" | "DOWN" }
+    payload: { column: SankeyColumn; direction: "UP" | "DOWN" | "LEFT" }
   ): void
 }>()
 
@@ -239,7 +244,7 @@ function getFocusedColumn({
   groupingOptions: ComputeSankeyGroupingOptions
 }): SankeyColumn {
   const focusedNodeColumnIdx = graph.columns.findIndex(c =>
-    c.nodes.some(n => n.id === groupingOptions?.focusedNodeId)
+    c.nodes.some(n => n.id === groupingOptions?.selectedNodeIds.at(-1))
   )
 
   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]

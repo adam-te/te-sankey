@@ -7,7 +7,6 @@ import {
 import { computeGroupLinks } from "./computeGroupLinks"
 import { computeGroupedSubnets } from "./computeGroupedSubnets"
 import { GroupType, SubnetData, SubnetGroup } from "./models"
-// import { sortToMinimizeLinkCrossings } from "./sortToMinimizeLinkCrossings"
 
 type ColumnId =
   | "SOURCE_REGION"
