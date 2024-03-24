@@ -26,13 +26,8 @@ export function sortToMinimizeLinkCrossings({
   }
 
   // Don't cross own node links
-  function sortLinksByTargetIdx(
-    column: SankeyColumn,
-    nextColumn: SankeyColumn
-  ) {
-    const nodeIdToNextColumnIdx = new Map(
-      nextColumn.nodes.map((node, index) => [node.id, index])
-    )
+  function sortLinksByTargetIdx(column: SankeyColumn, nextColumn: SankeyColumn) {
+    const nodeIdToNextColumnIdx = new Map(nextColumn.nodes.map((node, index) => [node.id, index]))
 
     for (const node of column.nodes) {
       node.sourceLinks.sort((a, b) => {
@@ -52,14 +47,9 @@ export function sortToMinimizeLinkCrossings({
     }
   }
 
-  function sortNodesByBarycenter(
-    column: SankeyColumn,
-    nextColumn: SankeyColumn
-  ) {
-    const nodeIdToNextColumnIdx = new Map(
-      nextColumn.nodes.map((node, index) => [node.id, index])
-    )
-    return column.nodes.sort((a, b) => {
+  function sortNodesByBarycenter(column: SankeyColumn, nextColumn: SankeyColumn) {
+    const nodeIdToNextColumnIdx = new Map(nextColumn.nodes.map((node, index) => [node.id, index]))
+    column.nodes.sort((a, b) => {
       const aBarycenter = calculateBarycenter(a) || Infinity
       const bBarycenter = calculateBarycenter(b) || Infinity
       return aBarycenter - bBarycenter
@@ -69,9 +59,7 @@ export function sortToMinimizeLinkCrossings({
       const linkMidpoints = node.sourceLinks.map(v => {
         const isLinkTargetInNextColumn = nodeIdToNextColumnIdx.has(v.target.id)
         if (!isLinkTargetInNextColumn) {
-          throw new Error(
-            "Link is pointing to a node that is not in the neighboring column!"
-          )
+          throw new Error("Link is pointing to a node that is not in the neighboring column!")
         }
         return nodeIdToNextColumnIdx.get(v.target.id) as number
       })

@@ -77,12 +77,10 @@ function onTargetGroupingChanged(newValue: ComputeSankeyGroupingOptions["targetG
   }
 }
 
-function onNodeClicked({ visibleGraph, node }: { visibleGraph: SankeyGraph; node: SankeyNode }) {
+function onNodeClicked({ graph, node }: { graph: SankeyGraph; node: SankeyNode }) {
   const { selectedNodeIds } = computeSankeyGroupingOptions.value
-  const nextColumnEligibleForFocus = visibleGraph.columns[selectedNodeIds.length]
-  const clickedColumn = visibleGraph.columns.find(column =>
-    column.nodes.some(n => n.id === node.id)
-  )
+  const nextColumnEligibleForFocus = graph.columns[selectedNodeIds.length]
+  const clickedColumn = graph.columns.find(column => column.nodes.some(n => n.id === node.id))
   if (clickedColumn !== nextColumnEligibleForFocus || clickedColumn.isTarget) {
     return // don't allow selecting invalid nodes
   }

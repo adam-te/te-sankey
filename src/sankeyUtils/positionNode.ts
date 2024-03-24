@@ -1,23 +1,26 @@
 import { ScaleLinear, scaleLinear } from "d3-scale"
 import { getNodeTotalFlowValue } from "./utils"
 import { positionLinks } from "./positionLinks"
-import { SankeyConfig, SankeyNode } from "./models"
+import { SankeyColumn, SankeyConfig, SankeyNode } from "./models"
 
 export function positionNode({
   x,
   y0,
   yScale,
+  column,
   node,
   sankeyConfig,
 }: {
   x: number
   y0: number
   yScale: ScaleLinear<number, number>
+  column: SankeyColumn
   node: SankeyNode
   sankeyConfig: SankeyConfig
 }) {
   const nodeHeight =
-    yScale(getNodeTotalFlowValue(node)) - sankeyConfig.nodeYPadding
+    yScale(column.staticLink ? column.staticLink.totalValue : getNodeTotalFlowValue(node)) -
+    sankeyConfig.nodeYPadding
 
   Object.assign(node, {
     x0: x,
@@ -29,30 +32,40 @@ export function positionNode({
   // ADAMTODO:(perf)
   const linkHeightScale = computeLinkHeightScale(node)
 
-  const { linksEndY } = positionLinks({
-    x,
-    y0,
-    linkHeightScale,
-    links: node.sourceLinks.filter(v => !v.isHidden),
-    sankeyConfig: {
-      ...sankeyConfig,
-      linkXPadding: sankeyConfig.linkXPadding + sankeyConfig.nodeWidth,
-    },
-    type: "start",
-  })
-  node.linksEndY = linksEndY
+  if (column.staticLink) {
+    // console.log(column)
+    console.log(
+      column.id,
+      column.staticLink,
+      yScale(column.staticLink.visibleValue),
+      column.staticLink.totalValue > column.staticLink.visibleValue
+    )
+    node.linksEndY = yScale(column.staticLink.visibleValue)
+  } else {
+    node.linksEndY = positionLinks({
+      x,
+      y0,
+      linkHeightScale,
+      links: node.sourceLinks.filter(v => !v.isHidden),
+      sankeyConfig: {
+        ...sankeyConfig,
+        linkXPadding: sankeyConfig.linkXPadding + sankeyConfig.nodeWidth,
+      },
+      type: "start",
+    }).linksEndY
 
-  positionLinks({
-    x,
-    y0,
-    linkHeightScale,
-    links: node.targetLinks.filter(v => !v.isHidden),
-    sankeyConfig: {
-      ...sankeyConfig,
-      linkXPadding: -sankeyConfig.linkXPadding,
-    },
-    type: "end",
-  })
+    positionLinks({
+      x,
+      y0,
+      linkHeightScale,
+      links: node.targetLinks.filter(v => !v.isHidden),
+      sankeyConfig: {
+        ...sankeyConfig,
+        linkXPadding: -sankeyConfig.linkXPadding,
+      },
+      type: "end",
+    })
+  }
 
   return {
     nodeHeight,

@@ -1,17 +1,9 @@
-import { SankeyNode } from "./models"
+import { SankeyColumn, SankeyNode } from "./models"
 
-export function getNodeVisibleFlowValue(node: SankeyNode) {
-  let totalNodeSourceFlowValue = 0
-  for (const link of node.sourceLinks.filter(v => !v.isHidden)) {
-    totalNodeSourceFlowValue += link.value
+export function getColumnTotalFlowValue(column: SankeyColumn) {
+  if (column.staticLink) {
+    return column.staticLink.totalValue
   }
-
-  let totalNodeTargetFlowValue = 0
-  for (const link of node.targetLinks.filter(v => !v.isHidden)) {
-    totalNodeTargetFlowValue += link.value
-  }
-
-  return Math.max(totalNodeSourceFlowValue, totalNodeTargetFlowValue)
 }
 
 export function getNodeTotalFlowValue(node: SankeyNode) {
@@ -20,10 +12,11 @@ export function getNodeTotalFlowValue(node: SankeyNode) {
     totalNodeSourceFlowValue += link.value
   }
 
-  let totalNodeTargetFlowValue = 0
-  for (const link of node.targetLinks) {
-    totalNodeTargetFlowValue += link.value
-  }
+  // let totalNodeTargetFlowValue = 0
+  // for (const link of node.targetLinks) {
+  //   totalNodeTargetFlowValue += link.value
+  // }
 
-  return Math.max(totalNodeSourceFlowValue, totalNodeTargetFlowValue)
+  return totalNodeSourceFlowValue
+  // return Math.max(totalNodeSourceFlowValue, totalNodeTargetFlowValue)
 }

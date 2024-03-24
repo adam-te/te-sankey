@@ -70,9 +70,15 @@ export interface SankeyGraph {
   links: (SankeyLink | MergedSankeyLink)[]
   columns: SankeyColumn[]
 }
+export interface StaticLink {
+  visibleValue: number
+  totalValue: number
+}
+
 export interface SankeyColumn {
   id: string
   nodes: SankeyNode[]
+  staticLink?: StaticLink
   visibleRows: [number, number]
   rightPadding: number
   isTarget: boolean // TODO: May be removed

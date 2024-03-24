@@ -19,7 +19,7 @@
       <button
         v-if="focusedColumn"
         class="sankey-scroll-btn"
-        :disabled="!hasHiddenTopNodes(focusedColumn)"
+        :disabled="!focusedColumn.hasHiddenTopNodes"
         :style="{ left: `${getColumnX(focusedColumn)}px` }"
         @click="
           emits('columnScrollClicked', {
@@ -30,7 +30,7 @@
       >
         ▲
       </button>
-      <button
+      <!-- <button
         v-if="focusedColumn !== sankeyGraph.columns.at(-1)"
         class="sankey-scroll-btn"
         :disabled="true"
@@ -39,7 +39,7 @@
         }"
       >
         ▶
-      </button>
+      </button> -->
     </div>
 
     <svg
@@ -49,7 +49,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <template v-for="node of visibleSankeyGraph.nodes" :key="node.id">
+        <template v-for="node of sankeyGraph.nodes" :key="node.id">
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop
               class="flows-stop"
@@ -67,7 +67,7 @@
 
       <g class="links">
         <path
-          v-for="link of visibleSankeyGraph.links"
+          v-for="link of sankeyGraph.links"
           :key="link.source.name + '_' + link.target.name"
           :d="computeSankeyLinkPath(link)"
           class="sankey-link"
@@ -75,7 +75,7 @@
       </g>
 
       <g class="nodes">
-        <template v-for="node of visibleSankeyGraph.nodes" :key="node.name">
+        <template v-for="node of sankeyGraph.nodes" :key="node.name">
           <rect
             :transform="`translate(${node.x0}, ${node.y0})`"
             :width="getNodeWidth(node)"
@@ -91,7 +91,7 @@
       </g>
 
       <g class="labels">
-        <template v-for="node of visibleSankeyGraph.nodes" :key="node.name">
+        <template v-for="node of sankeyGraph.nodes" :key="node.name">
           <text
             v-if="!node.label"
             :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
@@ -126,7 +126,7 @@
       <button
         v-if="focusedColumn"
         class="sankey-scroll-btn"
-        :disabled="!hasHiddenBottomNodes(focusedColumn)"
+        :disabled="focusedColumn.hasHiddenBottomNodes"
         :style="{ left: `${getColumnX(focusedColumn)}px` }"
         @click="
           emits('columnScrollClicked', {
@@ -159,7 +159,9 @@ import {
   sortToMinimizeLinkCrossings,
 } from "."
 // import { SankeyOptions } from "../sankeyUtils"
-// import { SankeyLink, MergedSankeyLink } from "../sankeyUtils"
+import { SankeyLink } from "../sankeyUtils"
+import { stat } from "fs"
+import { getNodeTotalFlowValue } from "../sankeyUtils/utils"
 
 const props = defineProps<{
   width: number
@@ -177,34 +179,32 @@ const emits = defineEmits<{
   ): void
 }>()
 
-const data = computed<SubnetData>(() => {
+const subnetData = computed<SubnetData>(() => {
   return computeWiredGraph(props.data)
 })
 
-const sankeyState = computed<{
-  graph: SankeyGraph
-  visibleGraph: SankeyGraph
-  focusedColumn: SankeyColumn
-}>(() => {
-  const rawSankeyGrouping = computeSankeyGrouping(data.value, props.groupingOptions)
+const sankeyGraph = computed<DisplaySankeyGraph>(() => {
+  const rawSankeyGrouping = computeSankeyGrouping(subnetData.value, props.groupingOptions)
 
-  const focusedColumn = getFocusedColumn({
-    graph: rawSankeyGrouping,
-    groupingOptions: props.groupingOptions,
-  })
+  rawSankeyGrouping.columns
 
-  // const sankeyGrouping = rawSankeyGrouping
+  // TODO: Merge this with computeSankeyGrouping and do it first
   const sankeyGrouping = computeFocusGraph({
     graph: rawSankeyGrouping,
     selectedNodeIds: props.groupingOptions.selectedNodeIds,
   })
-  console.log("GROUPING", sankeyGrouping)
 
+  // insertStaticLinks({ graph: sankeyGrouping, groupingOptions: props.groupingOptions })
+
+  // TO COMPUTE YSCALE,
+  //    GET FOCUS COLUMN
+  //    GET SUM OF OUTFLOWS FROM FOCUS COLUMN
+
+  // TODO: Only sort the final selected row, and do it better
   sortToMinimizeLinkCrossings({
     columns: sankeyGrouping.columns,
     numberOfIterations: 6,
   })
-  // console.log(sankeyGrouping)
 
   setSourceTargetPadding(sankeyGrouping.columns)
 
@@ -214,33 +214,29 @@ const sankeyState = computed<{
     linkXPadding: 3,
   })
 
-  console.log("VISIBLE GRAPH", getVisibleGraph(graph))
-  const visibleGraph = getVisibleGraph(graph)
-  return {
-    graph,
-    visibleGraph,
-    // TODO: Cleanup, hacky
-    focusedColumn: graph.columns.find(column => column.id === focusedColumn.id),
-  }
+  return getVisibleGraph(graph)
 })
 
-const focusedColumn = computed(() => sankeyState.value.focusedColumn)
-const sankeyGraph = computed(() => sankeyState.value.graph)
-const visibleSankeyGraph = computed(() => sankeyState.value.visibleGraph)
+const focusedColumn = computed(() => {
+  return getFocusedColumn({
+    columns: sankeyGraph.value.columns,
+    selectedNodeIds: props.groupingOptions.selectedNodeIds,
+  })
+})
 
 /** Focused column is the column "after" the focusedNode, or the first column if none */
 function getFocusedColumn({
-  graph,
-  groupingOptions,
+  columns,
+  selectedNodeIds,
 }: {
-  graph: SankeyGraph
-  groupingOptions: ComputeSankeyGroupingOptions
+  columns: SankeyColumn[]
+  selectedNodeIds: string[]
 }): SankeyColumn {
-  const focusedNodeColumnIdx = graph.columns.findIndex(c =>
-    c.nodes.some(n => n.id === groupingOptions?.selectedNodeIds.at(-1))
+  const focusedNodeColumnIdx = columns.findIndex(c =>
+    c.nodes.some(n => n.id === selectedNodeIds.at(-1))
   )
 
-  return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
+  return columns[focusedNodeColumnIdx + 1] || columns[0]
 }
 
 function getNodeWidth(node: SankeyNode) {
@@ -265,7 +261,17 @@ function getFlowsEndPercentage(node: SankeyNode) {
   return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100
 }
 
-function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
+type DisplaySankeyColumn = SankeyColumn & {
+  hasHiddenTopNodes: boolean
+  hasHiddenBottomNodes: boolean
+}
+interface DisplaySankeyGraph {
+  nodes: SankeyGraph["nodes"]
+  links: SankeyGraph["links"]
+  columns: DisplaySankeyColumn[]
+}
+
+function getVisibleGraph(graph: SankeyGraph): DisplaySankeyGraph {
   const visibleLinks = graph.links.filter(v => !v.isHidden)
   return {
     nodes: graph.nodes
@@ -278,6 +284,8 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
     links: visibleLinks,
     columns: graph.columns.map(c => ({
       ...c,
+      hasHiddenTopNodes: hasHiddenTopNodes(c),
+      hasHiddenBottomNodes: hasHiddenBottomNodes(c),
       nodes: c.nodes
         .filter(v => !v.isHidden)
         .map(v => ({
@@ -290,7 +298,7 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
 }
 
 function onSankeyNodeClicked(node: SankeyNode) {
-  emits("nodeClicked", { visibleGraph: visibleSankeyGraph.value, node })
+  emits("nodeClicked", { graph: sankeyGraph.value, node })
 }
 
 function hasHiddenTopNodes(column: SankeyColumn): boolean {
@@ -318,6 +326,11 @@ function setSourceTargetPadding(columns: SankeyColumn[]): void {
   lastSourceColumn.rightPadding = props.sourceTargetPadding
 }
 
+// function insertStaticLinks({ graph }: { graph: SankeyGraph }): void {
+//   graph.
+//   selectedNodeIds: string[]
+// }
+
 /**
  * Gets the "focus" graph, or the graph that is altered
  * taking into consideration the "focusedColumn".
@@ -341,17 +354,54 @@ function computeFocusGraph({
 
   const firstSelectedNodes = selectedNodes.slice(0, -1)
   const lastSelectedNode = selectedNodes.at(-1) as SankeyNode
-  const reachableNodes = [
-    ...firstSelectedNodes, // Include in graph, but not in reachable node traversal
-    ...getReachableNodes(lastSelectedNode),
-  ]
+
+  const reachableNodes = getReachableNodes(lastSelectedNode)
   const reachableNodeSet = new Set(reachableNodes)
+
+  // TODO: Handle target side
+  // const staticLinkColumns = graph.columns.slice(0, selectedNodes.length)
+  for (const [idx, node] of selectedNodes.entries()) {
+    const column = graph.columns[idx]
+    console.log(
+      "GETTING TOTAL VALUE",
+      column.id,
+      // getTotalFlows(column),
+      getNodeTotalFlowValue(node)
+    )
+    column.staticLink = {
+      // @ts-ignore
+      visibleValue: undefined,
+      // ADAMTODO: is this right? should always be one node
+      totalValue: getNodeTotalFlowValue(node),
+      // getTotalFlows(column),
+    }
+  }
+  // for (const column of staticLinkColumns) {
+  //   // TODO: Issue, total value needs to be computed after filtering column includes
+  //   console.log(
+  //     "GETTING TOTAL VALUE",
+  //     column.nodes.map(v => v.id),
+  //     // getTotalFlows(column),
+  //     getNodeTotalFlowValue(column.nodes.filter(n => reachableNodeSet.has(n))[0])
+  //   )
+  //   column.staticLink = {
+  //     // @ts-ignore
+  //     visibleValue: undefined,
+  //     // ADAMTODO: is this right? should always be one node
+  //     totalValue: getNodeTotalFlowValue(column.nodes.filter(n => reachableNodeSet.has(n))[0]),
+  //     // getTotalFlows(column),
+  //   }
+  // }
+
   const reachableLinks = graph.links.filter(
-    l => reachableNodeSet.has(l.source) && reachableNodeSet.has(l.target)
+    l =>
+      reachableNodeSet.has(l.source) &&
+      reachableNodeSet.has(l.target) &&
+      l.source !== lastSelectedNode
   )
   const reachableLinkSet = new Set(reachableLinks)
 
-  const focusedNodes = reachableNodes.map(node => ({
+  const focusedNodes = [...firstSelectedNodes, ...reachableNodes].map(node => ({
     ...node,
     sourceLinks: node.sourceLinks.filter(l => reachableLinkSet.has(l)),
     targetLinks: node.targetLinks.filter(l => reachableLinkSet.has(l)),
@@ -368,11 +418,37 @@ function computeFocusGraph({
     })
   }
 
-  // Insert merged link for non-focus columns
-  // const sumFocusedColumnValue = focusedLinks.reduce(
-  //   (sum, link) => sum + link.value,
-  //   0
-  // )
+  // ADAMTODO: Ensure this is after filtering
+  const sumFocusedColumnValue = getTotalFlows(
+    getFocusedColumn({ columns: focusedColumns, selectedNodeIds })
+  )
+  for (const column of focusedColumns) {
+    if (!column.staticLink) {
+      continue
+    }
+    // const nextColumn = focusedColumns[focusedColumns.findIndex(c => c.id === column.id) + 1]
+
+    column.staticLink.visibleValue = sumFocusedColumnValue
+    // const staticLink: SankeyLink = {
+    //   source: column.nodes[0],
+    //   target: nextColumn.nodes[0], // TODO: next column 0
+    //   // @ts-ignore
+    //   value: sumFocusedColumnValue,
+    //   // @ts-ignore
+    //   ___IS_MOCK___: true,
+    // }
+
+    // column.nodes[0].sourceLinks.push(staticLink)
+    // nextColumn.nodes[0].targetLinks.push(staticLink)
+    // reachableLinks.push(staticLink)
+    // console.log("INSERTING MERGED", staticLink)
+    // @ts-ignore
+    // column.staticLink.visibleValue = sumFocusedColumnValue
+    // column.nodes[0].sourceLinks.push({
+
+    // })
+  }
+
   // for (const [columnIdx, column] of focusedColumns.entries()) {
   //   const nextColumn = graph.columns[columnIdx + 1]
   //   if (!nextColumn || column.id === focusedColumn.id) {
@@ -435,6 +511,26 @@ function getReachableNodes(startNode: SankeyNode): SankeyNode[] {
   }
 
   return [...reachableNodes]
+}
+
+function getTotalFlows(column: SankeyColumn) {
+  let sourceValue = 0
+  for (const node of column.nodes) {
+    for (const link of node.sourceLinks) {
+      sourceValue += link.value
+    }
+  }
+
+  // let targetValue = 0
+  // for (const node of column.nodes) {
+  //   for (const link of node.targetLinks) {
+  //     targetValue += link.value
+  //   }
+  // }
+
+  return sourceValue
+  // return targetValue
+  // return Math.max(sourceValue, targetValue)
 }
 </script>
 

@@ -7,43 +7,27 @@ export function positionColumn({
   x,
   column,
   sankeyConfig,
-  yScale,
-}: {
+}: // yScale,
+{
   x: number
   column: SankeyColumn
   sankeyConfig: SankeyConfig
-  yScale: ScaleLinear<number, number>
+  // yScale: ScaleLinear<number, number>
 }) {
   if (!column.visibleRows) {
     throw new Error("column.visibleRows needs to be defined!")
   }
 
-  const visibleColumnNodes = column.nodes.slice(
-    column.visibleRows[0],
-    column.visibleRows[1]
-  )
-
-  const totalColumnFlowValue = getColumnTotalFlowValue(visibleColumnNodes)
-  const innerYScale = scaleLinear()
-    .domain([0, totalColumnFlowValue])
-    .range([
-      0,
-      sankeyConfig.height -
-        sankeyConfig.nodeYPadding * visibleColumnNodes.length,
-    ])
-  // TODO: Settle on single applicable yScale definition
-  yScale = innerYScale
+  const visibleColumnNodes = getVisibleNodes(column)
+  const yScale = computeColumnYScale(column, sankeyConfig)
 
   let y0 = 0
   for (const node of visibleColumnNodes) {
-    if (node.id.includes("vpc-01f")) {
-      console.log(node)
-    }
-
     const { nodeHeight } = positionNode({
       x,
       y0,
       yScale,
+      column,
       node,
       sankeyConfig,
     })
@@ -52,9 +36,24 @@ export function positionColumn({
   }
 }
 
-function getColumnTotalFlowValue(columnNodes: SankeyNode[]) {
+function computeColumnYScale(column: SankeyColumn, sankeyConfig: SankeyConfig) {
+  if (column.staticLink) {
+    return scaleLinear().domain([0, column.staticLink.totalValue]).range([0, sankeyConfig.height])
+  }
+  const numVisibleNodes = column.visibleRows[1] - column.visibleRows[1]
+  return scaleLinear()
+    .domain([0, getColumnTotalFlowValue(column)])
+    .range([0, sankeyConfig.height - sankeyConfig.nodeYPadding * numVisibleNodes])
+}
+
+function getVisibleNodes(column: SankeyColumn) {
+  return column.nodes.slice(column.visibleRows[0], column.visibleRows[1])
+}
+
+function getColumnTotalFlowValue(column: SankeyColumn) {
+  const visibleColumnNodes = column.nodes.slice(column.visibleRows[0], column.visibleRows[1])
   let totalColumnFlowValue = 0
-  for (const node of columnNodes) {
+  for (const node of visibleColumnNodes) {
     totalColumnFlowValue += getNodeTotalFlowValue(node)
   }
 
