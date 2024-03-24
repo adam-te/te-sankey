@@ -27,7 +27,6 @@ export function positionColumn({
       x,
       y0,
       yScale,
-      column,
       node,
       sankeyConfig,
     })
@@ -37,13 +36,9 @@ export function positionColumn({
 }
 
 function computeColumnYScale(column: SankeyColumn, sankeyConfig: SankeyConfig) {
-  if (column.staticLink) {
-    return scaleLinear().domain([0, column.staticLink.totalValue]).range([0, sankeyConfig.height])
-  }
-  const numVisibleNodes = column.visibleRows[1] - column.visibleRows[1]
   return scaleLinear()
     .domain([0, getColumnTotalFlowValue(column)])
-    .range([0, sankeyConfig.height - sankeyConfig.nodeYPadding * numVisibleNodes])
+    .range([0, sankeyConfig.height])
 }
 
 function getVisibleNodes(column: SankeyColumn) {
