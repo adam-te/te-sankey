@@ -35,7 +35,7 @@ export function sortToMinimizeLinkCrossings({
     )
 
     for (const node of column.nodes) {
-      // TODO: node.sourceLinks.sort((a, b) => {
+      node.sourceLinks.sort((a, b) => {
         const aTargetRowIdx = nodeIdToNextColumnIdx.get(a.target.id)
         const bTargetRowIdx = nodeIdToNextColumnIdx.get(b.target.id)
         if (aTargetRowIdx == null && bTargetRowIdx == null) {
@@ -66,7 +66,7 @@ export function sortToMinimizeLinkCrossings({
     })
 
     function calculateBarycenter(node: SankeyNode) {
-      // TODO: const linkMidpoints = node.sourceLinks.map(v => {
+      const linkMidpoints = node.sourceLinks.map(v => {
         const isLinkTargetInNextColumn = nodeIdToNextColumnIdx.has(v.target.id)
         if (!isLinkTargetInNextColumn) {
           throw new Error(

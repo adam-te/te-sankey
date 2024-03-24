@@ -63,7 +63,6 @@ function computeLinkHeightScale(node: SankeyNode): ScaleLinear<number, number> {
   if (node.y0 == null || node.y1 == null) {
     throw new Error("node.(y0, y1) must be defined!")
   }
-  // TODO: I think should be equal, check ui
   // TODO(perf), pre-compute this
   const maxSourceValue = node.sourceLinks.reduce((a, v) => a + v.value, 0)
   const maxTargetValue = node.targetLinks.reduce((a, v) => a + v.value, 0)

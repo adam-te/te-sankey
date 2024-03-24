@@ -11,7 +11,7 @@ export function computeGroupLinks({
   group: SubnetGroup
 }): SankeyLink[] {
   const targetGroupIdToLinks = groupBy<SubnetLink>(
-    group.sourceLinks,
+    group.links,
     getTargetGroupId
   )
 

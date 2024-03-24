@@ -141,7 +141,7 @@ export function computeSankeyGrouping(
     })
 
     for (const link of groupSourceLinks) {
-      // TODO: link.source.sourceLinks.push(link)
+      link.source.sourceLinks.push(link)
       link.target.targetLinks.push(link)
     }
     sankeyLinks.push(...groupSourceLinks)

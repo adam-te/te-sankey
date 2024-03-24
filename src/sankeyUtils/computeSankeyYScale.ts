@@ -15,7 +15,7 @@ function getGraphVisibleNodeFlowValue(graph: SankeyGraph) {
 
   let totalFlowValue = 0
   for (const node of nodes.filter(n => !n.isHidden)) {
-    // TODO: for (const link of node.sourceLinks) {
+    for (const link of node.sourceLinks) {
       totalFlowValue += link.value
     }
   }

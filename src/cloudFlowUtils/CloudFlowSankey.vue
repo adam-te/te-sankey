@@ -2,11 +2,11 @@
   <div>
     <div class="sankey-scroll-btn-container top">
       <button
-        v-if="focusedColumn !== sankeyState.graph.columns[0]"
+        v-if="focusedColumn !== sankeyGraph.columns[0]"
         class="sankey-scroll-btn"
         :disabled="true"
         :style="{
-          left: `${getColumnX(sankeyState.graph.columns[0])}px`,
+          left: `${getColumnX(sankeyGraph.columns[0])}px`,
         }"
       >
         ◀
@@ -26,11 +26,11 @@
         ▲
       </button>
       <button
-        v-if="focusedColumn !== sankeyState.graph.columns.at(-1)"
+        v-if="focusedColumn !== sankeyGraph.columns.at(-1)"
         class="sankey-scroll-btn"
         :disabled="true"
         :style="{
-          left: `${getColumnX(sankeyState.graph.columns.at(-1))}px`,
+          left: `${getColumnX(sankeyGraph.columns.at(-1))}px`,
         }"
       >
         ▶
@@ -44,7 +44,7 @@
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        <template v-for="node of sankeyState.visibleGraph.nodes" :key="node.id">
+        <template v-for="node of visibleSankeyGraph.nodes" :key="node.id">
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop
               class="flows-stop"
@@ -62,7 +62,7 @@
 
       <g class="links">
         <path
-          v-for="link of sankeyState.visibleGraph.links"
+          v-for="link of visibleSankeyGraph.links"
           :key="link.source.name + '_' + link.target.name"
           :d="computeSankeyLinkPath(link)"
           class="sankey-link"
@@ -70,10 +70,7 @@
       </g>
 
       <g class="nodes">
-        <template
-          v-for="node of sankeyState.visibleGraph.nodes"
-          :key="node.name"
-        >
+        <template v-for="node of visibleSankeyGraph.nodes" :key="node.name">
           <rect
             :transform="`translate(${node.x0}, ${node.y0})`"
             :width="getNodeWidth(node)"
@@ -89,10 +86,7 @@
       </g>
 
       <g class="labels">
-        <template
-          v-for="node of sankeyState.visibleGraph.nodes"
-          :key="node.name"
-        >
+        <template v-for="node of visibleSankeyGraph.nodes" :key="node.name">
           <text
             v-if="!node.label"
             :transform="`translate(${2 + node.x0 + getNodeWidth(node) / 2}, ${
@@ -160,7 +154,8 @@ import {
   RawSubnetData,
   SubnetData,
 } from "."
-import { SankeyOptions } from "../sankeyUtils"
+// import { SankeyOptions } from "../sankeyUtils"
+import { SankeyLink } from "../sankeyUtils"
 
 const props = defineProps<{
   width: number
@@ -185,16 +180,23 @@ const data = computed<SubnetData>(() => {
 const sankeyState = computed<{
   graph: SankeyGraph
   visibleGraph: SankeyGraph
+  focusedColumn: SankeyColumn
 }>(() => {
-  const sankeyGrouping = computeSankeyGrouping(
+  const rawSankeyGrouping = computeSankeyGrouping(
     data.value,
     props.groupingOptions
   )
 
   const focusedColumn = getFocusedColumn({
-    graph: sankeyGrouping,
+    graph: rawSankeyGrouping,
     groupingOptions: props.groupingOptions,
   })
+
+  const sankeyGrouping = rawSankeyGrouping
+  // const sankeyGrouping = computeFocusGraph({
+  //   graph: rawSankeyGrouping,
+  //   focusedColumn,
+  // })
 
   setSourceTargetPadding(sankeyGrouping.columns)
 
@@ -204,48 +206,16 @@ const sankeyState = computed<{
     linkXPadding: 3,
   })
 
-  const visibleGraph = getVisibleGraph(graph)
-  //   TODO: reimplement merged links
-  //   for (const col of visibleGraph.columns) {
-  // if (!col.mergeLinks) {
-  //   continue;
-  // }
-  // const colLinks = col.nodes.flatMap((v) => v.sourceLinks);
-  // if (!colLinks.length) {
-  //   continue;
-  // }
-
-  // // Remove existing links
-  // visibleGraph.links = visibleGraph.links.filter(
-  //   (l) => !colLinks.includes(l)
-  // );
-  // const topLink = colLinks[0];
-  // const bottomLink = colLinks.at(-1);
-  // visibleGraph.links.push({
-  //   // TODO:
-  //   source: { name: "placeholder" },
-  //   target: { name: "placeholder" },
-  //   start: {
-  //     x: topLink.start.x,
-  //     y0: topLink.start.y0,
-  //     y1: bottomLink.start.y1,
-  //   },
-  //   end: {
-  //     x: bottomLink.end.x,
-  //     y0: topLink.end.y0,
-  //     y1: bottomLink.end.y1,
-  //   },
-  // });
-  //   }
-  //   visibleNodes = visibleGraph.nodes;
-  //   visibleLinks = visibleGraph.links;
-  //   return visibleGraph;
   return {
     graph,
-    visibleGraph,
+    visibleGraph: getVisibleGraph(graph),
     focusedColumn,
   }
 })
+
+const focusedColumn = computed(() => sankeyState.value.focusedColumn)
+const sankeyGraph = computed(() => sankeyState.value.graph)
+const visibleSankeyGraph = computed(() => sankeyState.value.visibleGraph)
 
 // const focusedColumn = computed<SankeyColumn>(() => {
 //   const { graph } = sankeyState.value
@@ -304,8 +274,8 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
       .filter(v => !v.isHidden)
       .map(v => ({
         ...v,
-        // sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
-        // targetLinks: v.targetLinks.filter(v => !v.isHidden),
+        sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+        targetLinks: v.targetLinks.filter(v => !v.isHidden),
       })),
     links: visibleLinks,
     columns: graph.columns.map(c => ({
@@ -314,8 +284,8 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
         .filter(v => !v.isHidden)
         .map(v => ({
           ...v,
-          // sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
-          // targetLinks: v.targetLinks.filter(v => !v.isHidden),
+          sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+          targetLinks: v.targetLinks.filter(v => !v.isHidden),
         })),
     })),
   }
@@ -366,21 +336,124 @@ function computeFocusGraph({
   graph: SankeyGraph
   focusedColumn: SankeyColumn
 }): SankeyGraph {
-  // removeUnrelatedNodesAndLinks
-  // insert mock merged links for columns < focusColumn
+  const focusedColumnNodes = new Set(focusedColumn.nodes)
 
-  // nodeToColumn
-  // removeAllLinks()
-  // computeTotalLinkValue for subnets
+  const focusedLinks = graph.links.filter(isLinkFromFocusedColumn)
+  const focusedNodes = getReachableNodes(
+    focusedLinks.flatMap(l => [l.source, l.target])
+  ).map(node => ({
+    ...node,
+    sourceLinks: node.sourceLinks.filter(isLinkFromFocusedColumn),
+    targetLinks: node.targetLinks.filter(isLinkFromFocusedColumn),
+  }))
 
-  // insert mockLink with this value for prior
-  for (const column of graph.columns) {
-    for (const node of column.nodes) {
-      // node.links
+  const nodeIdToNewNode = new Map<string, SankeyNode>(
+    focusedNodes.map(v => [v.id, v])
+  )
+  const focusedColumns = graph.columns.map(v => ({
+    ...v,
+    nodes: v.nodes
+      .filter(v => nodeIdToNewNode.has(v.id))
+      .map(v => nodeIdToNewNode.get(v.id) as SankeyNode),
+  }))
+
+  // const focusedMergedLinks = new Set()
+  // for (const column of graph.columns.filter(isNotFocusedColumn)) {
+  //   const colLinks = column.nodes.flatMap(v => v.sourceLinks)
+  //   if (!colLinks.length) {
+  //     continue
+  //   }
+  //   const topLink = colLinks[0]
+  //   const bottomLink = colLinks.at(-1)
+  //   if (
+  //     !topLink.start ||
+  //     !topLink.end ||
+  //     !bottomLink?.start ||
+  //     !bottomLink?.end
+  //   ) {
+  //     throw new Error("Link start and end must be defined!")
+  //   }
+
+  //   focusedMergedLinks.add({
+  //     // @ts-ignore
+  //     source: "placeholder",
+  //     // @ts-ignore
+  //     target: "placeholder",
+  //     value: 1,
+  //     // INSTEAD put subnet
+  //     // start: {
+  //     //   x: topLink.start.x,
+  //     //   y0: topLink.start.y0,
+  //     //   y1: bottomLink.start.y1,
+  //     // },
+  //     // end: {
+  //     //   x: bottomLink.end.x,
+  //     //   y0: topLink.end.y0,
+  //     //   y1: bottomLink.end.y1,
+  //     // },
+  //   })
+  // }
+
+  // for (const node of graph.nodes) {
+  //   const focusNode = {
+  //     ...node,
+  //     sourceLinks: node.sourceLinks.filter(isLinkFromFocusedColumn),
+  //     targetLinks: node.targetLinks.filter(isLinkFromFocusedColumn),
+  //   }
+
+  //   // Include node, if has any links OR is in graph of focused links
+  //   const hasAnyLinks =
+  //     focusNode.sourceLinks.length || focusNode.targetLinks.length
+  //   if (hasAnyLinks) {
+  //     focusedNodes.push(focusNode)
+  //   }
+  // }
+
+  // Add mock links
+
+  return {
+    links: focusedLinks,
+    nodes: focusedNodes,
+    columns: focusedColumns,
+  }
+
+  function isNotFocusedColumn(column: SankeyColumn) {
+    return column !== focusedColumn
+  }
+
+  function isLinkFromFocusedColumn(link: SankeyLink): boolean {
+    return focusedColumnNodes.has(link.source)
+  }
+}
+
+function getReachableNodes(startNodes: SankeyNode[]): SankeyNode[] {
+  const visited = new Set<SankeyNode>()
+  const stack: SankeyNode[] = [...startNodes]
+  const reachableNodes = new Set<SankeyNode>()
+
+  while (stack.length > 0) {
+    const node = stack.pop() as SankeyNode
+    if (visited.has(node)) {
+      continue
+    }
+
+    visited.add(node)
+    reachableNodes.add(node)
+
+    for (const link of node.sourceLinks) {
+      if (!visited.has(link.target)) {
+        stack.push(link.target)
+      }
+    }
+
+    for (const link of node.targetLinks) {
+      if (!visited.has(link.source)) {
+        stack.push(link.source)
+      }
     }
   }
-  graph.links
-  return graph
+
+  return Array.from(reachableNodes)
 }
 </script>
 

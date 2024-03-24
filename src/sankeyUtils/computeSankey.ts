@@ -1,11 +1,9 @@
-import {
-  SankeyConfig,
-  SankeyGraph,
-  computeSankeyYScale,
-  computeSpacingBetweenColumns,
-  markHiddenNodes,
-  positionColumn,
-} from "."
+import { SankeyConfig, SankeyGraph } from "."
+import { computeSankeyYScale } from "./computeSankeyYScale"
+import { computeSpacingBetweenColumns } from "./computeSpacingBetweenColumns"
+import { markHiddenNodes } from "./markHiddenNodes"
+import { positionColumn } from "./positionColumn"
+
 export interface SankeyOptions {
   width: number
   height: number

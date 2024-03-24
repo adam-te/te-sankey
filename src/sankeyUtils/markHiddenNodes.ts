@@ -10,7 +10,7 @@ export function markHiddenNodes(columns: SankeyColumn[]) {
         rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1]
       if (isRowHidden) {
         node.isHidden = true
-        // TODO: node.sourceLinks.forEach(l => (l.isHidden = true))
+        node.sourceLinks.forEach(l => (l.isHidden = true))
         node.targetLinks.forEach(l => (l.isHidden = true))
       }
     }
