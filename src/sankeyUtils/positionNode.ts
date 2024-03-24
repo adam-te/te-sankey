@@ -63,12 +63,17 @@ function computeLinkHeightScale(node: SankeyNode): ScaleLinear<number, number> {
   if (node.y0 == null || node.y1 == null) {
     throw new Error("node.(y0, y1) must be defined!")
   }
-  // TODO(perf), pre-compute this
   const maxSourceValue = node.sourceLinks.reduce((a, v) => a + v.value, 0)
   const maxTargetValue = node.targetLinks.reduce((a, v) => a + v.value, 0)
   return scaleLinear()
     .range([0, node.y1 - node.y0])
     .domain([0, Math.max(maxSourceValue, maxTargetValue)])
+  // TODO(perf), pre-compute this
+  // const maxSourceValue = node.sourceLinks.reduce((a, v) => a + v.value, 0)
+  // const maxTargetValue = node.targetLinks.reduce((a, v) => a + v.value, 0)
+  // return scaleLinear()
+  //   .range([0, node.y1 - node.y0])
+  //   .domain([0, Math.max(maxSourceValue, maxTargetValue)])
 }
 
 // function sum() {}

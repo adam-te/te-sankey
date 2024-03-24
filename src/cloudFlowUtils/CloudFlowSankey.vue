@@ -192,11 +192,12 @@ const sankeyState = computed<{
     groupingOptions: props.groupingOptions,
   })
 
-  const sankeyGrouping = rawSankeyGrouping
-  // const sankeyGrouping = computeFocusGraph({
-  //   graph: rawSankeyGrouping,
-  //   focusedColumn,
-  // })
+  // const sankeyGrouping = rawSankeyGrouping
+  const sankeyGrouping = computeFocusGraph({
+    graph: rawSankeyGrouping,
+    focusedColumn,
+  })
+  console.log(sankeyGrouping)
 
   setSourceTargetPadding(sankeyGrouping.columns)
 
@@ -209,7 +210,10 @@ const sankeyState = computed<{
   return {
     graph,
     visibleGraph: getVisibleGraph(graph),
-    focusedColumn,
+    // TODO: Cleanup
+    focusedColumn: graph.columns.find(
+      c => c.id === focusedColumn.id
+    ) as SankeyColumn,
   }
 })
 
@@ -415,10 +419,6 @@ function computeFocusGraph({
     links: focusedLinks,
     nodes: focusedNodes,
     columns: focusedColumns,
-  }
-
-  function isNotFocusedColumn(column: SankeyColumn) {
-    return column !== focusedColumn
   }
 
   function isLinkFromFocusedColumn(link: SankeyLink): boolean {
