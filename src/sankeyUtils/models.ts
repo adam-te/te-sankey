@@ -3,8 +3,8 @@ export interface SankeyNode {
   displayName: string
   label: string
 
-  sourceLinks: SankeyLink[] // If source of link, in sourcelinks
-  targetLinks: SankeyLink[] // if target of link, in targetlinks
+  sourceLinks: (SankeyLink | MergedSankeyLink)[] // If source of link, in sourcelinks
+  targetLinks: (SankeyLink | MergedSankeyLink)[] // if target of link, in targetlinks
   isHidden?: boolean
 
   height?: number
@@ -32,9 +32,42 @@ export interface SankeyLink {
   }
 }
 
+export interface MergedSankeyLink {
+  links: SankeyLink[]
+  value: number //
+  isHidden?: boolean
+  start?: {
+    x: number
+    y0: number
+    y1: number
+  }
+  end?: {
+    x: number
+    y0: number
+    y1: number
+  }
+}
+
+export interface MergedSankeyLink {
+  source: SankeyNode
+  target: SankeyNode
+  value: number //
+  isHidden?: boolean
+  start?: {
+    x: number
+    y0: number
+    y1: number
+  }
+  end?: {
+    x: number
+    y0: number
+    y1: number
+  }
+}
+
 export interface SankeyGraph {
   nodes: SankeyNode[]
-  links: SankeyLink[]
+  links: (SankeyLink | MergedSankeyLink)[]
   columns: SankeyColumn[]
 }
 export interface SankeyColumn {

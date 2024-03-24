@@ -1,5 +1,6 @@
 export * from "./computeWiredGraph"
 export * from "./computeSankeyGrouping"
+export * from "./sortToMinimizeLinkCrossings"
 export type {
   RawSubnetData,
   RawSubnet,

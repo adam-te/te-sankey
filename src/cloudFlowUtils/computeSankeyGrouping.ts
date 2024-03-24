@@ -7,7 +7,7 @@ import {
 import { computeGroupLinks } from "./computeGroupLinks"
 import { computeGroupedSubnets } from "./computeGroupedSubnets"
 import { GroupType, SubnetData, SubnetGroup } from "./models"
-import { sortToMinimizeLinkCrossings } from "./sortToMinimizeLinkCrossings"
+// import { sortToMinimizeLinkCrossings } from "./sortToMinimizeLinkCrossings"
 
 type ColumnId =
   | "SOURCE_REGION"
@@ -25,7 +25,7 @@ interface ColumnSpec {
 export interface ComputeSankeyGroupingOptions {
   sourceGroupType: "REGION" | "VPC" | "SUBNET"
   targetGroupType: "REGION" | "VPC" | "SUBNET"
-  focusedNodeId?: string
+  selectedNodeIds: string[]
   columnSpecs: ColumnSpec[]
 }
 
@@ -147,11 +147,6 @@ export function computeSankeyGrouping(
     sankeyLinks.push(...groupSourceLinks)
   }
 
-  sortToMinimizeLinkCrossings({
-    columns,
-    numberOfIterations: 6,
-  })
-
   return {
     nodes: [...groupIdToSankeyNode.values()],
     links: sankeyLinks,
@@ -171,13 +166,13 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
     isSourceRegionsVisible: ["REGION"].includes(options.sourceGroupType),
     isSourceVpcsVisible:
       ["VPC"].includes(options.sourceGroupType) ||
-      (options.sourceGroupType === "REGION" && !!options.focusedNodeId),
+      (options.sourceGroupType === "REGION" &&
+        !!options.selectedNodeIds.length),
     isSourceSubnetsVisible:
       ["SUBNET"].includes(options.sourceGroupType) ||
-      !!(
-        options.focusedNodeId?.startsWith("VPC_") ||
-        options.focusedNodeId?.startsWith("SUBNET_")
-      ), // TODO: Fix hacky string inference
+      !!options.selectedNodeIds.some(
+        v => v.startsWith("VPC_") || v.startsWith("SUBNET_") // TODO: Fix hacky string inference
+      ),
     isTargetSubnetsVisible: ["SUBNET"].includes(options.targetGroupType),
     isTargetVpcsVisible: ["SUBNET", "VPC"].includes(options.targetGroupType),
     isTargetRegionsVisible: ["SUBNET", "VPC", "REGION"].includes(

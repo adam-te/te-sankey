@@ -153,9 +153,10 @@ import {
   computeSankeyGrouping,
   RawSubnetData,
   SubnetData,
+  sortToMinimizeLinkCrossings,
 } from "."
 // import { SankeyOptions } from "../sankeyUtils"
-import { SankeyLink } from "../sankeyUtils"
+import { SankeyLink, MergedSankeyLink } from "../sankeyUtils"
 
 const props = defineProps<{
   width: number
@@ -166,7 +167,10 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (event: "nodeClicked", payload: { nodeId: string }): void
+  (
+    event: "nodeClicked",
+    payload: { graph: SankeyGraph; node: SankeyNode }
+  ): void
   (
     event: "columnScrollClicked",
     payload: { column: SankeyColumn; direction: "UP" | "DOWN" }
@@ -192,11 +196,16 @@ const sankeyState = computed<{
     groupingOptions: props.groupingOptions,
   })
 
-  const sankeyGrouping = rawSankeyGrouping
-  // const sankeyGrouping = computeFocusGraph({
-  //   graph: rawSankeyGrouping,
-  //   focusedColumn,
-  // })
+  // const sankeyGrouping = rawSankeyGrouping
+  const sankeyGrouping = computeFocusGraph({
+    graph: rawSankeyGrouping,
+    selectedNodeIds: props.groupingOptions.selectedNodeIds,
+  })
+
+  sortToMinimizeLinkCrossings({
+    columns: sankeyGrouping.columns,
+    numberOfIterations: 6,
+  })
   // console.log(sankeyGrouping)
 
   setSourceTargetPadding(sankeyGrouping.columns)
@@ -208,9 +217,10 @@ const sankeyState = computed<{
   })
 
   console.log("VISIBLE GRAPH", getVisibleGraph(graph))
+  const visibleGraph = getVisibleGraph(graph)
   return {
     graph,
-    visibleGraph: getVisibleGraph(graph),
+    visibleGraph,
     // TODO: Cleanup, hacky
     focusedColumn: graph.columns.find(column => column.id === focusedColumn.id),
   }
@@ -282,7 +292,7 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
 }
 
 function onSankeyNodeClicked(node: SankeyNode) {
-  emits("nodeClicked", { nodeId: node.id })
+  emits("nodeClicked", { visibleGraph: visibleSankeyGraph.value, node })
 }
 
 function hasHiddenTopNodes(column: SankeyColumn): boolean {
@@ -321,20 +331,36 @@ function setSourceTargetPadding(columns: SankeyColumn[]): void {
  */
 function computeFocusGraph({
   graph,
-  focusedColumn,
+  selectedNodeIds,
 }: {
   graph: SankeyGraph
-  focusedColumn: SankeyColumn
+  selectedNodeIds: string[]
 }): SankeyGraph {
-  const focusedColumnNodes = new Set(focusedColumn.nodes)
+  // const focusedNodes = focusedNodeIds.map(id => )
+  // const firstFocusedNodeId = focusedNodeIds?.[0]
+  const selectedNodes = graph.nodes.filter(node =>
+    selectedNodeIds.includes(node.id)
+  )
+  if (!selectedNodes.length) {
+    return graph
+  }
 
-  const focusedLinks = graph.links.filter(isLinkFromFocusedColumn)
-  const focusedNodes = getReachableNodes(
-    focusedLinks.flatMap(l => [l.source, l.target])
-  ).map(node => ({
+  const firstSelectedNodes = selectedNodes.slice(0, -1)
+  const lastSelectedNode = selectedNodes.at(-1) as SankeyNode
+  const reachableNodes = [
+    ...firstSelectedNodes, // Include in graph, but not in reachable node traversal
+    ...getReachableNodes(lastSelectedNode),
+  ]
+  const reachableNodeSet = new Set(reachableNodes)
+  const reachableLinks = graph.links.filter(
+    l => reachableNodeSet.has(l.source) && reachableNodeSet.has(l.target)
+  )
+  const reachableLinkSet = new Set(reachableLinks)
+
+  const focusedNodes = reachableNodes.map(node => ({
     ...node,
-    sourceLinks: node.sourceLinks.filter(isLinkFromFocusedColumn),
-    targetLinks: node.targetLinks.filter(isLinkFromFocusedColumn),
+    sourceLinks: node.sourceLinks.filter(l => reachableLinkSet.has(l)),
+    targetLinks: node.targetLinks.filter(l => reachableLinkSet.has(l)),
   }))
 
   const nodeIdToNewNode = new Map<string, SankeyNode>(
@@ -361,13 +387,13 @@ function computeFocusGraph({
   //     continue
   //   }
   //   //
-  //   const mergedLink: SankeyLink = {
-  //     type: "merged",
-  //     source: column.nodes[0],
-  //     target: nextColumn.nodes[0],
-  //     // Enforce that merged links reflect same flows as focusedColumn so flow between each column is equivalent.
-  //     // NOTE: That this means we are displaying potentially incorrect information. Revisit this
-  //     value: sumFocusedColumnValue,
+  //   const mergedLink: MergedSankeyLink = {
+  //     links: nextColumn.nodes
+  //     // source: column.nodes[0],
+  //     // target: nextColumn.nodes[0],
+  //     // // Enforce that merged links reflect same flows as focusedColumn so flow between each column is equivalent.
+  //     // // NOTE: That this means we are displaying potentially incorrect information. Revisit this
+  //     // value: sumFocusedColumnValue,
   //   }
 
   //   console.log("INSERTING MERGED LINK", mergedLink)
@@ -379,19 +405,19 @@ function computeFocusGraph({
   // Add mock links
 
   return {
-    links: focusedLinks,
+    links: reachableLinks,
     nodes: focusedNodes,
     columns: focusedColumns,
   }
 
-  function isLinkFromFocusedColumn(link: SankeyLink): boolean {
-    return focusedColumnNodes.has(link.source)
-  }
+  // function isLinkFromFocusedColumn(link: SankeyLink): boolean {
+  //   return focusedColumnNodes.has(link.source)
+  // }
 }
 
-function getReachableNodes(startNodes: SankeyNode[]): SankeyNode[] {
+function getReachableNodes(startNode: SankeyNode): SankeyNode[] {
   const visited = new Set<SankeyNode>()
-  const stack: SankeyNode[] = [...startNodes]
+  const stack: SankeyNode[] = [startNode]
   const reachableNodes = new Set<SankeyNode>()
 
   while (stack.length > 0) {
@@ -409,14 +435,14 @@ function getReachableNodes(startNodes: SankeyNode[]): SankeyNode[] {
       }
     }
 
-    for (const link of node.targetLinks) {
-      if (!visited.has(link.source)) {
-        stack.push(link.source)
-      }
-    }
+    // for (const link of node.targetLinks) {
+    //   if (!visited.has(link.source)) {
+    //     stack.push(link.source)
+    //   }
+    // }
   }
 
-  return Array.from(reachableNodes)
+  return [...reachableNodes]
 }
 </script>
 

@@ -45,11 +45,12 @@ import { ref } from "vue"
 import rawData from "./data.json"
 import CloudFlowSankey from "../src/cloudFlowUtils/CloudFlowSankey.vue"
 import { ComputeSankeyGroupingOptions } from "../src/cloudFlowUtils"
+import { SankeyColumn, SankeyGraph, SankeyNode } from "../src/sankeyUtils"
 
 const computeSankeyGroupingOptions = ref<ComputeSankeyGroupingOptions>({
   sourceGroupType: "REGION",
   targetGroupType: "REGION",
-  focusedNodeId: undefined,
+  selectedNodeIds: [],
   columnSpecs: [
     { id: "SOURCE_REGION", visibleRows: [0, 4] },
     { id: "SOURCE_VPC", visibleRows: [0, 4] },
@@ -66,7 +67,7 @@ function onSourceGroupingChanged(
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     sourceGroupType: newValue,
-    focusedNodeId: undefined,
+    selectedNodeIds: [],
   }
 }
 
@@ -76,14 +77,27 @@ function onTargetGroupingChanged(
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     targetGroupType: newValue,
-    focusedNodeId: undefined,
+    selectedNodeIds: [],
   }
 }
 
-function onNodeClicked({ nodeId }) {
+function onNodeClicked({
+  visibleGraph,
+  node,
+}: {
+  visibleGraph: SankeyGraph
+  node: SankeyNode
+}) {
+  const { selectedNodeIds } = computeSankeyGroupingOptions.value
+  const nextColumnEligibleForFocus =
+    visibleGraph.columns[selectedNodeIds.length]
+  if (!nextColumnEligibleForFocus || nextColumnEligibleForFocus.isTarget) {
+    return // don't allow selecting invalid nodes
+  }
+
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
-    focusedNodeId: nodeId,
+    selectedNodeIds: [...selectedNodeIds, node.id],
   }
 }
 
