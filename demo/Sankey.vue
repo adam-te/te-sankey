@@ -61,9 +61,7 @@ const computeSankeyGroupingOptions = ref<ComputeSankeyGroupingOptions>({
   ],
 })
 
-function onSourceGroupingChanged(
-  newValue: ComputeSankeyGroupingOptions["sourceGroupType"]
-) {
+function onSourceGroupingChanged(newValue: ComputeSankeyGroupingOptions["sourceGroupType"]) {
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     sourceGroupType: newValue,
@@ -71,9 +69,7 @@ function onSourceGroupingChanged(
   }
 }
 
-function onTargetGroupingChanged(
-  newValue: ComputeSankeyGroupingOptions["targetGroupType"]
-) {
+function onTargetGroupingChanged(newValue: ComputeSankeyGroupingOptions["targetGroupType"]) {
   computeSankeyGroupingOptions.value = {
     ...computeSankeyGroupingOptions.value,
     targetGroupType: newValue,
@@ -81,17 +77,13 @@ function onTargetGroupingChanged(
   }
 }
 
-function onNodeClicked({
-  visibleGraph,
-  node,
-}: {
-  visibleGraph: SankeyGraph
-  node: SankeyNode
-}) {
+function onNodeClicked({ visibleGraph, node }: { visibleGraph: SankeyGraph; node: SankeyNode }) {
   const { selectedNodeIds } = computeSankeyGroupingOptions.value
-  const nextColumnEligibleForFocus =
-    visibleGraph.columns[selectedNodeIds.length]
-  if (!nextColumnEligibleForFocus || nextColumnEligibleForFocus.isTarget) {
+  const nextColumnEligibleForFocus = visibleGraph.columns[selectedNodeIds.length]
+  const clickedColumn = visibleGraph.columns.find(column =>
+    column.nodes.some(n => n.id === node.id)
+  )
+  if (clickedColumn !== nextColumnEligibleForFocus || clickedColumn.isTarget) {
     return // don't allow selecting invalid nodes
   }
 
@@ -106,10 +98,7 @@ function onColumnScrollClicked({ column, direction }) {
   if (direction === "LEFT") {
     computeSankeyGroupingOptions.value = {
       ...computeSankeyGroupingOptions.value,
-      selectedNodeIds: computeSankeyGroupingOptions.value.selectedNodeIds.slice(
-        0,
-        -1
-      ),
+      selectedNodeIds: computeSankeyGroupingOptions.value.selectedNodeIds.slice(0, -1),
     }
     return
   }
@@ -122,10 +111,7 @@ function onColumnScrollClicked({ column, direction }) {
       c.id === column.id
         ? {
             ...c,
-            visibleRows: c.visibleRows.map(v => v + scrollOffset) as [
-              number,
-              number
-            ],
+            visibleRows: c.visibleRows.map(v => v + scrollOffset) as [number, number],
           }
         : c
     ),

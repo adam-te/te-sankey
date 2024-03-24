@@ -104,9 +104,7 @@
 
           <text
             v-else-if="node.label === 'left'"
-            :transform="`translate(${node.x0 - 5}, ${
-              node.y0 + getNodeHeight(node) / 2
-            })`"
+            :transform="`translate(${node.x0 - 5}, ${node.y0 + getNodeHeight(node) / 2})`"
             class="sankey-label left"
           >
             {{ node.displayName || node.id }}
@@ -172,10 +170,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-  (
-    event: "nodeClicked",
-    payload: { graph: SankeyGraph; node: SankeyNode }
-  ): void
+  (event: "nodeClicked", payload: { graph: SankeyGraph; node: SankeyNode }): void
   (
     event: "columnScrollClicked",
     payload: { column: SankeyColumn; direction: "UP" | "DOWN" | "LEFT" }
@@ -191,10 +186,7 @@ const sankeyState = computed<{
   visibleGraph: SankeyGraph
   focusedColumn: SankeyColumn
 }>(() => {
-  const rawSankeyGrouping = computeSankeyGrouping(
-    data.value,
-    props.groupingOptions
-  )
+  const rawSankeyGrouping = computeSankeyGrouping(data.value, props.groupingOptions)
 
   const focusedColumn = getFocusedColumn({
     graph: rawSankeyGrouping,
@@ -206,6 +198,7 @@ const sankeyState = computed<{
     graph: rawSankeyGrouping,
     selectedNodeIds: props.groupingOptions.selectedNodeIds,
   })
+  console.log("GROUPING", sankeyGrouping)
 
   sortToMinimizeLinkCrossings({
     columns: sankeyGrouping.columns,
@@ -305,9 +298,7 @@ function hasHiddenTopNodes(column: SankeyColumn): boolean {
 }
 
 function hasHiddenBottomNodes(column: SankeyColumn): boolean {
-  return Boolean(
-    column.nodes.length && column.visibleRows[1] < column.nodes.length
-  )
+  return Boolean(column.nodes.length && column.visibleRows[1] < column.nodes.length)
 }
 
 function getColumnX(column: SankeyColumn): number | null {
@@ -343,9 +334,7 @@ function computeFocusGraph({
 }): SankeyGraph {
   // const focusedNodes = focusedNodeIds.map(id => )
   // const firstFocusedNodeId = focusedNodeIds?.[0]
-  const selectedNodes = graph.nodes.filter(node =>
-    selectedNodeIds.includes(node.id)
-  )
+  const selectedNodes = graph.nodes.filter(node => selectedNodeIds.includes(node.id))
   if (!selectedNodes.length) {
     return graph
   }
@@ -368,9 +357,7 @@ function computeFocusGraph({
     targetLinks: node.targetLinks.filter(l => reachableLinkSet.has(l)),
   }))
 
-  const nodeIdToNewNode = new Map<string, SankeyNode>(
-    focusedNodes.map(v => [v.id, v])
-  )
+  const nodeIdToNewNode = new Map<string, SankeyNode>(focusedNodes.map(v => [v.id, v]))
   const focusedColumns: SankeyColumn[] = []
   for (const column of graph.columns) {
     focusedColumns.push({
