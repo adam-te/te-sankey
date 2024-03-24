@@ -15,7 +15,7 @@ export function computeGroupedSubnets(
         id: groupId,
         isTarget: subnet.isTarget,
         subnets: [],
-        sourceLinks: [],
+        links: [],
         groupType,
       })
     }
@@ -26,7 +26,7 @@ export function computeGroupedSubnets(
   for (const subnetLink of data.links) {
     const sourceGroupId = groupType.getGroupId(subnetLink.source)
     if (groupIdToGroup.has(sourceGroupId)) {
-      groupIdToGroup.get(sourceGroupId)?.sourceLinks.push(subnetLink)
+      groupIdToGroup.get(sourceGroupId)?.links.push(subnetLink)
     }
   }
 

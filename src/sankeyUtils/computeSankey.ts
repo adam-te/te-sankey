@@ -38,6 +38,9 @@ export function computeSankey(
   markHiddenNodes(graph.columns)
   const yScale = computeSankeyYScale(graph, sankeyConfig)
 
+  // graph.columns.
+  // TODO: Compute flows for scale
+
   let x = spacingBetweenColumns
   for (const column of graph.columns) {
     positionColumn({

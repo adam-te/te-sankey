@@ -7,7 +7,7 @@ export interface SubnetGroup {
   id: string
   isTarget: boolean
   subnets: Subnet[]
-  sourceLinks: SubnetLink[]
+  links: SubnetLink[]
   groupType: GroupType
   targetGroupType?: GroupType
 }

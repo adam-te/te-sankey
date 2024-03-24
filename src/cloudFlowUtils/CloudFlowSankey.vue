@@ -145,7 +145,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue"
+import { computed } from "vue"
 import {
   SankeyColumn,
   SankeyGraph,
@@ -160,6 +160,7 @@ import {
   RawSubnetData,
   SubnetData,
 } from "."
+import { SankeyOptions } from "../sankeyUtils"
 
 const props = defineProps<{
   width: number
@@ -190,7 +191,12 @@ const sankeyState = computed<{
     props.groupingOptions
   )
 
-  addSourceTargetPadding(sankeyGrouping.columns)
+  const focusedColumn = getFocusedColumn({
+    graph: sankeyGrouping,
+    groupingOptions: props.groupingOptions,
+  })
+
+  setSourceTargetPadding(sankeyGrouping.columns)
 
   const graph = computeSankey(sankeyGrouping, {
     width: props.width,
@@ -237,18 +243,33 @@ const sankeyState = computed<{
   return {
     graph,
     visibleGraph,
+    focusedColumn,
   }
 })
 
+// const focusedColumn = computed<SankeyColumn>(() => {
+//   const { graph } = sankeyState.value
+//   const focusedNodeColumnIdx = graph.columns.findIndex(c =>
+//     c.nodes.some(n => n.id === props.groupingOptions?.focusedNodeId)
+//   )
+
+//   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
+// })
+
 /** Focused column is the column "after" the focusedNode, or the first column if none */
-const focusedColumn = computed<SankeyColumn>(() => {
-  const { graph } = sankeyState.value
+function getFocusedColumn({
+  graph,
+  groupingOptions,
+}: {
+  graph: SankeyGraph
+  groupingOptions: ComputeSankeyGroupingOptions
+}): SankeyColumn {
   const focusedNodeColumnIdx = graph.columns.findIndex(c =>
-    c.nodes.some(n => n.id === props.groupingOptions?.focusedNodeId)
+    c.nodes.some(n => n.id === groupingOptions?.focusedNodeId)
   )
 
   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
-})
+}
 
 /**
  * derive flows from focusedColumn
@@ -283,8 +304,8 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
       .filter(v => !v.isHidden)
       .map(v => ({
         ...v,
-        sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
-        targetLinks: v.targetLinks.filter(v => !v.isHidden),
+        // sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+        // targetLinks: v.targetLinks.filter(v => !v.isHidden),
       })),
     links: visibleLinks,
     columns: graph.columns.map(c => ({
@@ -293,8 +314,8 @@ function getVisibleGraph(graph: SankeyGraph): SankeyGraph {
         .filter(v => !v.isHidden)
         .map(v => ({
           ...v,
-          sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
-          targetLinks: v.targetLinks.filter(v => !v.isHidden),
+          // sourceLinks: v.sourceLinks.filter(v => !v.isHidden),
+          // targetLinks: v.targetLinks.filter(v => !v.isHidden),
         })),
     })),
   }
@@ -323,12 +344,43 @@ function getColumnX(column: SankeyColumn): number | null {
 }
 
 /** Add wider gap between sources and targets */
-function addSourceTargetPadding(columns: SankeyColumn[]): void {
+function setSourceTargetPadding(columns: SankeyColumn[]): void {
   const lastSourceColumn = columns.filter(c => !c.isTarget).at(-1)
   if (!lastSourceColumn) {
     throw new Error("Source columns must be defined!")
   }
   lastSourceColumn.rightPadding = props.sourceTargetPadding
+}
+
+/**
+ * Gets the "focus" graph, or the graph that is altered
+ * taking into consideration the "focusedColumn".
+ *
+ * Effectively this just means, we clean up link presentation and filter
+ * out nodes unrelated to the selected node.
+ */
+function computeFocusGraph({
+  graph,
+  focusedColumn,
+}: {
+  graph: SankeyGraph
+  focusedColumn: SankeyColumn
+}): SankeyGraph {
+  // removeUnrelatedNodesAndLinks
+  // insert mock merged links for columns < focusColumn
+
+  // nodeToColumn
+  // removeAllLinks()
+  // computeTotalLinkValue for subnets
+
+  // insert mockLink with this value for prior
+  for (const column of graph.columns) {
+    for (const node of column.nodes) {
+      // node.links
+    }
+  }
+  graph.links
+  return graph
 }
 </script>
 
