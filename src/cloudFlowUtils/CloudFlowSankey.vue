@@ -192,12 +192,12 @@ const sankeyState = computed<{
     groupingOptions: props.groupingOptions,
   })
 
-  // const sankeyGrouping = rawSankeyGrouping
-  const sankeyGrouping = computeFocusGraph({
-    graph: rawSankeyGrouping,
-    focusedColumn,
-  })
-  console.log(sankeyGrouping)
+  const sankeyGrouping = rawSankeyGrouping
+  // const sankeyGrouping = computeFocusGraph({
+  //   graph: rawSankeyGrouping,
+  //   focusedColumn,
+  // })
+  // console.log(sankeyGrouping)
 
   setSourceTargetPadding(sankeyGrouping.columns)
 
@@ -207,28 +207,18 @@ const sankeyState = computed<{
     linkXPadding: 3,
   })
 
+  console.log("VISIBLE GRAPH", getVisibleGraph(graph))
   return {
     graph,
     visibleGraph: getVisibleGraph(graph),
-    // TODO: Cleanup
-    focusedColumn: graph.columns.find(
-      c => c.id === focusedColumn.id
-    ) as SankeyColumn,
+    // TODO: Cleanup, hacky
+    focusedColumn: graph.columns.find(column => column.id === focusedColumn.id),
   }
 })
 
 const focusedColumn = computed(() => sankeyState.value.focusedColumn)
 const sankeyGraph = computed(() => sankeyState.value.graph)
 const visibleSankeyGraph = computed(() => sankeyState.value.visibleGraph)
-
-// const focusedColumn = computed<SankeyColumn>(() => {
-//   const { graph } = sankeyState.value
-//   const focusedNodeColumnIdx = graph.columns.findIndex(c =>
-//     c.nodes.some(n => n.id === props.groupingOptions?.focusedNodeId)
-//   )
-
-//   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
-// })
 
 /** Focused column is the column "after" the focusedNode, or the first column if none */
 function getFocusedColumn({
@@ -244,10 +234,6 @@ function getFocusedColumn({
 
   return graph.columns[focusedNodeColumnIdx + 1] || graph.columns[0]
 }
-
-/**
- * derive flows from focusedColumn
- */
 
 function getNodeWidth(node: SankeyNode) {
   if (node.x1 == null || node.x0 == null) {
@@ -354,63 +340,40 @@ function computeFocusGraph({
   const nodeIdToNewNode = new Map<string, SankeyNode>(
     focusedNodes.map(v => [v.id, v])
   )
-  const focusedColumns = graph.columns.map(v => ({
-    ...v,
-    nodes: v.nodes
-      .filter(v => nodeIdToNewNode.has(v.id))
-      .map(v => nodeIdToNewNode.get(v.id) as SankeyNode),
-  }))
+  const focusedColumns: SankeyColumn[] = []
+  for (const column of graph.columns) {
+    focusedColumns.push({
+      ...column,
+      nodes: column.nodes
+        .filter(node => nodeIdToNewNode.has(node.id))
+        .map(node => nodeIdToNewNode.get(node.id) as SankeyNode),
+    })
+  }
 
-  // const focusedMergedLinks = new Set()
-  // for (const column of graph.columns.filter(isNotFocusedColumn)) {
-  //   const colLinks = column.nodes.flatMap(v => v.sourceLinks)
-  //   if (!colLinks.length) {
+  // Insert merged link for non-focus columns
+  // const sumFocusedColumnValue = focusedLinks.reduce(
+  //   (sum, link) => sum + link.value,
+  //   0
+  // )
+  // for (const [columnIdx, column] of focusedColumns.entries()) {
+  //   const nextColumn = graph.columns[columnIdx + 1]
+  //   if (!nextColumn || column.id === focusedColumn.id) {
   //     continue
   //   }
-  //   const topLink = colLinks[0]
-  //   const bottomLink = colLinks.at(-1)
-  //   if (
-  //     !topLink.start ||
-  //     !topLink.end ||
-  //     !bottomLink?.start ||
-  //     !bottomLink?.end
-  //   ) {
-  //     throw new Error("Link start and end must be defined!")
+  //   //
+  //   const mergedLink: SankeyLink = {
+  //     type: "merged",
+  //     source: column.nodes[0],
+  //     target: nextColumn.nodes[0],
+  //     // Enforce that merged links reflect same flows as focusedColumn so flow between each column is equivalent.
+  //     // NOTE: That this means we are displaying potentially incorrect information. Revisit this
+  //     value: sumFocusedColumnValue,
   //   }
 
-  //   focusedMergedLinks.add({
-  //     // @ts-ignore
-  //     source: "placeholder",
-  //     // @ts-ignore
-  //     target: "placeholder",
-  //     value: 1,
-  //     // INSTEAD put subnet
-  //     // start: {
-  //     //   x: topLink.start.x,
-  //     //   y0: topLink.start.y0,
-  //     //   y1: bottomLink.start.y1,
-  //     // },
-  //     // end: {
-  //     //   x: bottomLink.end.x,
-  //     //   y0: topLink.end.y0,
-  //     //   y1: bottomLink.end.y1,
-  //     // },
-  //   })
-  // }
-
-  // for (const node of graph.nodes) {
-  //   const focusNode = {
-  //     ...node,
-  //     sourceLinks: node.sourceLinks.filter(isLinkFromFocusedColumn),
-  //     targetLinks: node.targetLinks.filter(isLinkFromFocusedColumn),
-  //   }
-
-  //   // Include node, if has any links OR is in graph of focused links
-  //   const hasAnyLinks =
-  //     focusNode.sourceLinks.length || focusNode.targetLinks.length
-  //   if (hasAnyLinks) {
-  //     focusedNodes.push(focusNode)
-  //   }
+  //   console.log("INSERTING MERGED LINK", mergedLink)
+  //   mergedLink.source.sourceLinks.push(mergedLink)
+  //   mergedLink.target.targetLinks.push(mergedLink)
+  //   focusedLinks.push(mergedLink)
   // }
 
   // Add mock links
