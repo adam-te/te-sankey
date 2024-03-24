@@ -126,7 +126,7 @@
       <button
         v-if="focusedColumn"
         class="sankey-scroll-btn"
-        :disabled="focusedColumn.hasHiddenBottomNodes"
+        :disabled="!focusedColumn.hasHiddenBottomNodes"
         :style="{ left: `${getColumnX(focusedColumn)}px` }"
         @click="
           emits('columnScrollClicked', {
@@ -159,8 +159,6 @@ import {
   sortToMinimizeLinkCrossings,
 } from "."
 // import { SankeyOptions } from "../sankeyUtils"
-import { SankeyLink } from "../sankeyUtils"
-import { stat } from "fs"
 import { getNodeTotalFlowValue } from "../sankeyUtils/utils"
 
 const props = defineProps<{

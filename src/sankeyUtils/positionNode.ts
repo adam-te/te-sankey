@@ -41,6 +41,7 @@ export function positionNode({
       column.staticLink.totalValue > column.staticLink.visibleValue
     )
     node.linksEndY = yScale(column.staticLink.visibleValue)
+    // node.linksEndY = yScale(Math.min(column.staticLink.visibleValue, column.staticLink.totalValue))
   } else {
     node.linksEndY = positionLinks({
       x,
