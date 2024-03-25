@@ -1,7 +1,7 @@
-import { ScaleLinear, scaleLinear } from "d3-scale"
+import { scaleLinear } from "d3-scale"
 import { positionNode } from "./positionNode"
 import { getNodeTotalFlowValue } from "./utils"
-import { SankeyColumn, SankeyConfig, SankeyNode } from "./models"
+import { SankeyColumn, SankeyConfig } from "./models"
 
 export function positionColumn({
   x,

@@ -28,10 +28,10 @@ export function getNodeHeight(node: SankeyNode) {
 }
 
 export function getFlowsEndPercentage(node: SankeyNode) {
-  // TODO: handle target nodes
-  //   if (node.y1 == null || node.y0 == null || node.linksEndY == null) {
-  //     throw new Error("node.y0, node.y1 and node.linksEndY must be defined!")
-  //   }
+  if (node.y1 == null || node.y0 == null || node.linksEndY == null) {
+    return null
+    //   TODO: throw new Error("node.y0, node.y1 and node.linksEndY must be defined!")
+  }
   return ((node.linksEndY - node.y0) / (node.y1 - node.y0)) * 100
 }
 
@@ -42,22 +42,6 @@ export function getColumnX(column: SankeyColumn): number | null {
   // @ts-ignore
   return column.nodes.find(v => v.x0 != null).x0
 }
-
-// export function markHiddenNodes(columns: SankeyColumn[]) {
-//   for (const column of columns) {
-//     for (const [rowIdx, node] of column.nodes.entries()) {
-//       if (!column.visibleRows) {
-//         throw new Error("column.visibleRows must be defined at this point!")
-//       }
-//       const isRowHidden = rowIdx < column.visibleRows[0] || rowIdx >= column.visibleRows[1]
-//       if (isRowHidden) {
-//         node.isHidden = true
-//         node.sourceLinks.forEach(l => (l.isHidden = true))
-//         node.targetLinks.forEach(l => (l.isHidden = true))
-//       }
-//     }
-//   }
-// }
 
 export function getVisibleNodeIds(column: SankeyColumn): Set<string> {
   const nodeIds = new Set<string>()

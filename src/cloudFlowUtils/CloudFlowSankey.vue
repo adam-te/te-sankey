@@ -46,10 +46,16 @@
       <defs>
         <template v-for="node of sankeyGraph.nodes" :key="node.id">
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
-            <!-- :class="{ focus: node.focus }" -->
-            <stop class="flows-stop" :offset="`${getFlowsEndPercentage(node)}%`" />
-            <!-- :class="{ focus: node.focus }" -->
-            <stop class="no-flows-stop" :offset="`${getFlowsEndPercentage(node)}%`" />
+            <stop
+              class="flows-stop"
+              :class="{ focus: !selectedNodeIds.has(node.id) }"
+              :offset="`${getFlowsEndPercentage(node)}%`"
+            />
+            <stop
+              class="no-flows-stop"
+              :class="{ focus: !selectedNodeIds.has(node.id) }"
+              :offset="`${getFlowsEndPercentage(node)}%`"
+            />
           </linearGradient>
         </template>
       </defs>
@@ -57,14 +63,14 @@
       <g class="links">
         <path
           v-for="link of sankeyGraph.links"
-          :key="link.source.name + '_' + link.target.name"
+          :key="link.source.id + '_' + link.target.id"
           :d="computeSankeyLinkPath(link)"
           class="sankey-link"
         />
       </g>
 
       <g class="nodes">
-        <template v-for="node of sankeyGraph.nodes" :key="node.name">
+        <template v-for="node of sankeyGraph.nodes" :key="node.id">
           <rect
             :transform="`translate(${node.x0}, ${node.y0})`"
             :width="getNodeWidth(node)"
@@ -74,7 +80,7 @@
             ry="3"
             @click="onSankeyNodeClicked(node)"
             :fill="`url(#${node.id})`"
-            :class="{ focus: node.focus }"
+            :class="{ focus: selectedNodeIds.has(node.id) }"
           />
         </template>
       </g>
@@ -134,7 +140,7 @@
 import { computed } from "vue"
 import { SankeyColumn, SankeyGraph, SankeyNode, computeSankeyLinkPath } from "../sankeyUtils"
 import { computeWiredGraph, ComputeSankeyGroupingOptions, RawSubnetData, SubnetData } from "."
-import { DisplaySankeyGraph } from "./models"
+import { DisplaySankeyGraph, DisplaySankeyColumn } from "./models"
 import { computeDisplaySankey } from "./computeDisplaySankey"
 import { getColumnX, getFlowsEndPercentage, getFocusedColumn, getNodeHeight, getNodeWidth } from "./utils"
 
@@ -165,12 +171,15 @@ const sankeyGraph = computed<DisplaySankeyGraph>(() => {
   })
 })
 
-const focusedColumn = computed(() => {
-  return getFocusedColumn({
-    columns: sankeyGraph.value.columns,
-    selectedNodeIds: props.groupingOptions.selectedNodeIds,
-  })
-})
+const focusedColumn = computed(
+  () =>
+    getFocusedColumn({
+      columns: sankeyGraph.value.columns,
+      selectedNodeIds: props.groupingOptions.selectedNodeIds,
+    }) as DisplaySankeyColumn
+)
+
+const selectedNodeIds = computed(() => new Set(props.groupingOptions.selectedNodeIds))
 
 function onSankeyNodeClicked(node: SankeyNode) {
   emits("nodeClicked", { graph: sankeyGraph.value, node })
@@ -180,7 +189,8 @@ function onSankeyNodeClicked(node: SankeyNode) {
 <style>
 :root {
   --sankeyLinkColor: #c9def0;
-  --sankeyLinkOpacity: 0.85;
+  --sankeyLinkOpacity: 0.4;
+  --sankeyLinkHoveredOpacity: 0.9;
 
   --sankeyFlowNodeColor: #2679c2;
   --sankeyNoFlowNodeColor: #195386;
@@ -197,7 +207,7 @@ function onSankeyNodeClicked(node: SankeyNode) {
 }
 
 .sankey-link:hover {
-  opacity: 1;
+  opacity: var(--sankeyLinkHoveredOpacity);
 }
 
 .sankey-node {
@@ -207,10 +217,6 @@ function onSankeyNodeClicked(node: SankeyNode) {
 .sankey-node:hover {
   filter: brightness(115%);
 }
-
-/* .sankey-node.flows.focus {
-        fill: var(--sankeyNodeActiveFlowColor);
-      } */
 
 .flows-stop.focus {
   stop-color: var(--sankeyFlowNodeColor);

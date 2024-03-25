@@ -1,5 +1,4 @@
 import { SankeyConfig, SankeyGraph } from "."
-import { computeSankeyYScale } from "./computeSankeyYScale"
 import { computeSpacingBetweenColumns } from "./computeSpacingBetweenColumns"
 import { markHiddenNodes } from "./markHiddenNodes"
 import { positionColumn } from "./positionColumn"
@@ -20,24 +19,10 @@ export function computeSankey(graph: SankeyGraph, options: SankeyOptions): Sanke
     ...options,
   }
 
-  //   const columns = computeNodeColumns(nodes);
-  const spacingBetweenColumns = computeSpacingBetweenColumns(
-    sankeyConfig.width,
-    graph.columns,
-    sankeyConfig
-  )
+  const spacingBetweenColumns = computeSpacingBetweenColumns(sankeyConfig.width, graph.columns, sankeyConfig)
 
   // TODO: property of column instead of bool on node
   markHiddenNodes(graph.columns)
-  // const yScale = computeSankeyYScale(graph, sankeyConfig)
-
-  // getFocusedColumn()
-
-  // FOR EACH COLUMN
-  // yScale is sum of all flows for that column
-  // CREATE SINGLE FAKE LINK
-  // graph.columns.
-  // TODO: Compute flows for scale
 
   let x = spacingBetweenColumns
   for (const column of graph.columns) {

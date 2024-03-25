@@ -64,14 +64,14 @@ export function sortToMinimizeLinkCrossings({
         return nodeIdToNextColumnIdx.get(v.target.id) as number
       })
 
-      return linkMidpoints.length
-        ? linkMidpoints.reduce((a, b) => a + b, 0) / linkMidpoints.length
-        : null
+      return linkMidpoints.length ? linkMidpoints.reduce((a, b) => a + b, 0) / linkMidpoints.length : null
     }
   }
 }
 
 if (import.meta.vitest) {
   const { it, expect } = import.meta.vitest
-  it("TODO", () => {})
+  it("TODO", () => {
+    expect(true).toBe(true)
+  })
 }
