@@ -1,0 +1,3910 @@
+{
+  "vertices": {
+    "036476006320-us-west-1-subnet-0c007c2b937018184": {
+      "id": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-01467758515c907ef",
+      "az": "usw1-az1",
+      "subnet": "subnet-0c007c2b937018184"
+    },
+    "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c": {
+      "id": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az1",
+      "subnet": "subnet-0869c24ffe0c9e67c"
+    },
+    "036476006320-us-west-1-subnet-0a415aa89455cf4f8": {
+      "id": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-04f987fff6675ec10",
+      "az": "usw1-az3",
+      "subnet": "subnet-0a415aa89455cf4f8"
+    },
+    "036476006320-us-west-1-subnet-0c94a963395cadb86": {
+      "id": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-04f987fff6675ec10",
+      "az": "usw1-az1",
+      "subnet": "subnet-0c94a963395cadb86"
+    },
+    "036476006320-us-west-1-subnet-0fe4415deeb34f790": {
+      "id": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-04f987fff6675ec10",
+      "az": "usw1-az3",
+      "subnet": "subnet-0fe4415deeb34f790"
+    },
+    "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48": {
+      "id": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az2",
+      "subnet": "subnet-0fcf1be5eaab72a48"
+    },
+    "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc": {
+      "id": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az3",
+      "subnet": "subnet-0fc8dcf8bbb9df4fc"
+    },
+    "269366561554-us-west-1-subnet-0b95d281e098056d2": {
+      "id": "269366561554-us-west-1-subnet-0b95d281e098056d2",
+      "account": "269366561554",
+      "region": "us-west-1",
+      "vpc": "vpc-09b3b03e4713c207d",
+      "az": "usw1-az3",
+      "subnet": "subnet-0b95d281e098056d2"
+    },
+    "287573302805-eu-central-1-subnet-0949dac2b0a00bacd": {
+      "id": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az3",
+      "subnet": "subnet-0949dac2b0a00bacd"
+    },
+    "036476006320-us-west-1-subnet-0b80fd637701b8d22": {
+      "id": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-01467758515c907ef",
+      "az": "usw1-az3",
+      "subnet": "subnet-0b80fd637701b8d22"
+    },
+    "269366561554-us-west-1-subnet-044e00100103e5abd": {
+      "id": "269366561554-us-west-1-subnet-044e00100103e5abd",
+      "account": "269366561554",
+      "region": "us-west-1",
+      "vpc": "vpc-09b3b03e4713c207d",
+      "az": "usw1-az1",
+      "subnet": "subnet-044e00100103e5abd"
+    },
+    "958719611210-us-west-1-subnet-0c79e59b7f49a8110": {
+      "id": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-0df72d4eb9c69e3f5",
+      "az": "usw1-az3",
+      "subnet": "subnet-0c79e59b7f49a8110"
+    },
+    "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0": {
+      "id": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az2",
+      "subnet": "subnet-04b3a3b9b0195d1a0"
+    },
+    "036476006320-eu-central-1-subnet-01a045c1593f8d763": {
+      "id": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az1",
+      "subnet": "subnet-01a045c1593f8d763"
+    },
+    "617842948938-us-west-1-subnet-045aa15ce1680467e": {
+      "id": "617842948938-us-west-1-subnet-045aa15ce1680467e",
+      "account": "617842948938",
+      "region": "us-west-1",
+      "vpc": "vpc-02358023ad31f2bf9",
+      "az": "usw1-az1",
+      "subnet": "subnet-045aa15ce1680467e"
+    },
+    "036476006320-us-west-1-subnet-0a1b9106e59d449a1": {
+      "id": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-01467758515c907ef",
+      "az": "usw1-az1",
+      "subnet": "subnet-0a1b9106e59d449a1"
+    },
+    "617842948938-us-west-1-subnet-0860f07ae2234f2af": {
+      "id": "617842948938-us-west-1-subnet-0860f07ae2234f2af",
+      "account": "617842948938",
+      "region": "us-west-1",
+      "vpc": "vpc-02358023ad31f2bf9",
+      "az": "usw1-az3",
+      "subnet": "subnet-0860f07ae2234f2af"
+    },
+    "287573302805-eu-central-1-subnet-08d700693057f0995": {
+      "id": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az3",
+      "subnet": "subnet-08d700693057f0995"
+    },
+    "958719611210-eu-central-1-subnet-0f85e85735e74a0fd": {
+      "id": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "account": "958719611210",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az1",
+      "subnet": "subnet-0f85e85735e74a0fd"
+    },
+    "958719611210-eu-central-1-subnet-0569756265116bdc8": {
+      "id": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "account": "958719611210",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az2",
+      "subnet": "subnet-0569756265116bdc8"
+    },
+    "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8": {
+      "id": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az3",
+      "subnet": "subnet-0e1271ff4ea0aa4a8"
+    },
+    "565095755193-eu-central-1-subnet-05a23b49e51f1c52e": {
+      "id": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az3",
+      "subnet": "subnet-05a23b49e51f1c52e"
+    },
+    "958719611210-us-west-1-subnet-03ce597027b797679": {
+      "id": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-0df72d4eb9c69e3f5",
+      "az": "usw1-az3",
+      "subnet": "subnet-03ce597027b797679"
+    },
+    "958719611210-eu-central-1-subnet-073be0359a58876f4": {
+      "id": "958719611210-eu-central-1-subnet-073be0359a58876f4",
+      "account": "958719611210",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az1",
+      "subnet": "subnet-073be0359a58876f4"
+    },
+    "036476006320-us-west-1-subnet-0511f175d8744983e": {
+      "id": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-01467758515c907ef",
+      "az": "usw1-az3",
+      "subnet": "subnet-0511f175d8744983e"
+    },
+    "036476006320-us-west-1-subnet-06cf599f32111688b": {
+      "id": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "account": "036476006320",
+      "region": "us-west-1",
+      "vpc": "vpc-04f987fff6675ec10",
+      "az": "usw1-az1",
+      "subnet": "subnet-06cf599f32111688b"
+    },
+    "565095755193-eu-central-1-subnet-0f85e85735e74a0fd": {
+      "id": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az1",
+      "subnet": "subnet-0f85e85735e74a0fd"
+    },
+    "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2": {
+      "id": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az3",
+      "subnet": "subnet-0e83157a5fb3e54e2"
+    },
+    "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c": {
+      "id": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az1",
+      "subnet": "subnet-0a8f1cb5ac368c44c"
+    },
+    "565095755193-eu-central-1-subnet-08918d3218ab4af0e": {
+      "id": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az2",
+      "subnet": "subnet-08918d3218ab4af0e"
+    },
+    "287573302805-eu-central-1-subnet-018d43ab005a260d7": {
+      "id": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az2",
+      "subnet": "subnet-018d43ab005a260d7"
+    },
+    "565095755193-eu-central-1-subnet-0569756265116bdc8": {
+      "id": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az2",
+      "subnet": "subnet-0569756265116bdc8"
+    },
+    "287573302805-eu-central-1-subnet-037207fa50e058ae7": {
+      "id": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az3",
+      "subnet": "subnet-037207fa50e058ae7"
+    },
+    "958719611210-us-west-1-subnet-09c63d01fea1c2de6": {
+      "id": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-036fa436135e997b8",
+      "az": "usw1-az1",
+      "subnet": "subnet-09c63d01fea1c2de6"
+    },
+    "565095755193-eu-central-1-subnet-073be0359a58876f4": {
+      "id": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az1",
+      "subnet": "subnet-073be0359a58876f4"
+    },
+    "958719611210-us-west-1-subnet-02498cfe77be1ca67": {
+      "id": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-036fa436135e997b8",
+      "az": "usw1-az3",
+      "subnet": "subnet-02498cfe77be1ca67"
+    },
+    "565095755193-eu-central-1-subnet-08596bc4647def41d": {
+      "id": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az2",
+      "subnet": "subnet-08596bc4647def41d"
+    },
+    "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e": {
+      "id": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az1",
+      "subnet": "subnet-0b3170c4fdaeb051e"
+    },
+    "958719611210-eu-central-1-subnet-01420e3917132a0b7": {
+      "id": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "account": "958719611210",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az3",
+      "subnet": "subnet-01420e3917132a0b7"
+    },
+    "036476006320-eu-central-1-subnet-037207fa50e058ae7": {
+      "id": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az3",
+      "subnet": "subnet-037207fa50e058ae7"
+    },
+    "036476006320-eu-central-1-subnet-018d43ab005a260d7": {
+      "id": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az2",
+      "subnet": "subnet-018d43ab005a260d7"
+    },
+    "958719611210-us-west-1-subnet-0785b6c5648d24d5c": {
+      "id": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-036fa436135e997b8",
+      "az": "usw1-az1",
+      "subnet": "subnet-0785b6c5648d24d5c"
+    },
+    "287573302805-eu-central-1-subnet-00828bea1d081da52": {
+      "id": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-09acc8433e7fa5c1b",
+      "az": "euc1-az2",
+      "subnet": "subnet-00828bea1d081da52"
+    },
+    "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1": {
+      "id": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az2",
+      "subnet": "subnet-011dcb3f14ef2dbb1"
+    },
+    "036476006320-eu-central-1-subnet-08d700693057f0995": {
+      "id": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "account": "036476006320",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az3",
+      "subnet": "subnet-08d700693057f0995"
+    },
+    "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3": {
+      "id": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az1",
+      "subnet": "subnet-0edc88a1f8a5b05e3"
+    },
+    "565095755193-eu-central-1-subnet-01420e3917132a0b7": {
+      "id": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az3",
+      "subnet": "subnet-01420e3917132a0b7"
+    },
+    "958719611210-us-west-1-subnet-06dde0f0321d130ed": {
+      "id": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-036fa436135e997b8",
+      "az": "usw1-az3",
+      "subnet": "subnet-06dde0f0321d130ed"
+    },
+    "565095755193-eu-central-1-subnet-0810b1632f4bf5641": {
+      "id": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "account": "565095755193",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b88dc86f39d04037",
+      "az": "euc1-az1",
+      "subnet": "subnet-0810b1632f4bf5641"
+    },
+    "287573302805-eu-central-1-subnet-01a045c1593f8d763": {
+      "id": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az1",
+      "subnet": "subnet-01a045c1593f8d763"
+    },
+    "958719611210-us-west-1-subnet-044aeee00becffcb3": {
+      "id": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-0df72d4eb9c69e3f5",
+      "az": "usw1-az1",
+      "subnet": "subnet-044aeee00becffcb3"
+    },
+    "958719611210-us-west-1-subnet-0478b1bab7523201e": {
+      "id": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "account": "958719611210",
+      "region": "us-west-1",
+      "vpc": "vpc-0df72d4eb9c69e3f5",
+      "az": "usw1-az1",
+      "subnet": "subnet-0478b1bab7523201e"
+    },
+    "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c": {
+      "id": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az1",
+      "subnet": "subnet-0869c24ffe0c9e67c"
+    },
+    "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48": {
+      "id": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "account": "287573302805",
+      "region": "eu-central-1",
+      "vpc": "vpc-01f876b5a7449b3fc",
+      "az": "euc1-az2",
+      "subnet": "subnet-0fcf1be5eaab72a48"
+    },
+    "617842948938-us-west-1-subnet-0828d1a426e23dc4f": {
+      "id": "617842948938-us-west-1-subnet-0828d1a426e23dc4f",
+      "account": "617842948938",
+      "region": "us-west-1",
+      "vpc": "vpc-02358023ad31f2bf9",
+      "az": "usw1-az3",
+      "subnet": "subnet-0828d1a426e23dc4f"
+    },
+    "269366561554-us-west-1-subnet-03459280ad10d1a64": {
+      "id": "269366561554-us-west-1-subnet-03459280ad10d1a64",
+      "account": "269366561554",
+      "region": "us-west-1",
+      "vpc": "vpc-09b3b03e4713c207d",
+      "az": "usw1-az1",
+      "subnet": "subnet-03459280ad10d1a64"
+    },
+    "617842948938-us-west-1-subnet-0272af3ae57fb3833": {
+      "id": "617842948938-us-west-1-subnet-0272af3ae57fb3833",
+      "account": "617842948938",
+      "region": "us-west-1",
+      "vpc": "vpc-02358023ad31f2bf9",
+      "az": "usw1-az1",
+      "subnet": "subnet-0272af3ae57fb3833"
+    },
+    "269366561554-us-west-1-subnet-0d2caf01dc261f14a": {
+      "id": "269366561554-us-west-1-subnet-0d2caf01dc261f14a",
+      "account": "269366561554",
+      "region": "us-west-1",
+      "vpc": "vpc-09b3b03e4713c207d",
+      "az": "usw1-az3",
+      "subnet": "subnet-0d2caf01dc261f14a"
+    },
+    "958719611210-eu-central-1-subnet-0e83157a5fb3e54e2": {
+      "id": "958719611210-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "account": "958719611210",
+      "region": "eu-central-1",
+      "vpc": "vpc-0b204dba6c794ffa9",
+      "az": "euc1-az3",
+      "subnet": "subnet-0e83157a5fb3e54e2"
+    },
+    "617842948938-eu-central-1-subnet-0342b0a17bd38fe54": {
+      "id": "617842948938-eu-central-1-subnet-0342b0a17bd38fe54",
+      "account": "617842948938",
+      "region": "eu-central-1",
+      "vpc": "vpc-092acfbfb14bec914",
+      "az": "euc1-az1",
+      "subnet": "subnet-0342b0a17bd38fe54"
+    },
+    "269366561554-eu-central-1-subnet-0b4ff0c1da66b02d0": {
+      "id": "269366561554-eu-central-1-subnet-0b4ff0c1da66b02d0",
+      "account": "269366561554",
+      "region": "eu-central-1",
+      "vpc": "vpc-03476390a8eb5042e",
+      "az": "euc1-az1",
+      "subnet": "subnet-0b4ff0c1da66b02d0"
+    },
+    "269366561554-eu-central-1-subnet-0b1cea167a34f36bb": {
+      "id": "269366561554-eu-central-1-subnet-0b1cea167a34f36bb",
+      "account": "269366561554",
+      "region": "eu-central-1",
+      "vpc": "vpc-03476390a8eb5042e",
+      "az": "euc1-az2",
+      "subnet": "subnet-0b1cea167a34f36bb"
+    },
+    "269366561554-eu-central-1-subnet-04a30f252ca0e2b7d": {
+      "id": "269366561554-eu-central-1-subnet-04a30f252ca0e2b7d",
+      "account": "269366561554",
+      "region": "eu-central-1",
+      "vpc": "vpc-03476390a8eb5042e",
+      "az": "euc1-az3",
+      "subnet": "subnet-04a30f252ca0e2b7d"
+    },
+    "617842948938-eu-central-1-subnet-04e3abcabe9d2664b": {
+      "id": "617842948938-eu-central-1-subnet-04e3abcabe9d2664b",
+      "account": "617842948938",
+      "region": "eu-central-1",
+      "vpc": "vpc-092acfbfb14bec914",
+      "az": "euc1-az3",
+      "subnet": "subnet-04e3abcabe9d2664b"
+    },
+    "617842948938-eu-central-1-subnet-0769809d8d01b2d22": {
+      "id": "617842948938-eu-central-1-subnet-0769809d8d01b2d22",
+      "account": "617842948938",
+      "region": "eu-central-1",
+      "vpc": "vpc-092acfbfb14bec914",
+      "az": "euc1-az2",
+      "subnet": "subnet-0769809d8d01b2d22"
+    }
+  },
+  "edges": [
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 1930362262,
+      "ingressBytes": 115128553
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 4833363985118,
+      "ingressBytes": 2801958170004
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 50548453414,
+      "ingressBytes": 12079419199
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 15498482352,
+      "ingressBytes": 726491462
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 55333903622,
+      "ingressBytes": 40657111446
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 9465062,
+      "ingressBytes": 11422017
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 16345,
+      "ingressBytes": 1606
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 40708258,
+      "ingressBytes": 466310
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 15281110,
+      "ingressBytes": 17980594
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 23219177173,
+      "ingressBytes": 254068608983
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 3622033756,
+      "ingressBytes": 11747295255
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 20373031900070,
+      "ingressBytes": 21408199074751
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 4101820612414,
+      "ingressBytes": 4116127332020
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 140927832371,
+      "ingressBytes": 115156784034
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 1686,
+      "ingressBytes": 8377
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 9617,
+      "ingressBytes": 52636
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 2380392434584,
+      "ingressBytes": 1129727665811
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "egressBytes": 39368411,
+      "ingressBytes": 1025026274
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 4802,
+      "ingressBytes": 1300
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 62755752,
+      "ingressBytes": 26077584
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 238169630,
+      "ingressBytes": 7770256218
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 92215779,
+      "ingressBytes": 37455509
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 49008246,
+      "ingressBytes": 33916533
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 307266118245,
+      "ingressBytes": 367141154232
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 20050289912102,
+      "ingressBytes": 22440585425809
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 54432448,
+      "ingressBytes": 290649865
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 29625563,
+      "ingressBytes": 9032722
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 115638448,
+      "ingressBytes": 1939062070
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 11987757313,
+      "ingressBytes": 50885702553
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 858375200,
+      "ingressBytes": 957345964
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 402765785626,
+      "ingressBytes": 2225315109674
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 48960,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 21066904,
+      "ingressBytes": 15666374
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 46524128,
+      "ingressBytes": 1860558
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 228760812,
+      "ingressBytes": 894233157
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 86740,
+      "ingressBytes": 4505
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 53430,
+      "ingressBytes": 13187
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 5992989,
+      "ingressBytes": 6513390
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 119762122,
+      "ingressBytes": 8876866
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 7411451896,
+      "ingressBytes": 20478244695
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 53247567,
+      "ingressBytes": 288534483
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 16106044,
+      "ingressBytes": 4438032
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 1305090260,
+      "ingressBytes": 1982437652
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 16484,
+      "ingressBytes": 5269
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 11360,
+      "ingressBytes": 17040
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 184358677,
+      "ingressBytes": 19696399
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 21977978447405,
+      "ingressBytes": 22080141286809
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 394706720,
+      "ingressBytes": 2103347932
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 142784642852,
+      "ingressBytes": 115669862503
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "egressBytes": 75693001,
+      "ingressBytes": 53818142
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 419575170,
+      "ingressBytes": 81099250
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 1866581,
+      "ingressBytes": 46671136
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 6763602061,
+      "ingressBytes": 21453600124
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 4215833,
+      "ingressBytes": 793745
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 83113546012,
+      "ingressBytes": 47954606136
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 49917422,
+      "ingressBytes": 1970184
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 1561143232,
+      "ingressBytes": 2309210374
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 322694013954,
+      "ingressBytes": 331126899436
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 20427263669839,
+      "ingressBytes": 19463212866185
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 531953329,
+      "ingressBytes": 38704143
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 105104503167,
+      "ingressBytes": 3328942915
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 1937762,
+      "ingressBytes": 48932217
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 18540486411,
+      "ingressBytes": 2626504563
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 288520503518,
+      "ingressBytes": 268009261990
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 19107182,
+      "ingressBytes": 15712314
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 483724,
+      "ingressBytes": 50669422
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 12236,
+      "ingressBytes": 12857
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 4051,
+      "ingressBytes": 1014
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 351679755497,
+      "ingressBytes": 357344178290
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 387805040485,
+      "ingressBytes": 448059461282
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 9824859071438,
+      "ingressBytes": 10248599947777
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "egressBytes": 159457495,
+      "ingressBytes": 144105599
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 975620807,
+      "ingressBytes": 1874138163
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 11206340,
+      "ingressBytes": 19288419
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 203793994758,
+      "ingressBytes": 577650183464
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 447080,
+      "ingressBytes": 188124
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 752874146,
+      "ingressBytes": 131030808
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 1467077295,
+      "ingressBytes": 2419107153
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 39586615,
+      "ingressBytes": 490348
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 53042890,
+      "ingressBytes": 287047626
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 40754773,
+      "ingressBytes": 236998131
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 27960,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 259000064,
+      "ingressBytes": 63320431
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 47303111956,
+      "ingressBytes": 84125628449
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 103653461,
+      "ingressBytes": 4021328
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 16819,
+      "ingressBytes": 9602
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 30941439,
+      "ingressBytes": 4089540
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 61771,
+      "ingressBytes": 28108
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 48040220,
+      "ingressBytes": 84496690
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 11813214917,
+      "ingressBytes": 6597384452
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 2425136595,
+      "ingressBytes": 1289258412
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 2871443163,
+      "ingressBytes": 12414296714
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 46201,
+      "ingressBytes": 19844
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 37328073,
+      "ingressBytes": 3659914
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 13290,
+      "ingressBytes": 7022
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 86770360,
+      "ingressBytes": 1860850328
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 5752842,
+      "ingressBytes": 5278102
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 775712335,
+      "ingressBytes": 905918705
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 412865507,
+      "ingressBytes": 82849871
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 14846,
+      "ingressBytes": 13832
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 1330258941605,
+      "ingressBytes": 1541825640507
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "egressBytes": 1678,
+      "ingressBytes": 8264
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 7346877,
+      "ingressBytes": 7503725
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 23037726,
+      "ingressBytes": 296637
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 1783615950,
+      "ingressBytes": 909970721
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 1019823902190,
+      "ingressBytes": 920635657405
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 1029363489,
+      "ingressBytes": 39533077
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 1032374842,
+      "ingressBytes": 39386446
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 89580653,
+      "ingressBytes": 457957698
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 402792312609,
+      "ingressBytes": 2220212022476
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 8377,
+      "ingressBytes": 1686
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 4528337,
+      "ingressBytes": 4401629
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 13704,
+      "ingressBytes": 12768
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 1162621273,
+      "ingressBytes": 654772006
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 10590012091,
+      "ingressBytes": 9173653728
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 46903721,
+      "ingressBytes": 37329907
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 466310,
+      "ingressBytes": 40707922
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 4053510,
+      "ingressBytes": 103795188
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 4053555,
+      "ingressBytes": 3086220
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 2472005758,
+      "ingressBytes": 2066083449
+    },
+    {
+      "localId": "617842948938-us-west-1-subnet-045aa15ce1680467e",
+      "remoteId": "617842948938-us-west-1-subnet-045aa15ce1680467e",
+      "egressBytes": 0,
+      "ingressBytes": 3846
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 656920544960,
+      "ingressBytes": 409921106640
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 206712,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 32322,
+      "ingressBytes": 11397
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 527966,
+      "ingressBytes": 1258322
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 5471933059,
+      "ingressBytes": 187299942
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 80869,
+      "ingressBytes": 7228
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 326769815570,
+      "ingressBytes": 382507254751
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 12768,
+      "ingressBytes": 13416
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 195876886,
+      "ingressBytes": 10806272
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 2527404247,
+      "ingressBytes": 2225773567
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 22158,
+      "ingressBytes": 465843
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 52564703,
+      "ingressBytes": 292426833
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 96290637523,
+      "ingressBytes": 54936016264
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 23361111,
+      "ingressBytes": 2605018
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 4765080,
+      "ingressBytes": 7903370
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 10162578,
+      "ingressBytes": 18142069
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 1485232365,
+      "ingressBytes": 1562332601
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 49242612,
+      "ingressBytes": 1952868
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 2940423,
+      "ingressBytes": 2534689
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 366212771,
+      "ingressBytes": 971242925
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 186212285,
+      "ingressBytes": 109067232
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 85153117641,
+      "ingressBytes": 47573636746
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 8837027320,
+      "ingressBytes": 36561358764
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 95203,
+      "ingressBytes": 39843
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 7022,
+      "ingressBytes": 13290
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 551786518,
+      "ingressBytes": 38349398
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 480,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 135589651857,
+      "ingressBytes": 154152757380
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 3827580,
+      "ingressBytes": 1444280
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 428655436,
+      "ingressBytes": 83213342
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 4056654,
+      "ingressBytes": 104251196
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 446645463562,
+      "ingressBytes": 1737176806766
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 1028861635,
+      "ingressBytes": 39222789
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 1032905191,
+      "ingressBytes": 39612590
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 202351123822,
+      "ingressBytes": 160677298897
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 1502,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 898064,
+      "ingressBytes": 42228
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 52712766779,
+      "ingressBytes": 39570458210
+    },
+    {
+      "localId": "269366561554-us-west-1-subnet-0d2caf01dc261f14a",
+      "remoteId": "269366561554-us-west-1-subnet-0b95d281e098056d2",
+      "egressBytes": 25680807,
+      "ingressBytes": 1927116
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 3986897,
+      "ingressBytes": 3076968
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 87664165,
+      "ingressBytes": 459019580
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 970013352771,
+      "ingressBytes": 1123836774009
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 2832955,
+      "ingressBytes": 4156238
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 62405790,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 48117797679,
+      "ingressBytes": 82117323236
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 19301088,
+      "ingressBytes": 11267412
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 11732,
+      "ingressBytes": 14042
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 159394055441,
+      "ingressBytes": 145522213923
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 340926417,
+      "ingressBytes": 69109320
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 76560128941,
+      "ingressBytes": 218895808629
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 72370,
+      "ingressBytes": 16927
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 15519898,
+      "ingressBytes": 20961144
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 41366609,
+      "ingressBytes": 2158180
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 2949693,
+      "ingressBytes": 786535
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 887855862444,
+      "ingressBytes": 829952669573
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 92763844,
+      "ingressBytes": 23361111
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 1985402,
+      "ingressBytes": 50312662
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 368413879899,
+      "ingressBytes": 493767671885
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 331441200581,
+      "ingressBytes": 353227666506
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 12334971899,
+      "ingressBytes": 6834036406
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 426369171702,
+      "ingressBytes": 382898347122
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 16559,
+      "ingressBytes": 15428
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 1377908785101,
+      "ingressBytes": 1394456123843
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 19578826001,
+      "ingressBytes": 157881423
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 20696493230,
+      "ingressBytes": 167826734
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 423285259988,
+      "ingressBytes": 357585893756
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 499160371377,
+      "ingressBytes": 506827345928
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 103288790,
+      "ingressBytes": 4033758
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 62089463,
+      "ingressBytes": 635073639
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 388025965465,
+      "ingressBytes": 323563751841
+    },
+    {
+      "localId": "617842948938-us-west-1-subnet-0860f07ae2234f2af",
+      "remoteId": "617842948938-us-west-1-subnet-045aa15ce1680467e",
+      "egressBytes": 10698,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 124679445,
+      "ingressBytes": 781357041
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 26702187,
+      "ingressBytes": 4156933
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 17317652735,
+      "ingressBytes": 22944431985
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 124593377,
+      "ingressBytes": 766259980
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 598786131,
+      "ingressBytes": 39853036
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 9703,
+      "ingressBytes": 1819
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 1718432727,
+      "ingressBytes": 111524753
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 12125464848,
+      "ingressBytes": 50553322053
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 16289322,
+      "ingressBytes": 4522093
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 387460858246,
+      "ingressBytes": 417814341498
+    },
+    {
+      "localId": "617842948938-us-west-1-subnet-0272af3ae57fb3833",
+      "remoteId": "617842948938-us-west-1-subnet-045aa15ce1680467e",
+      "egressBytes": 2830407,
+      "ingressBytes": 2239786
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 2989164045,
+      "ingressBytes": 13401580212
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 16068729185,
+      "ingressBytes": 3678686306
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 50669830,
+      "ingressBytes": 483724
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 2141631716,
+      "ingressBytes": 1212609350
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 329219555,
+      "ingressBytes": 2125620353
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 132512970,
+      "ingressBytes": 779142091
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 22178,
+      "ingressBytes": 9926
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 132193435,
+      "ingressBytes": 772879403
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 10589022,
+      "ingressBytes": 194895962
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 13527302,
+      "ingressBytes": 7880264
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 38634569,
+      "ingressBytes": 232146251
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 1560559617,
+      "ingressBytes": 1482577842
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 10108,
+      "ingressBytes": 10621
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 2633,
+      "ingressBytes": 6645
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 31661524,
+      "ingressBytes": 10019614
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 3548899216,
+      "ingressBytes": 14996464846
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 1079174185128,
+      "ingressBytes": 2381259954240
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 1062731887092,
+      "ingressBytes": 1063426234451
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "958719611210-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 23064,
+      "ingressBytes": 6677
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 54932240341,
+      "ingressBytes": 95518512724
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 817173647115,
+      "ingressBytes": 1496623460744
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 47908320,
+      "ingressBytes": 68877594
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 21912968662100,
+      "ingressBytes": 24046505140320
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 61953980,
+      "ingressBytes": 592122871
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 89669372,
+      "ingressBytes": 26705909
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 1973680082,
+      "ingressBytes": 1302527098
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 6059,
+      "ingressBytes": 13290
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 5087,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 4136033573,
+      "ingressBytes": 104593453118
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 6042386,
+      "ingressBytes": 2837740
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 362158811,
+      "ingressBytes": 70051403
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 49441085406,
+      "ingressBytes": 37342896878
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 465843,
+      "ingressBytes": 22158
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 373547563,
+      "ingressBytes": 2209168144
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 978415,
+      "ingressBytes": 964857
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 2913172001,
+      "ingressBytes": 12858394534
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 87748203,
+      "ingressBytes": 462545121
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 1606,
+      "ingressBytes": 16345
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 3960,
+      "ingressBytes": 1006
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 756381026,
+      "ingressBytes": 123680706
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 60293571,
+      "ingressBytes": 35884157
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 15871427,
+      "ingressBytes": 4479673
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 3034876,
+      "ingressBytes": 2628896
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 787588763861,
+      "ingressBytes": 783418056717
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 5137,
+      "ingressBytes": 1384
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 435108826,
+      "ingressBytes": 85057117
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 6686281,
+      "ingressBytes": 7850648
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 442061835615,
+      "ingressBytes": 353349677886
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 15666,
+      "ingressBytes": 5295
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 438069587892,
+      "ingressBytes": 406977095560
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 23058,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 12429041622657,
+      "ingressBytes": 10634996583947
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 356298258022,
+      "ingressBytes": 293298811910
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 40658930,
+      "ingressBytes": 236980532
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 1298096025,
+      "ingressBytes": 2428124545
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 281644670,
+      "ingressBytes": 53276703
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 40207529,
+      "ingressBytes": 235525951
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 88345497365,
+      "ingressBytes": 10484031402
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 519501764,
+      "ingressBytes": 38744719
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 32997059,
+      "ingressBytes": 384735
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 48461,
+      "ingressBytes": 17735
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 10948949436,
+      "ingressBytes": 374763662
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 447596,
+      "ingressBytes": 188540
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 403659466072,
+      "ingressBytes": 429216575431
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 1215759462,
+      "ingressBytes": 2140579696
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 12880538265,
+      "ingressBytes": 368124988
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 10467916705,
+      "ingressBytes": 9107164956
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 4040368,
+      "ingressBytes": 104145533
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 104032682,
+      "ingressBytes": 4048366
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 39610195,
+      "ingressBytes": 1032838406
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 18142442086,
+      "ingressBytes": 19090271722
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 9004569,
+      "ingressBytes": 10128176
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 0,
+      "ingressBytes": 206136
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 31649400,
+      "ingressBytes": 9774628
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 9233621089,
+      "ingressBytes": 10430681420
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 48023024,
+      "ingressBytes": 51784016
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 33916533,
+      "ingressBytes": 4120057
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 0,
+      "ingressBytes": 205488
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 11953,
+      "ingressBytes": 5165
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 21472072895709,
+      "ingressBytes": 25953363337214
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 16845560804,
+      "ingressBytes": 10214042862
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 536258722566,
+      "ingressBytes": 1490060180789
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 10126,
+      "ingressBytes": 2721
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 378246957816,
+      "ingressBytes": 423598516876
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 26411410,
+      "ingressBytes": 3764698
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 7772,
+      "ingressBytes": 1901
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 18934617763,
+      "ingressBytes": 57065590549
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 284192694145,
+      "ingressBytes": 265865540298
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 3808988,
+      "ingressBytes": 819706
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 1572647608753,
+      "ingressBytes": 1747955653597
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 365188537650,
+      "ingressBytes": 442983146844
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 1600726482437,
+      "ingressBytes": 1677574140956
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 1129012905415,
+      "ingressBytes": 1120515219286
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 6645,
+      "ingressBytes": 3511
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 49072528,
+      "ingressBytes": 1930304
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 384735,
+      "ingressBytes": 32996652
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 29950,
+      "ingressBytes": 11863
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 11178559889,
+      "ingressBytes": 327368919
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 7137,
+      "ingressBytes": 1349
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 1689461545382,
+      "ingressBytes": 1598609731753
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 784039361,
+      "ingressBytes": 135330957
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 26160,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 1598,
+      "ingressBytes": 16243
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 360424793500,
+      "ingressBytes": 347158027355
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 476412253452,
+      "ingressBytes": 280044163468
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 5087,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 298346486,
+      "ingressBytes": 56909328
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 2798620035781,
+      "ingressBytes": 355173078141
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 4201101798,
+      "ingressBytes": 111106491851
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 6197256,
+      "ingressBytes": 4872049
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 168287843,
+      "ingressBytes": 48625219
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 2997800975,
+      "ingressBytes": 13463158893
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 6641,
+      "ingressBytes": 2583
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 10679674,
+      "ingressBytes": 3432041
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 42228,
+      "ingressBytes": 898064
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 1392012945167,
+      "ingressBytes": 1396070045151
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 698334522782,
+      "ingressBytes": 823096140084
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 20595647,
+      "ingressBytes": 6016544
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "egressBytes": 4210244,
+      "ingressBytes": 3477929
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 87449415,
+      "ingressBytes": 469369281
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 4303169557818,
+      "ingressBytes": 1088533049414
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 124526553,
+      "ingressBytes": 766426447
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 4065089,
+      "ingressBytes": 3207766
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 27344042,
+      "ingressBytes": 17401725
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 296558008944,
+      "ingressBytes": 360407404058
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 60222474,
+      "ingressBytes": 111473406
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 415626947,
+      "ingressBytes": 81309996
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 41492008,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 315062724,
+      "ingressBytes": 59539938
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 4142783,
+      "ingressBytes": 2825121
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 445352364293,
+      "ingressBytes": 2303434195088
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 392513407,
+      "ingressBytes": 2089802895
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 6645,
+      "ingressBytes": 2633
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 1924227037,
+      "ingressBytes": 1567491896
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 132710437,
+      "ingressBytes": 785498824
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 4161524576247,
+      "ingressBytes": 1080338723920
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 629060094439,
+      "ingressBytes": 619533853697
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 41908047743,
+      "ingressBytes": 3518371694197
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 46508620,
+      "ingressBytes": 1860071
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 376844241,
+      "ingressBytes": 2257221417
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 2740074792041,
+      "ingressBytes": 2744587959790
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 490348,
+      "ingressBytes": 1182878
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 455989907,
+      "ingressBytes": 10125560
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 53465026,
+      "ingressBytes": 295695411
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 29760,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 13300,
+      "ingressBytes": 13975
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 17555,
+      "ingressBytes": 4595
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 5633,
+      "ingressBytes": 1355
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 18985990,
+      "ingressBytes": 11226947
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 11360,
+      "ingressBytes": 17040
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 2914211,
+      "ingressBytes": 2443814
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 508223932,
+      "ingressBytes": 217278933
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 1327511455,
+      "ingressBytes": 978638766
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 38641735,
+      "ingressBytes": 232011998
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 432500787268,
+      "ingressBytes": 433149429757
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 10284155280,
+      "ingressBytes": 42074219301
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 2948999819402,
+      "ingressBytes": 7228582450166
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 11410626,
+      "ingressBytes": 11274857
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 2583,
+      "ingressBytes": 6641
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 8372,
+      "ingressBytes": 1634
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 73156160,
+      "ingressBytes": 55250974
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 1490752727786,
+      "ingressBytes": 535882704085
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 355793763290,
+      "ingressBytes": 326609038776
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 41385659,
+      "ingressBytes": 2150720
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 882470729,
+      "ingressBytes": 228202575
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 0,
+      "ingressBytes": 2580
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 1763684440046,
+      "ingressBytes": 1767076412557
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 551514928,
+      "ingressBytes": 240420481
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 4309236,
+      "ingressBytes": 884964
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 1080962289225,
+      "ingressBytes": 1056409133887
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 104335874,
+      "ingressBytes": 4045452
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 1044727604163,
+      "ingressBytes": 1039691656760
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 10681785398097,
+      "ingressBytes": 12493083222737
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 309185528,
+      "ingressBytes": 61011387
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 330397906,
+      "ingressBytes": 2110335244
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 48730040,
+      "ingressBytes": 1929405
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 9231211731,
+      "ingressBytes": 10655619751
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 19585629,
+      "ingressBytes": 186483867
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 296637,
+      "ingressBytes": 23035924
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 1596894593057,
+      "ingressBytes": 1563897047547
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 768231084,
+      "ingressBytes": 133600627
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 65988415,
+      "ingressBytes": 30937666
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 18843,
+      "ingressBytes": 17523
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 22359275447699,
+      "ingressBytes": 21373076279797
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 11646976665,
+      "ingressBytes": 324212760
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-04b3a3b9b0195d1a0",
+      "egressBytes": 1940564,
+      "ingressBytes": 49335966
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 18408963,
+      "ingressBytes": 100652923
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 1592500886953,
+      "ingressBytes": 1605504583083
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 518805386,
+      "ingressBytes": 10892700
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 256810820795,
+      "ingressBytes": 2585774171886
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 4171547757,
+      "ingressBytes": 1502374735
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 651440645,
+      "ingressBytes": 1156398936
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 26077584,
+      "ingressBytes": 2883137
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 56700,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 24100189811054,
+      "ingressBytes": 20923367830889
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 7859464,
+      "ingressBytes": 4740488
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 4362691,
+      "ingressBytes": 3552389
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "egressBytes": 1634,
+      "ingressBytes": 8372
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 19771437,
+      "ingressBytes": 8313643
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 3101315508,
+      "ingressBytes": 111718271
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 40341751,
+      "ingressBytes": 236180753
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 1866464126,
+      "ingressBytes": 973808110
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 165637438,
+      "ingressBytes": 3831965878
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 53306557,
+      "ingressBytes": 283476671
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 622177744586,
+      "ingressBytes": 604319872469
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "egressBytes": 2848291,
+      "ingressBytes": 2357841
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 2844734,
+      "ingressBytes": 2327652
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 109392245,
+      "ingressBytes": 186852220
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 4048438,
+      "ingressBytes": 103800335
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0a1b9106e59d449a1",
+      "egressBytes": 16139685527,
+      "ingressBytes": 4385347927
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 10165325,
+      "ingressBytes": 3224535
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 4178828572,
+      "ingressBytes": 1491187439
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 106102444,
+      "ingressBytes": 30637133
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 87807159,
+      "ingressBytes": 456404243
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 443453639395,
+      "ingressBytes": 2303175006788
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 7868540,
+      "ingressBytes": 13492124
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 2903190287,
+      "ingressBytes": 12815533477
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 50669187,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 10155227972,
+      "ingressBytes": 41365742901
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 17523,
+      "ingressBytes": 18447
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 609059151,
+      "ingressBytes": 41265474
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 10849,
+      "ingressBytes": 10108
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 910718071,
+      "ingressBytes": 1785294968
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "egressBytes": 39096079,
+      "ingressBytes": 1025527311
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 13300,
+      "ingressBytes": 13975
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 3511,
+      "ingressBytes": 6645
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 4796,
+      "ingressBytes": 1371
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 441568569,
+      "ingressBytes": 82874155
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 57064773759,
+      "ingressBytes": 18895666155
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 14275,
+      "ingressBytes": 13300
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 1753370143520,
+      "ingressBytes": 1562713786591
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 11920723,
+      "ingressBytes": 10997227
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 191266296,
+      "ingressBytes": 20169512
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 9752038446827,
+      "ingressBytes": 10391093195194
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 12100540831,
+      "ingressBytes": 2763034625
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 10982829,
+      "ingressBytes": 3516898
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 533931723,
+      "ingressBytes": 40223052
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "egressBytes": 15724696240,
+      "ingressBytes": 2830605427
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 21883337,
+      "ingressBytes": 28082836
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 12983616746,
+      "ingressBytes": 2848155028
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 1282940470,
+      "ingressBytes": 151557678
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 40429618703892,
+      "ingressBytes": 40807004486415
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 1710994896762,
+      "ingressBytes": 439055618217
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 13133,
+      "ingressBytes": 12236
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 38440787,
+      "ingressBytes": 231390784
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 1606,
+      "ingressBytes": 16345
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 772253833,
+      "ingressBytes": 128013441
+    },
+    {
+      "localId": "617842948938-us-west-1-subnet-0828d1a426e23dc4f",
+      "remoteId": "617842948938-us-west-1-subnet-0860f07ae2234f2af",
+      "egressBytes": 984999,
+      "ingressBytes": 473820
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 39344143,
+      "ingressBytes": 1031225221
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 3831565871,
+      "ingressBytes": 165527066
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 101937933137,
+      "ingressBytes": 1687492631227
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 40690731922694,
+      "ingressBytes": 40243894518114
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 2787198592435,
+      "ingressBytes": 384727172782
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "egressBytes": 4053042,
+      "ingressBytes": 104528458
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 60895738,
+      "ingressBytes": 531655
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 330760177,
+      "ingressBytes": 2097575504
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 2748550493234,
+      "ingressBytes": 2767958071913
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 24952529258977,
+      "ingressBytes": 28815304351606
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 11346238938,
+      "ingressBytes": 388584722
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 1075349083800,
+      "ingressBytes": 1048740605259
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 76868397,
+      "ingressBytes": 26411410
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 19068820166,
+      "ingressBytes": 56485951878
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 13290,
+      "ingressBytes": 6059
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 53919004899,
+      "ingressBytes": 82293893679
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 2806060622652,
+      "ingressBytes": 4809296869091
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 25025060193169,
+      "ingressBytes": 28944644785764
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 430062064849,
+      "ingressBytes": 710328807073
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 596607124475,
+      "ingressBytes": 1475969012813
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 747747052004,
+      "ingressBytes": 751791970787
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 2959217,
+      "ingressBytes": 805173
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 13771837804,
+      "ingressBytes": 18165977972
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 329877364179,
+      "ingressBytes": 290517085438
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 11742433,
+      "ingressBytes": 18773183
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 15726766541,
+      "ingressBytes": 8502547617
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 48459488,
+      "ingressBytes": 168063443
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 20719334,
+      "ingressBytes": 6204370
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c94a963395cadb86",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 26405686882,
+      "ingressBytes": 40165111044
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 10263317634,
+      "ingressBytes": 16861002245
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 10018333,
+      "ingressBytes": 31671408
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 287225473840,
+      "ingressBytes": 389493799924
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 5087,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 442646,
+      "ingressBytes": 187975
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 1007205025,
+      "ingressBytes": 864262724
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 621901091691,
+      "ingressBytes": 604367935615
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 12458956798,
+      "ingressBytes": 2804932738
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 1473083554678,
+      "ingressBytes": 594946219355
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 103655816,
+      "ingressBytes": 4043010
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "egressBytes": 334859557167,
+      "ingressBytes": 285681217372
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "remoteId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "egressBytes": 17924000847,
+      "ingressBytes": 727354159
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "remoteId": "565095755193-eu-central-1-subnet-08918d3218ab4af0e",
+      "egressBytes": 35884157,
+      "ingressBytes": 3745285
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 52828,
+      "ingressBytes": 9617
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-us-west-1-subnet-03ce597027b797679",
+      "egressBytes": 762595895,
+      "ingressBytes": 126714567
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 40758838,
+      "ingressBytes": 236676427
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 15243265,
+      "ingressBytes": 18946724
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 40337491,
+      "ingressBytes": 236479030
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 392483485,
+      "ingressBytes": 2089638785
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 12543508387,
+      "ingressBytes": 2866885961
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 3641124388429,
+      "ingressBytes": 9085603737595
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 150924434,
+      "ingressBytes": 1279454474
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 1959539,
+      "ingressBytes": 49413076
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "egressBytes": 206784,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 591323320,
+      "ingressBytes": 260763425
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 480,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 373778877,
+      "ingressBytes": 2200602537
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 15428,
+      "ingressBytes": 16211
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 1863445387,
+      "ingressBytes": 86813512
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 114548656497,
+      "ingressBytes": 17587692956
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 1570212524100,
+      "ingressBytes": 1588842186955
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 13334085929,
+      "ingressBytes": 2972579903
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0fc8dcf8bbb9df4fc",
+      "egressBytes": 1867719,
+      "ingressBytes": 46701502
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 4131447,
+      "ingressBytes": 2755146
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 26775225492,
+      "ingressBytes": 37763458415
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 41385499,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "egressBytes": 16271,
+      "ingressBytes": 1502
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "egressBytes": 1601539669418,
+      "ingressBytes": 1602150841478
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 22184895,
+      "ingressBytes": 6530732
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "egressBytes": 441586665478,
+      "ingressBytes": 429727392587
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 7801882329,
+      "ingressBytes": 238943440
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0478b1bab7523201e",
+      "remoteId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "egressBytes": 23619073,
+      "ingressBytes": 29222444
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "remoteId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "egressBytes": 912560163,
+      "ingressBytes": 777721875
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-us-west-1-subnet-0c79e59b7f49a8110",
+      "egressBytes": 18803039,
+      "ingressBytes": 11782903
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 63759981061,
+      "ingressBytes": 94374433759
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "remoteId": "958719611210-us-west-1-subnet-02498cfe77be1ca67",
+      "egressBytes": 758489561,
+      "ingressBytes": 2259734570
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-06dde0f0321d130ed",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 767035756,
+      "ingressBytes": 4763437945
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 362885957,
+      "ingressBytes": 957278143
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-09c63d01fea1c2de6",
+      "remoteId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "egressBytes": 55673676908,
+      "ingressBytes": 89308618627
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0a415aa89455cf4f8",
+      "remoteId": "036476006320-us-west-1-subnet-0511f175d8744983e",
+      "egressBytes": 641328484,
+      "ingressBytes": 13700188
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 26621658,
+      "ingressBytes": 103512599
+    },
+    {
+      "localId": "269366561554-us-west-1-subnet-03459280ad10d1a64",
+      "remoteId": "269366561554-us-west-1-subnet-044e00100103e5abd",
+      "egressBytes": 922172,
+      "ingressBytes": 425148
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "287573302805-eu-central-1-subnet-01a045c1593f8d763",
+      "egressBytes": 2918336,
+      "ingressBytes": 775238
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "036476006320-us-west-1-subnet-0fe4415deeb34f790",
+      "egressBytes": 2807232,
+      "ingressBytes": 4238280
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "565095755193-eu-central-1-subnet-0e1271ff4ea0aa4a8",
+      "egressBytes": 41923684,
+      "ingressBytes": 94499982
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-011dcb3f14ef2dbb1",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 104055401,
+      "ingressBytes": 4034782
+    },
+    {
+      "localId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 2881819735,
+      "ingressBytes": 12624858058
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "egressBytes": 63490603,
+      "ingressBytes": 259163617
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "958719611210-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 11265183574,
+      "ingressBytes": 357401656
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "egressBytes": 72040124651,
+      "ingressBytes": 107854201736
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "egressBytes": 4048128,
+      "ingressBytes": 104408603
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 1532624427256,
+      "ingressBytes": 1319403977507
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-01420e3917132a0b7",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 22952249943,
+      "ingressBytes": 17312543855
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "remoteId": "287573302805-eu-central-1-subnet-0869c24ffe0c9e67c",
+      "egressBytes": 845377078919,
+      "ingressBytes": 918660985609
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0edc88a1f8a5b05e3",
+      "remoteId": "565095755193-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 650717603,
+      "ingressBytes": 11334126
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-0785b6c5648d24d5c",
+      "remoteId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "egressBytes": 168927392,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "remoteId": "958719611210-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 11264383153,
+      "ingressBytes": 6517527431
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "036476006320-us-west-1-subnet-0b80fd637701b8d22",
+      "egressBytes": 89659176,
+      "ingressBytes": 459200034
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0a8f1cb5ac368c44c",
+      "remoteId": "287573302805-eu-central-1-subnet-0b3170c4fdaeb051e",
+      "egressBytes": 67291700,
+      "ingressBytes": 81235845
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-08596bc4647def41d",
+      "egressBytes": 110968136,
+      "ingressBytes": 3103923436
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "egressBytes": 19626751,
+      "ingressBytes": 190889948
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 4410407383,
+      "ingressBytes": 2459800286
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "egressBytes": 185428203,
+      "ingressBytes": 5454435382
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-073be0359a58876f4",
+      "remoteId": "565095755193-eu-central-1-subnet-0810b1632f4bf5641",
+      "egressBytes": 347263999941,
+      "ingressBytes": 269810266640
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-00828bea1d081da52",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 53855447971,
+      "ingressBytes": 81518306475
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "958719611210-eu-central-1-subnet-0f85e85735e74a0fd",
+      "egressBytes": 12843371232,
+      "ingressBytes": 2921288162
+    },
+    {
+      "localId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 480,
+      "ingressBytes": 0
+    },
+    {
+      "localId": "036476006320-us-west-1-subnet-0c007c2b937018184",
+      "remoteId": "036476006320-us-west-1-subnet-06cf599f32111688b",
+      "egressBytes": 153750073455,
+      "ingressBytes": 198946406855
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-05a23b49e51f1c52e",
+      "remoteId": "958719611210-us-west-1-subnet-044aeee00becffcb3",
+      "egressBytes": 975007008,
+      "ingressBytes": 1321237885
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "remoteId": "036476006320-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 368849512,
+      "ingressBytes": 971117237
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0fcf1be5eaab72a48",
+      "remoteId": "287573302805-eu-central-1-subnet-08d700693057f0995",
+      "egressBytes": 1551131818,
+      "ingressBytes": 1921965728
+    },
+    {
+      "localId": "287573302805-eu-central-1-subnet-0949dac2b0a00bacd",
+      "remoteId": "287573302805-eu-central-1-subnet-037207fa50e058ae7",
+      "egressBytes": 54591560544,
+      "ingressBytes": 83497618681
+    },
+    {
+      "localId": "565095755193-eu-central-1-subnet-0e83157a5fb3e54e2",
+      "remoteId": "565095755193-eu-central-1-subnet-0569756265116bdc8",
+      "egressBytes": 9089240109,
+      "ingressBytes": 10406188165
+    },
+    {
+      "localId": "036476006320-eu-central-1-subnet-01a045c1593f8d763",
+      "remoteId": "287573302805-eu-central-1-subnet-018d43ab005a260d7",
+      "egressBytes": 5603284,
+      "ingressBytes": 2497535
+    }
+  ]
+}
