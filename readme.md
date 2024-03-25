@@ -2,6 +2,8 @@
 
 The CloudFlow Sankey is a custom column constrained Sankey visualization primarily for use in visualizing the "flows" from different networking abstractions. e.g. all flows from AWS region -> region, region -> VPC, region to VPC, and any combination thereof.
 
+![alt text](image.png)
+
 ## See it in action
 
 - Clone the repository
