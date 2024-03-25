@@ -44,7 +44,7 @@
 import { ref } from "vue"
 import rawData from "./data.json"
 import CloudFlowSankey from "../src/cloudFlowUtils/CloudFlowSankey.vue"
-import { ComputeSankeyGroupingOptions } from "../src/cloudFlowUtils"
+import { ComputeSankeyGroupingOptions } from "../src"
 import { SankeyColumn, SankeyGraph, SankeyNode } from "../src/sankeyUtils"
 
 const computeSankeyGroupingOptions = ref<ComputeSankeyGroupingOptions>({

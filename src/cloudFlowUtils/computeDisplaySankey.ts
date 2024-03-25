@@ -1,13 +1,10 @@
-import {
-  ComputeSankeyGroupingOptions,
-  SubnetData,
-  computeSankeyGrouping,
-  sortToMinimizeLinkCrossings,
-} from "."
+import { SubnetData } from "./models"
 import { SankeyColumn, computeSankey } from "../sankeyUtils"
 import { computeFocusGraph } from "./computeFocusGraph"
+import { computeSankeyGrouping, ComputeSankeyGroupingOptions } from "./computeSankeyGrouping"
 import { getVisibleGraph } from "./getVisibleGraph"
 import { insertStaticLinks } from "./insertStaticLinks"
+import { sortToMinimizeLinkCrossings } from "./sortToMinimizeLinkCrossings"
 
 export function computeDisplaySankey({
   subnetData,
@@ -22,10 +19,7 @@ export function computeDisplaySankey({
   graphHeight: number
   sourceTargetPadding: number
 }) {
-  // const rawSankeyGrouping = computeSankeyGrouping(subnetData, groupingOptions)
-  // const sankeyGrouping = computeSankeyGrouping(subnetData, groupingOptions)
-
-  // TODO: Merge this with computeSankeyGrouping and do it first
+  // TODO: Merge computeFocusGraph with computeSankeyGrouping
   const sankeyGrouping = computeFocusGraph({
     graph: computeSankeyGrouping(subnetData, groupingOptions),
     selectedNodeIds: groupingOptions.selectedNodeIds,

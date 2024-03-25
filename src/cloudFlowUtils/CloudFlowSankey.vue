@@ -139,8 +139,9 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { SankeyColumn, SankeyGraph, SankeyNode, computeSankeyLinkPath } from "../sankeyUtils"
-import { computeWiredGraph, ComputeSankeyGroupingOptions, RawSubnetData, SubnetData } from "."
+import { ComputeSankeyGroupingOptions, RawSubnetData, SubnetData } from "."
 import { DisplaySankeyGraph, DisplaySankeyColumn } from "./models"
+import { computeWiredGraph } from "./computeWiredGraph"
 import { computeDisplaySankey } from "./computeDisplaySankey"
 import { getColumnX, getFlowsEndPercentage, getFocusedColumn, getNodeHeight, getNodeWidth } from "./utils"
 

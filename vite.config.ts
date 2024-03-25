@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
+import { defineConfig } from "vite"
+import vue from "@vitejs/plugin-vue"
 
 export default defineConfig(({ command, mode }) => {
   if (command === "serve" && mode !== "test") {
@@ -7,7 +7,7 @@ export default defineConfig(({ command, mode }) => {
     return {
       root: "./demo",
       plugins: [vue()],
-    };
+    }
   } else {
     // Build-specific config
     return {
@@ -22,10 +22,11 @@ export default defineConfig(({ command, mode }) => {
       test: {
         includeSource: ["src/**/*.ts"],
       },
+      plugins: [vue()],
       define: {
         // Remove test code for production builds
         "import.meta.vitest": "undefined",
       },
-    };
+    }
   }
-});
+})
