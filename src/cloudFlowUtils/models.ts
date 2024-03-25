@@ -1,3 +1,5 @@
+import { SankeyColumn, SankeyGraph } from "../sankeyUtils"
+
 export interface GroupType {
   id: string
   getGroupId: (subnet: Subnet) => string
@@ -69,4 +71,19 @@ export interface RawSubnetData {
 export interface SubnetData {
   subnets: Subnet[]
   links: SubnetLink[]
+}
+
+export type DisplaySankeyColumn = SankeyColumn & {
+  hasHiddenTopNodes: boolean
+  hasHiddenBottomNodes: boolean
+  flows?: {
+    visible: number
+    total: number
+  }
+}
+
+export interface DisplaySankeyGraph {
+  nodes: SankeyGraph["nodes"]
+  links: SankeyGraph["links"]
+  columns: DisplaySankeyColumn[]
 }

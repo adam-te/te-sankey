@@ -82,6 +82,10 @@ export interface SankeyColumn {
   visibleRows: [number, number]
   rightPadding: number
   isTarget: boolean // TODO: May be removed
+  flows?: {
+    visible: number
+    total: number
+  }
 }
 
 export interface SankeyConfig {
