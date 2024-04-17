@@ -12,26 +12,27 @@ import { RawSubnetData, Subnet, SubnetData } from "./models"
 export function computeWiredGraph(data: RawSubnetData): SubnetData {
   const { vertices, edges: links } = data
 
-  const subnets = [...Object.values(vertices)].flatMap(v => [
-    {
-      id: `SOURCE_${v.id}`,
-      account: `SOURCE_${v.account}`,
-      region: `SOURCE_${v.region}`,
-      vpc: `SOURCE_${v.vpc}`,
-      az: `SOURCE_${v.az}`,
-      subnet: `SOURCE_${v.subnet}`,
-      isTarget: false,
-    },
-    {
-      id: `TARGET_${v.id}`,
-      account: `TARGET_${v.account}`,
-      region: `TARGET_${v.region}`,
-      vpc: `TARGET_${v.vpc}`,
-      az: `TARGET_${v.az}`,
-      subnet: `TARGET_${v.subnet}`,
-      isTarget: true,
-    },
-  ])
+  const subnets = [...Object.values(vertices)].flatMap(v => {
+    let prefix = "SOURCE_"
+    if (v.isTarget) {
+      prefix = "TARGET_"
+    }
+    return [
+      {
+        id: `${prefix}${v.id}`,
+        account: `${prefix}${v.account}`,
+        region: `${prefix}${v.region}`,
+        vpc: `${prefix}${v.vpc}`,
+        az: `${prefix}${v.az}`,
+        subnet: `${prefix}${v.subnet}`,
+        isTarget: v.isTarget,
+        name: v.name,
+        vpcName: v.vpcName,
+        vpcId: v.vpc,
+        regionId : v.region
+      },
+    ]
+  })
   const subnetIdToSubnet = new Map<string, Subnet>(subnets.map(v => [v.id, v]))
   return {
     subnets,

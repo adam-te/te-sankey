@@ -41,8 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
-import rawData from "./data.json"
+import { ref, watch } from "vue"
+import rawData from "./enhancedData.json" //"./data.json"
 import CloudFlowSankey from "../src/cloudFlowUtils/CloudFlowSankey.vue"
 import { ComputeSankeyGroupingOptions } from "../src"
 import { SankeyColumn, SankeyGraph, SankeyNode } from "../src/sankeyUtils"

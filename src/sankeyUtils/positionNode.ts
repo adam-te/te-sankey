@@ -18,7 +18,7 @@ export function positionNode({
 }) {
   const nodeFlow = getNodeTotalFlowValue(node)
   const isNonFlowingSingleNodeColumn = yScale.domain()[0] === yScale.domain()[1] && nodeFlow === 0 // TODO: Cleanup
-  const nodeHeight = isNonFlowingSingleNodeColumn
+  let nodeHeight = isNonFlowingSingleNodeColumn
     ? yScale.range()[1]
     : yScale(nodeFlow) - sankeyConfig.nodeYPadding
 
@@ -55,7 +55,7 @@ export function positionNode({
     },
     type: "end",
   })
-
+  if (nodeHeight < 0) nodeHeight = 5
   return {
     nodeHeight,
   }

@@ -179,7 +179,7 @@ function getColumnVisibility(options: ComputeSankeyGroupingOptions): {
 function createSankeyNode(group: SubnetGroup): SankeyNode {
   return {
     id: group.id,
-    displayName: group.id.split("_").at(-1) as string,
+    displayName: group.name? group.name : group.id.split("_").at(-1) as string,
     label: group.isTarget ? "right" : "left",
     sourceLinks: [],
     targetLinks: [],
