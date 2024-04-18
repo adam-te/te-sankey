@@ -10,14 +10,7 @@ export function computeGroupedSubnets(data: SubnetData, groupType: GroupType): S
     if (!groupIdToGroup.has(groupId)) {
       groupIdToGroup.set(groupId, {
         id: groupId,
-        name:
-          groupType.id == "Region"
-            ? subnet.regionId
-            : groupType.id == "Vpc"
-            ? subnet.vpcName
-              ? subnet.vpcName
-              : subnet.vpcId
-            : subnet.name,
+        name: groupType.getGroupName(subnet),
         isTarget: subnet.isTarget,
         subnets: [],
         links: [],
@@ -29,7 +22,7 @@ export function computeGroupedSubnets(data: SubnetData, groupType: GroupType): S
   }
 
   for (const subnetLink of data.links) {
-    const sourceGroupId = groupType.getGroupId(subnetLink.source)
+    const sourceGroupId = subnetLink.source && groupType.getGroupId(subnetLink.source)
     if (groupIdToGroup.has(sourceGroupId)) {
       groupIdToGroup.get(sourceGroupId)?.links.push(subnetLink)
     }

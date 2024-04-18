@@ -21,7 +21,7 @@ export function computeGroupLinks({
 
   function getTargetGroupId(link: SubnetLink): string {
     // @ts-ignore
-    return group.targetGroupType.getGroupId(link.target)
+    return link.target && group.targetGroupType.getGroupId(link.target)
   }
 
   function getSourceGroupId(link: SubnetLink): string {

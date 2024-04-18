@@ -3,6 +3,7 @@ import { SankeyColumn, SankeyGraph } from "../sankeyUtils"
 export interface GroupType {
   id: string
   getGroupId: (subnet: Subnet) => string
+  getGroupName: (subnet: Subnet) => string
 }
 
 export interface SubnetGroup {
@@ -18,20 +19,23 @@ export interface SubnetGroup {
 export const GroupType: Record<string, GroupType> = {
   Region: {
     id: "Region",
-    getGroupId: (subnet: Subnet) => (subnet ? `REGION_${subnet.region}` : ""),
+    getGroupId: (subnet: Subnet) => (`REGION_${subnet.region}`),
+    getGroupName: (subnet: Subnet) => subnet.regionId,
   },
   Vpc: {
     id: "Vpc",
-    getGroupId: (subnet: Subnet) => (subnet ? `VPC_${subnet.vpc}` : ""),
+    getGroupId: (subnet: Subnet) => (`VPC_${subnet.vpc}`),
+    getGroupName: (subnet: Subnet) => subnet.vpcName || subnet.vpcId,
   },
   Subnet: {
     id: "Subnet",
-    getGroupId: (subnet: Subnet) => (subnet ? `SUBNET_${subnet.subnet}` : ""),
+    getGroupId: (subnet: Subnet) => (`SUBNET_${subnet.subnet}`),
+    getGroupName: (subnet: Subnet) => subnet.name,
   },
 }
 
 export interface RawSubnet {
-  isTarget: boolean,
+  isTarget: boolean
   name: string
   id: string // "036476006320-us-west-1-subnet-0c007c2b937018184",
   account: string // "036476006320",

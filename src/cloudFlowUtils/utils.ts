@@ -25,7 +25,7 @@ export function getNodeHeight(node: SankeyNode) {
     throw new Error("node.y0 and node.y1 must be defined!")
   }
   let height = node.y1 - node.y0
-  if (height < 0) height = 1
+  height = Math.max(height, 1)
   return height
 }
 

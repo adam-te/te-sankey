@@ -172,7 +172,6 @@ import { DisplaySankeyGraph, DisplaySankeyColumn } from "./models"
 import { computeWiredGraph } from "./computeWiredGraph"
 import { computeDisplaySankey } from "./computeDisplaySankey"
 import { getColumnX, getFlowsEndPercentage, getFocusedColumn, getNodeHeight, getNodeWidth } from "./utils"
-import { watch } from "fs"
 
 const props = defineProps<{
   width: number

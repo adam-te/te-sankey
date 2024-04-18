@@ -55,7 +55,7 @@ export function positionNode({
     },
     type: "end",
   })
-  if (nodeHeight < 0) nodeHeight = 5
+  nodeHeight = Math.max(nodeHeight, 5);
   return {
     nodeHeight,
   }
