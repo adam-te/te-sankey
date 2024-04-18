@@ -30,6 +30,20 @@
       >
         ▲
       </button>
+      <button
+        v-if="focusedTargetColumn"
+        class="sankey-scroll-btn"
+        :disabled="!focusedTargetColumn.hasHiddenTopNodes"
+        :style="{ left: `${getColumnX(focusedTargetColumn)}px` }"
+        @click="
+          emits('columnScrollClicked', {
+            column: focusedTargetColumn,
+            direction: 'UP',
+          })
+        "
+      >
+        ▲
+      </button>
       <!-- <button
         v-if="focusedColumn !== sankeyGraph.columns.at(-1)"
         class="sankey-scroll-btn"
@@ -42,7 +56,7 @@
       </button> -->
     </div>
 
-    <svg ref="chartContainer" :width="props.width" :height="props.height" xmlns="http://www.w3.org/2000/svg">
+    <svg :width="props.width" :height="props.height" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <template v-for="node of sankeyGraph.nodes" :key="node.id">
           <linearGradient :id="node.id" x1="0%" y1="0%" x2="0%" y2="100%">
@@ -132,6 +146,20 @@
       >
         ▼
       </button>
+      <button
+        v-if="focusedTargetColumn"
+        class="sankey-scroll-btn"
+        :disabled="!focusedTargetColumn.hasHiddenBottomNodes"
+        :style="{ left: `${getColumnX(focusedTargetColumn)}px` }"
+        @click="
+          emits('columnScrollClicked', {
+            column: focusedTargetColumn,
+            direction: 'DOWN',
+          })
+        "
+      >
+        ▼
+      </button>
     </div>
   </div>
 </template>
@@ -179,6 +207,9 @@ const focusedColumn = computed(
       selectedNodeIds: props.groupingOptions.selectedNodeIds,
     }) as DisplaySankeyColumn
 )
+const focusedTargetColumn = computed(() => {
+  return sankeyGraph.value.columns.find(column => column.id.includes("TARGET")) as DisplaySankeyColumn
+})
 
 const selectedNodeIds = computed(() => new Set(props.groupingOptions.selectedNodeIds))
 

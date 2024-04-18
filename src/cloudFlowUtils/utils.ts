@@ -24,7 +24,9 @@ export function getNodeHeight(node: SankeyNode) {
   if (node.y1 == null || node.y0 == null) {
     throw new Error("node.y0 and node.y1 must be defined!")
   }
-  return node.y1 - node.y0
+  let height = node.y1 - node.y0
+  height = Math.max(height, 1)
+  return height
 }
 
 export function getFlowsEndPercentage(node: SankeyNode) {

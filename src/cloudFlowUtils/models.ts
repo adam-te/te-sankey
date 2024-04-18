@@ -3,10 +3,12 @@ import { SankeyColumn, SankeyGraph } from "../sankeyUtils"
 export interface GroupType {
   id: string
   getGroupId: (subnet: Subnet) => string
+  getGroupName: (subnet: Subnet) => string
 }
 
 export interface SubnetGroup {
   id: string
+  name: string
   isTarget: boolean
   subnets: Subnet[]
   links: SubnetLink[]
@@ -17,23 +19,31 @@ export interface SubnetGroup {
 export const GroupType: Record<string, GroupType> = {
   Region: {
     id: "Region",
-    getGroupId: (subnet: Subnet) => `REGION_${subnet.region}`,
+    getGroupId: (subnet: Subnet) => (`REGION_${subnet.region}`),
+    getGroupName: (subnet: Subnet) => subnet.regionId,
   },
   Vpc: {
     id: "Vpc",
-    getGroupId: (subnet: Subnet) => `VPC_${subnet.vpc}`,
+    getGroupId: (subnet: Subnet) => (`VPC_${subnet.vpc}`),
+    getGroupName: (subnet: Subnet) => subnet.vpcName || subnet.vpcId,
   },
   Subnet: {
     id: "Subnet",
-    getGroupId: (subnet: Subnet) => `SUBNET_${subnet.subnet}`,
+    getGroupId: (subnet: Subnet) => (`SUBNET_${subnet.subnet}`),
+    getGroupName: (subnet: Subnet) => subnet.name,
   },
 }
 
 export interface RawSubnet {
+  isTarget: boolean
+  name: string
   id: string // "036476006320-us-west-1-subnet-0c007c2b937018184",
   account: string // "036476006320",
   region: string // "us-west-1",
+  regionId: string
   vpc: string // "vpc-01467758515c907ef",
+  vpcName: string
+  vpcId: string
   az: string // "usw1-az1",
   subnet: string // "subnet-0c007c2b937018184"
 }
@@ -42,11 +52,15 @@ export interface Subnet {
   id: string // "036476006320-us-west-1-subnet-0c007c2b937018184",
   account: string // "036476006320",
   region: string // "us-west-1",
+  regionId: string
   vpc: string // "vpc-01467758515c907ef",
+  vpcName: string
+  vpcId: string
   az: string // "usw1-az1",
   subnet: string // "subnet-0c007c2b937018184"
   /** Whether this is a "target" version of the subnet. If not a target, it is a source */
   isTarget: boolean
+  name: string //display name
 }
 
 export interface RawSubnetLink {
